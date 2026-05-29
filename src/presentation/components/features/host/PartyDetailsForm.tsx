@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Input } from '@/presentation/components/common/Input'
 import { Button } from '@/presentation/components/common/Button'
 import { DateTimeFields } from '@/presentation/components/features/event/DateTimeFields'
+import { AddressAutocomplete } from '@/presentation/components/features/event/AddressAutocomplete'
 import { composeEventTimes, splitEventTimes } from '@/shared/utils/eventDateTime'
 import type { DateTimeFields as DateTimeFieldsType } from '@/shared/utils/eventDateTime'
 
@@ -14,6 +15,8 @@ interface PartyDetailsFormProps {
     endsAt: string | null
     requirements: string
     allDay: boolean
+    lat?: number | null
+    lng?: number | null
   }
   onSave: (details: {
     title: string
@@ -22,6 +25,8 @@ interface PartyDetailsFormProps {
     endsAt: string | null
     requirements: string
     allDay: boolean
+    lat: number | null
+    lng: number | null
   }) => void
 }
 
@@ -29,6 +34,8 @@ export function PartyDetailsForm({ initial, onSave }: PartyDetailsFormProps) {
   const { t } = useTranslation()
   const [title, setTitle] = useState(initial.title)
   const [address, setAddress] = useState(initial.address)
+  const [lat, setLat] = useState<number | null>(initial.lat ?? null)
+  const [lng, setLng] = useState<number | null>(initial.lng ?? null)
   const [fields, setFields] = useState<DateTimeFieldsType>(() =>
     splitEventTimes({
       startsAt: initial.startsAt,
@@ -40,7 +47,7 @@ export function PartyDetailsForm({ initial, onSave }: PartyDetailsFormProps) {
 
   const handleSave = () => {
     const { startsAt, endsAt, allDay } = composeEventTimes(fields)
-    onSave({ title, address, startsAt, endsAt, requirements, allDay })
+    onSave({ title, address, startsAt, endsAt, requirements, allDay, lat, lng })
   }
 
   return (
@@ -52,11 +59,15 @@ export function PartyDetailsForm({ initial, onSave }: PartyDetailsFormProps) {
         onChange={(e) => setTitle(e.target.value)}
         required
       />
-      <Input
-        label={t('home.addressLabel')}
-        type="text"
+      <AddressAutocomplete
         value={address}
-        onChange={(e) => setAddress(e.target.value)}
+        lat={lat}
+        lng={lng}
+        onChange={({ address: a, lat: la, lng: ln }) => {
+          setAddress(a)
+          setLat(la)
+          setLng(ln)
+        }}
       />
       <DateTimeFields value={fields} onChange={setFields} />
       <label className="flex flex-col gap-1.5">

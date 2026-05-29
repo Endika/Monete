@@ -7,6 +7,7 @@ import { Button } from '@/presentation/components/common/Button'
 import { ErrorBanner } from '@/presentation/components/common/ErrorBanner'
 import { MonkeyMascot } from '@/presentation/components/common/MonkeyMascot'
 import { DateTimeFields } from '@/presentation/components/features/event/DateTimeFields'
+import { AddressAutocomplete } from '@/presentation/components/features/event/AddressAutocomplete'
 import { composeEventTimes } from '@/shared/utils/eventDateTime'
 import type { DateTimeFields as DateTimeFieldsType } from '@/shared/utils/eventDateTime'
 import { RecentsStore } from '@/infrastructure/persistence/RecentsStore'
@@ -30,6 +31,8 @@ function CreateForm({
 
   const [title, setTitle] = useState('')
   const [address, setAddress] = useState('')
+  const [lat, setLat] = useState<number | null>(null)
+  const [lng, setLng] = useState<number | null>(null)
   const [fields, setFields] = useState<DateTimeFieldsType>({
     startDate: '',
     startTime: '',
@@ -51,6 +54,8 @@ function CreateForm({
         endsAt,
         requirements,
         allDay,
+        lat,
+        lng,
       })
       recents.addHosted({ id: result.party.id, title, startsAt })
       onSuccess(result.party.id, title, startsAt)
@@ -73,11 +78,15 @@ function CreateForm({
           onChange={(e) => setTitle(e.target.value)}
           required
         />
-        <Input
-          label={t('home.addressLabel')}
-          type="text"
+        <AddressAutocomplete
           value={address}
-          onChange={(e) => setAddress(e.target.value)}
+          lat={lat}
+          lng={lng}
+          onChange={({ address: a, lat: la, lng: ln }) => {
+            setAddress(a)
+            setLat(la)
+            setLng(ln)
+          }}
         />
         <DateTimeFields value={fields} onChange={setFields} />
         <label className="flex flex-col gap-1.5">
