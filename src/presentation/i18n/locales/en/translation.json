@@ -1,0 +1,59 @@
+{
+  "home": {
+    "title": "Monete",
+    "subtitle": "RSVP for kids birthday parties",
+    "createCta": "Create a party",
+    "titleLabel": "Party title",
+    "addressLabel": "Address",
+    "startsAtLabel": "Date & time",
+    "endsAtLabel": "End time (optional)",
+    "requirementsLabel": "Requirements / notes",
+    "submit": "Create"
+  },
+  "host": {
+    "dashboardTitle": "Manage party",
+    "shareGuestLink": "Share guest link",
+    "questions": "Questions",
+    "addQuestion": "Add question",
+    "standardQuestions": "Standard questions",
+    "scopeFamily": "Per family",
+    "scopeChild": "Per child",
+    "typeSelect": "Choice",
+    "typeText": "Short text",
+    "typeNumber": "Number",
+    "typeDate": "Date",
+    "optionsLabel": "Options",
+    "requiredLabel": "Required",
+    "setPin": "Set edit PIN",
+    "headcount": "Headcount",
+    "shareVenue": "Share venue list"
+  },
+  "guest": {
+    "weAreParentsOf": "We are the parents of…",
+    "addChild": "Add a child",
+    "childName": "Child name",
+    "submit": "Send RSVP",
+    "thanks": "Thanks! Your RSVP was sent.",
+    "addToCalendar": "Add to calendar"
+  },
+  "venue": {
+    "totals": "Children ({{children}}) · Adults ({{adults}})",
+    "snack": "snack: {{snack}}",
+    "allergies": "allergies: {{allergies}}"
+  },
+  "common": {
+    "copy": "Copy",
+    "copied": "Copied",
+    "shareWhatsApp": "Share on WhatsApp",
+    "save": "Save",
+    "cancel": "Cancel",
+    "remove": "Remove",
+    "updateRequired": "Please update the app to view this party."
+  },
+  "standard": {
+    "adultsCount": "How many adults are coming?",
+    "allergies": "Allergies / intolerances",
+    "dateOfBirth": "Date of birth",
+    "snack": "Snack / preferred food"
+  }
+}
