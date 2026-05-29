@@ -7,6 +7,7 @@ import { ErrorBanner } from '@/presentation/components/common/ErrorBanner'
 import { AddToCalendarButton } from './AddToCalendarButton'
 import { RsvpForm } from './RsvpForm'
 import { MonkeyMascot } from '@/presentation/components/common/MonkeyMascot'
+import { googleMapsUrl } from '@/shared/utils/googleMapsUrl'
 
 interface GuestPageProps {
   partyId: string
@@ -57,7 +58,15 @@ export function GuestPage({ partyId }: GuestPageProps) {
                 <span aria-hidden className="text-sky">
                   &#128205;
                 </span>
-                {snapshot.event.address}
+                <a
+                  href={googleMapsUrl(snapshot.event.address)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={t('common.viewOnMaps')}
+                  className="underline underline-offset-2 hover:text-sky transition-colors"
+                >
+                  {snapshot.event.address}
+                </a>
               </p>
             )}
           </div>

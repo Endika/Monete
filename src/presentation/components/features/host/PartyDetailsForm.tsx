@@ -2,6 +2,9 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Input } from '@/presentation/components/common/Input'
 import { Button } from '@/presentation/components/common/Button'
+import { DateTimeFields } from '@/presentation/components/features/event/DateTimeFields'
+import { composeEventTimes, splitEventTimes } from '@/shared/utils/eventDateTime'
+import type { DateTimeFields as DateTimeFieldsType } from '@/shared/utils/eventDateTime'
 
 interface PartyDetailsFormProps {
   initial: {
@@ -10,6 +13,7 @@ interface PartyDetailsFormProps {
     startsAt: string
     endsAt: string | null
     requirements: string
+    allDay: boolean
   }
   onSave: (details: {
     title: string
@@ -17,37 +21,26 @@ interface PartyDetailsFormProps {
     startsAt: string
     endsAt: string | null
     requirements: string
+    allDay: boolean
   }) => void
-}
-
-function isoToInput(iso: string | null | undefined): string {
-  return iso ? new Date(iso).toISOString().slice(0, 16) : ''
-}
-
-function inputToIso(value: string): string {
-  return new Date(value).toISOString()
-}
-
-function inputToIsoOrNull(value: string): string | null {
-  return value ? new Date(value).toISOString() : null
 }
 
 export function PartyDetailsForm({ initial, onSave }: PartyDetailsFormProps) {
   const { t } = useTranslation()
   const [title, setTitle] = useState(initial.title)
   const [address, setAddress] = useState(initial.address)
-  const [startsAt, setStartsAt] = useState(isoToInput(initial.startsAt))
-  const [endsAt, setEndsAt] = useState(isoToInput(initial.endsAt))
+  const [fields, setFields] = useState<DateTimeFieldsType>(() =>
+    splitEventTimes({
+      startsAt: initial.startsAt,
+      endsAt: initial.endsAt,
+      allDay: initial.allDay,
+    }),
+  )
   const [requirements, setRequirements] = useState(initial.requirements)
 
   const handleSave = () => {
-    onSave({
-      title,
-      address,
-      startsAt: inputToIso(startsAt),
-      endsAt: inputToIsoOrNull(endsAt),
-      requirements,
-    })
+    const { startsAt, endsAt, allDay } = composeEventTimes(fields)
+    onSave({ title, address, startsAt, endsAt, requirements, allDay })
   }
 
   return (
@@ -65,19 +58,7 @@ export function PartyDetailsForm({ initial, onSave }: PartyDetailsFormProps) {
         value={address}
         onChange={(e) => setAddress(e.target.value)}
       />
-      <Input
-        label={t('home.startsAtLabel')}
-        type="datetime-local"
-        value={startsAt}
-        onChange={(e) => setStartsAt(e.target.value)}
-        required
-      />
-      <Input
-        label={t('home.endsAtLabel')}
-        type="datetime-local"
-        value={endsAt}
-        onChange={(e) => setEndsAt(e.target.value)}
-      />
+      <DateTimeFields value={fields} onChange={setFields} />
       <label className="flex flex-col gap-1.5">
         <span className="text-sm font-semibold font-display text-cocoa/80 tracking-wide">
           {t('home.requirementsLabel')}

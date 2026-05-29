@@ -16,7 +16,7 @@ describe('HomePage', () => {
       </ContainerProvider>,
     )
     await userEvent.type(screen.getByLabelText(/party title/i), 'Leo turns 5')
-    await userEvent.type(screen.getByLabelText(/date & time/i), '2026-06-20T17:00')
+    await userEvent.type(screen.getByLabelText(/date/i), '2026-06-20')
     await userEvent.click(screen.getByRole('button', { name: /create/i }))
     expect(onCreated).toHaveBeenCalledWith(expect.stringMatching(/^[a-z0-9]{7}$/))
   })

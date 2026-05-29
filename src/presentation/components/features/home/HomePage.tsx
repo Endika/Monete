@@ -6,6 +6,9 @@ import { Input } from '@/presentation/components/common/Input'
 import { Button } from '@/presentation/components/common/Button'
 import { ErrorBanner } from '@/presentation/components/common/ErrorBanner'
 import { MonkeyMascot } from '@/presentation/components/common/MonkeyMascot'
+import { DateTimeFields } from '@/presentation/components/features/event/DateTimeFields'
+import { composeEventTimes } from '@/shared/utils/eventDateTime'
+import type { DateTimeFields as DateTimeFieldsType } from '@/shared/utils/eventDateTime'
 
 export function HomePage({ onCreated }: { onCreated: (id: string) => void }) {
   const { t } = useTranslation()
@@ -13,21 +16,27 @@ export function HomePage({ onCreated }: { onCreated: (id: string) => void }) {
 
   const [title, setTitle] = useState('')
   const [address, setAddress] = useState('')
-  const [startsAt, setStartsAt] = useState('')
-  const [endsAt, setEndsAt] = useState('')
+  const [fields, setFields] = useState<DateTimeFieldsType>({
+    startDate: '',
+    startTime: '',
+    endDate: '',
+    endTime: '',
+  })
   const [requirements, setRequirements] = useState('')
   const [error, setError] = useState<string | null>(null)
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!fields.startDate) return
     try {
+      const { startsAt, endsAt, allDay } = composeEventTimes(fields)
       const result = await container.resolve<CreatePartyHandler>('createParty').execute({
         title,
         address,
-        startsAt: new Date(startsAt).toISOString(),
-        endsAt: endsAt ? new Date(endsAt).toISOString() : null,
+        startsAt,
+        endsAt,
         requirements,
-        allDay: false,
+        allDay,
       })
       onCreated(result.party.id)
     } catch (err) {
@@ -77,19 +86,7 @@ export function HomePage({ onCreated }: { onCreated: (id: string) => void }) {
             value={address}
             onChange={(e) => setAddress(e.target.value)}
           />
-          <Input
-            label={t('home.startsAtLabel')}
-            type="datetime-local"
-            value={startsAt}
-            onChange={(e) => setStartsAt(e.target.value)}
-            required
-          />
-          <Input
-            label={t('home.endsAtLabel')}
-            type="datetime-local"
-            value={endsAt}
-            onChange={(e) => setEndsAt(e.target.value)}
-          />
+          <DateTimeFields value={fields} onChange={setFields} />
           <label className="flex flex-col gap-1.5">
             <span className="text-sm font-semibold font-display text-cocoa/80 tracking-wide">
               {t('home.requirementsLabel')}
