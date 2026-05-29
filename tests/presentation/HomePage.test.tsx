@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { ContainerProvider } from '@/presentation/context/ContainerProvider'
@@ -7,6 +7,8 @@ import { buildContainer } from '@/shared/di/wiring'
 import '@/presentation/i18n/config'
 
 describe('HomePage', () => {
+  beforeEach(() => window.localStorage.clear())
+
   it('creates a party and calls onCreated with the new id', async () => {
     const container = buildContainer({ inMemory: true })
     const onCreated = vi.fn()

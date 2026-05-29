@@ -33,6 +33,15 @@ export default function App() {
     setRoute(readRoute())
   }
 
+  const openParty = (id: string, host: boolean) => {
+    window.history.pushState(
+      {},
+      '',
+      `${import.meta.env.BASE_URL}?party=${id}${host ? '&host=1' : ''}`,
+    )
+    setRoute(readRoute())
+  }
+
   return (
     <ContainerProvider>
       <OfflineBanner />
@@ -48,7 +57,7 @@ export default function App() {
           )}
         </PartyProvider>
       ) : (
-        <HomePage onCreated={goToParty} />
+        <HomePage onCreated={goToParty} onOpenParty={openParty} />
       )}
       <Footer />
     </ContainerProvider>
