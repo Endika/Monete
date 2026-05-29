@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.2](https://github.com/Endika/Monete/compare/v1.5.1...v1.5.2) (2026-05-29)
+
+
+### Bug Fixes
+
+* **guest:** hide 'not listed' button once a family is claimed ([ced838f](https://github.com/Endika/Monete/commit/ced838f1a4accb12d6cf4fcda9847e8ba7033947))
+
 ## [1.5.1](https://github.com/Endika/Monete/compare/v1.5.0...v1.5.1) (2026-05-29)
 
 
