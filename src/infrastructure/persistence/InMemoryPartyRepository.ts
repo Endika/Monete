@@ -46,4 +46,19 @@ export class InMemoryPartyRepository implements IPartyRepository {
     // Mirrors the atomic SQL append: only touches the rsvps array, never the rest.
     row.snapshot = { ...row.snapshot, rsvps: [...row.snapshot.rsvps, structuredClone(rsvp)] }
   }
+
+  async updateRsvp(id: string, rsvpId: string, rsvp: Rsvp): Promise<void> {
+    const row = this.rows.get(id)
+    if (!row) throw new Error('Party not found')
+    row.snapshot = {
+      ...row.snapshot,
+      rsvps: row.snapshot.rsvps.map((r) => (r.id === rsvpId ? structuredClone(rsvp) : r)),
+    }
+  }
+
+  async removeRsvp(id: string, rsvpId: string): Promise<void> {
+    const row = this.rows.get(id)
+    if (!row) throw new Error('Party not found')
+    row.snapshot = { ...row.snapshot, rsvps: row.snapshot.rsvps.filter((r) => r.id !== rsvpId) }
+  }
 }

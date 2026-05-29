@@ -80,4 +80,18 @@ export class SupabasePartyRepository implements IPartyRepository {
     const { error } = await this.client.rpc('append_rsvp', { p_id: id, p_rsvp: rsvp })
     if (error) throw error
   }
+
+  async updateRsvp(id: string, rsvpId: string, rsvp: Rsvp): Promise<void> {
+    const { error } = await this.client.rpc('update_rsvp', {
+      p_id: id,
+      p_rsvp_id: rsvpId,
+      p_rsvp: rsvp,
+    })
+    if (error) throw error
+  }
+
+  async removeRsvp(id: string, rsvpId: string): Promise<void> {
+    const { error } = await this.client.rpc('remove_rsvp', { p_id: id, p_rsvp_id: rsvpId })
+    if (error) throw error
+  }
 }

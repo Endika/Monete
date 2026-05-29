@@ -27,4 +27,8 @@ export interface IPartyRepository {
   update(id: string, snapshot: PartySnapshot, expectedVersion: number): Promise<SaveResult>
   /** Guest RSVP submit — atomic append, never clobbers config or other rsvps. */
   appendRsvp(id: string, rsvp: Rsvp): Promise<void>
+  /** Atomic replace of one rsvp by id (guest/host edit). */
+  updateRsvp(id: string, rsvpId: string, rsvp: Rsvp): Promise<void>
+  /** Atomic remove of one rsvp by id. */
+  removeRsvp(id: string, rsvpId: string): Promise<void>
 }
