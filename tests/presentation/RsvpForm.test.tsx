@@ -38,6 +38,7 @@ describe('RsvpForm', () => {
     render(<RsvpForm snapshot={snap()} onSubmit={onSubmit} />)
     await userEvent.type(screen.getByLabelText(/parents of/i), 'Parents of Leo')
     await userEvent.type(screen.getByLabelText(/adults/i), '2')
+    await userEvent.clear(screen.getByLabelText(/child name/i))
     await userEvent.type(screen.getByLabelText(/child name/i), 'Leo')
     await userEvent.selectOptions(screen.getByLabelText(/snack/i), 'Pizza')
     await userEvent.click(screen.getByRole('button', { name: /send rsvp/i }))

@@ -5,12 +5,19 @@ import { QuestionInput } from './QuestionInput'
 
 interface ChildAnswersProps {
   childQuestions: Question[]
-  value: { name: string; answers: AnswerMap }
-  onChange: (v: { name: string; answers: AnswerMap }) => void
+  value: { name: string; answers: AnswerMap; isSibling: boolean }
+  onChange: (v: { name: string; answers: AnswerMap; isSibling: boolean }) => void
   onRemove?: () => void
+  showSibling?: boolean
 }
 
-export function ChildAnswers({ childQuestions, value, onChange, onRemove }: ChildAnswersProps) {
+export function ChildAnswers({
+  childQuestions,
+  value,
+  onChange,
+  onRemove,
+  showSibling,
+}: ChildAnswersProps) {
   const { t } = useTranslation()
 
   function handleNameChange(name: string) {
@@ -43,6 +50,16 @@ export function ChildAnswers({ childQuestions, value, onChange, onRemove }: Chil
         value={value.name}
         onChange={(e) => handleNameChange(e.target.value)}
       />
+      {showSibling && (
+        <label className="flex items-center gap-2 text-sm text-cocoa">
+          <input
+            type="checkbox"
+            checked={value.isSibling}
+            onChange={() => onChange({ ...value, isSibling: !value.isSibling })}
+          />
+          {t('guest.sibling')}
+        </label>
+      )}
       {childQuestions.map((q) => (
         <QuestionInput
           key={q.id}

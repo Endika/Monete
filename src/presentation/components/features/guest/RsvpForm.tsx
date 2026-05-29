@@ -12,12 +12,12 @@ interface RsvpFormProps {
   onSubmit: (input: {
     parentsLabel: string
     familyAnswers: AnswerMap
-    children: { name: string; answers: AnswerMap }[]
+    children: { name: string; answers: AnswerMap; isSibling: boolean }[]
   }) => void
   initial?: {
     parentsLabel: string
     familyAnswers: AnswerMap
-    children: { name: string; answers: AnswerMap }[]
+    children: { name: string; answers: AnswerMap; isSibling?: boolean }[]
   }
   submitLabel?: string
 }
@@ -26,6 +26,7 @@ interface ChildEntry {
   id: string
   name: string
   answers: AnswerMap
+  isSibling: boolean
 }
 
 export function RsvpForm({ snapshot, onSubmit, initial, submitLabel }: RsvpFormProps) {
@@ -38,16 +39,39 @@ export function RsvpForm({ snapshot, onSubmit, initial, submitLabel }: RsvpFormP
   const [familyAnswers, setFamilyAnswers] = useState<AnswerMap>(initial?.familyAnswers ?? {})
   const [children, setChildren] = useState<ChildEntry[]>(
     initial?.children?.length
-      ? initial.children.map((c) => ({ id: uuidv7(), name: c.name, answers: c.answers }))
-      : [{ id: uuidv7(), name: '', answers: {} }],
+      ? initial.children.map((c) => ({
+          id: uuidv7(),
+          name: c.name,
+          answers: c.answers,
+          isSibling: c.isSibling ?? false,
+        }))
+      : [{ id: uuidv7(), name: '', answers: {}, isSibling: false }],
   )
+  const [firstChildTouched, setFirstChildTouched] = useState(!!initial)
 
-  function updateChild(id: string, value: { name: string; answers: AnswerMap }) {
+  function updateChild(
+    id: string,
+    value: { name: string; answers: AnswerMap; isSibling: boolean },
+    index: number,
+  ) {
+    if (index === 0 && !firstChildTouched) {
+      setFirstChildTouched(true)
+    }
     setChildren((prev) => prev.map((c) => (c.id === id ? { ...c, ...value } : c)))
   }
 
+  function handleParentsLabelChange(newValue: string) {
+    setParentsLabel(newValue)
+    if (!firstChildTouched) {
+      setChildren((prev) => {
+        const [first, ...rest] = prev
+        return [{ ...first!, name: newValue }, ...rest]
+      })
+    }
+  }
+
   function addChild() {
-    setChildren((prev) => [...prev, { id: uuidv7(), name: '', answers: {} }])
+    setChildren((prev) => [...prev, { id: uuidv7(), name: '', answers: {}, isSibling: true }])
   }
 
   function removeChild(index: number) {
@@ -59,7 +83,7 @@ export function RsvpForm({ snapshot, onSubmit, initial, submitLabel }: RsvpFormP
     onSubmit({
       parentsLabel,
       familyAnswers,
-      children: children.map(({ name, answers }) => ({ name, answers })),
+      children: children.map(({ name, answers, isSibling }) => ({ name, answers, isSibling })),
     })
   }
 
@@ -69,7 +93,7 @@ export function RsvpForm({ snapshot, onSubmit, initial, submitLabel }: RsvpFormP
       <Input
         label={t('guest.weAreParentsOf')}
         value={parentsLabel}
-        onChange={(e) => setParentsLabel(e.target.value)}
+        onChange={(e) => handleParentsLabelChange(e.target.value)}
       />
 
       {/* Family-level questions */}
@@ -88,9 +112,10 @@ export function RsvpForm({ snapshot, onSubmit, initial, submitLabel }: RsvpFormP
           <ChildAnswers
             key={child.id}
             childQuestions={childQuestions}
-            value={{ name: child.name, answers: child.answers }}
-            onChange={(v) => updateChild(child.id, v)}
+            value={{ name: child.name, answers: child.answers, isSibling: child.isSibling }}
+            onChange={(v) => updateChild(child.id, v, i)}
             onRemove={children.length > 1 ? () => removeChild(i) : undefined}
+            showSibling={i > 0}
           />
         ))}
       </div>
