@@ -39,6 +39,7 @@ const EventDetailsSchema = z.object({
   startsAt: z.string(),
   endsAt: z.string().nullable().default(null),
   requirements: z.string().default(''),
+  allDay: z.boolean().default(false),
 })
 
 /**

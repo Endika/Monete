@@ -49,6 +49,7 @@ export interface EventDetails {
   startsAt: string // ISO-8601
   endsAt: string | null
   requirements: string
+  allDay: boolean
 }
 
 export interface PartySnapshot {
@@ -67,6 +68,7 @@ export interface CreatePartyInput {
   startsAt: string
   endsAt: string | null
   requirements: string
+  allDay?: boolean
   id?: PartyId
   now?: string
 }
@@ -77,6 +79,7 @@ function normalizeDetails(input: {
   startsAt: string
   endsAt: string | null
   requirements: string
+  allDay?: boolean
 }): EventDetails {
   const title = input.title.trim()
   if (title.length < 1 || title.length > 100) throw new Error('Party: title must be 1..100 chars')
@@ -86,6 +89,7 @@ function normalizeDetails(input: {
     startsAt: input.startsAt,
     endsAt: input.endsAt,
     requirements: input.requirements.trim(),
+    allDay: input.allDay ?? false,
   }
 }
 
@@ -113,7 +117,7 @@ export class Party {
   static restore(s: PartySnapshot): Party {
     const backfilled: PartySnapshot = {
       ...s,
-      event: { ...s.event },
+      event: { ...s.event, allDay: s.event.allDay ?? false },
       questions: (s.questions ?? []).map((q) => ({
         ...q,
         options: q.options ?? [],
@@ -135,6 +139,7 @@ export class Party {
     startsAt: string
     endsAt: string | null
     requirements: string
+    allDay?: boolean
     now?: string
   }): Party {
     const event = normalizeDetails(input)
