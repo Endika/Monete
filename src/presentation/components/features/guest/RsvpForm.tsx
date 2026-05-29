@@ -55,7 +55,10 @@ export function RsvpForm({ snapshot, onSubmit, initial, submitLabel }: RsvpFormP
     index: number,
   ) {
     if (index === 0 && !firstChildTouched) {
-      setFirstChildTouched(true)
+      const currentName = children[0]?.name ?? ''
+      if (value.name !== currentName) {
+        setFirstChildTouched(true)
+      }
     }
     setChildren((prev) => prev.map((c) => (c.id === id ? { ...c, ...value } : c)))
   }

@@ -54,18 +54,22 @@ type FormState = null | { mode: 'add' } | { mode: 'edit'; rsvpId: string }
 interface RsvpInput {
   parentsLabel: string
   familyAnswers: AnswerMap
-  children: { name: string; answers: AnswerMap }[]
+  children: { name: string; answers: AnswerMap; isSibling: boolean }[]
 }
 
 function rsvpToInitial(r: {
   parentsLabel: string
   familyAnswers: AnswerMap
-  children: { id: string; name: string; answers: AnswerMap }[]
+  children: { id: string; name: string; answers: AnswerMap; isSibling?: boolean }[]
 }): RsvpInput {
   return {
     parentsLabel: r.parentsLabel,
     familyAnswers: r.familyAnswers,
-    children: r.children.map((c) => ({ name: c.name, answers: c.answers })),
+    children: r.children.map((c) => ({
+      name: c.name,
+      answers: c.answers,
+      isSibling: c.isSibling ?? false,
+    })),
   }
 }
 

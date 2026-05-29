@@ -15,6 +15,8 @@ export class EditPartyDetailsHandler {
         .editDetails({
           title: p.title,
           address: p.address,
+          lat: p.lat,
+          lng: p.lng,
           startsAt: p.startsAt,
           endsAt: p.endsAt,
           requirements: p.requirements,

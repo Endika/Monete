@@ -23,12 +23,16 @@ type Mode = 'view' | 'register' | { editRsvpId: string }
 function rsvpToInitial(rsvp: {
   parentsLabel: string
   familyAnswers: AnswerMap
-  children: { name: string; answers: AnswerMap }[]
+  children: { name: string; answers: AnswerMap; isSibling: boolean }[]
 }) {
   return {
     parentsLabel: rsvp.parentsLabel,
     familyAnswers: rsvp.familyAnswers,
-    children: rsvp.children.map((c) => ({ name: c.name, answers: c.answers })),
+    children: rsvp.children.map((c) => ({
+      name: c.name,
+      answers: c.answers,
+      isSibling: c.isSibling,
+    })),
   }
 }
 
@@ -62,7 +66,7 @@ export function GuestPage({ partyId }: GuestPageProps) {
   async function handleRegister(input: {
     parentsLabel: string
     familyAnswers: AnswerMap
-    children: { name: string; answers: AnswerMap }[]
+    children: { name: string; answers: AnswerMap; isSibling: boolean }[]
   }) {
     try {
       const { rsvpId } = await container
@@ -88,7 +92,7 @@ export function GuestPage({ partyId }: GuestPageProps) {
     input: {
       parentsLabel: string
       familyAnswers: AnswerMap
-      children: { name: string; answers: AnswerMap }[]
+      children: { name: string; answers: AnswerMap; isSibling: boolean }[]
     },
   ) {
     try {

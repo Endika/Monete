@@ -22,6 +22,7 @@ export function AddressAutocomplete({ value, onChange }: Props) {
   const [suggestions, setSuggestions] = useState<AddressSuggestion[]>([])
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const mountedRef = useRef(true)
+  const latestQueryRef = useRef<string>('')
 
   useEffect(() => {
     mountedRef.current = true
@@ -41,10 +42,12 @@ export function AddressAutocomplete({ value, onChange }: Props) {
       clearTimeout(timerRef.current)
     }
 
+    latestQueryRef.current = text
     timerRef.current = setTimeout(() => {
       const lang = i18n.language
-      void searchAddresses(text, lang).then((results) => {
-        if (mountedRef.current) {
+      const query = text
+      void searchAddresses(query, lang).then((results) => {
+        if (mountedRef.current && query === latestQueryRef.current) {
           setSuggestions(results)
         }
       })
