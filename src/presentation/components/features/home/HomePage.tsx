@@ -27,6 +27,7 @@ export function HomePage({ onCreated }: { onCreated: (id: string) => void }) {
         startsAt: new Date(startsAt).toISOString(),
         endsAt: endsAt ? new Date(endsAt).toISOString() : null,
         requirements,
+        allDay: false,
       })
       onCreated(result.party.id)
     } catch (err) {

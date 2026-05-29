@@ -6,5 +6,6 @@ export const EditPartyDetailsSchema = z.object({
   startsAt: z.string().datetime(),
   endsAt: z.string().datetime().nullable().default(null),
   requirements: z.string().trim().max(1000).default(''),
+  allDay: z.boolean().default(false),
 })
 export type EditPartyDetailsInput = z.infer<typeof EditPartyDetailsSchema>

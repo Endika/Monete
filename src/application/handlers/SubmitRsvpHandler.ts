@@ -4,7 +4,7 @@ import type { IPartyRepository } from '@/domain/repositories/IPartyRepository'
 
 export class SubmitRsvpHandler {
   constructor(private readonly repo: IPartyRepository) {}
-  async execute(input: SubmitRsvpInput): Promise<void> {
+  async execute(input: SubmitRsvpInput): Promise<{ rsvpId: string }> {
     const p = SubmitRsvpSchema.parse(input)
     const row = await this.repo.findById(p.partyId)
     if (!row) throw new Error('Party not found')
@@ -15,5 +15,6 @@ export class SubmitRsvpHandler {
       children: p.children,
     })
     await this.repo.appendRsvp(p.partyId, rsvp)
+    return { rsvpId: rsvp.id }
   }
 }

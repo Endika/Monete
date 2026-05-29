@@ -70,11 +70,12 @@ export function HostDashboard({ partyId }: HostDashboardProps) {
     startsAt: string
     endsAt: string | null
     requirements: string
+    allDay?: boolean
   }) => {
     try {
       await container
         .resolve<EditPartyDetailsHandler>('editPartyDetails')
-        .execute({ partyId, ...details })
+        .execute({ partyId, allDay: false, ...details })
       await refresh()
     } catch (err) {
       handleError(err)
