@@ -3,15 +3,15 @@ import { composeEventTimes, splitEventTimes } from '@/shared/utils/eventDateTime
 
 describe('eventDateTime', () => {
   it('all-day when no start time', () => {
-    const { startsAt, endsAt, allDay } = composeEventTimes({
+    const composed = composeEventTimes({
       startDate: '2026-06-20',
       startTime: '',
       endDate: '',
       endTime: '',
     })
-    expect(allDay).toBe(true)
-    expect(startsAt.startsWith('2026-06-20')).toBe(true)
-    expect(endsAt).toBeNull()
+    expect(composed.allDay).toBe(true)
+    expect(composed.endsAt).toBeNull()
+    expect(splitEventTimes(composed).startDate).toBe('2026-06-20') // local date round-trips, tz-stable
   })
 
   it('timed single-day with range', () => {

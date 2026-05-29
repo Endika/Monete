@@ -12,9 +12,7 @@ export interface ComposedTimes {
 }
 
 function toIso(date: string, time: string): string {
-  // Store as local ISO datetime (no UTC conversion) to match datetime-local
-  // input behaviour and keep date strings timezone-stable.
-  return `${date}T${time}:00`
+  return new Date(`${date}T${time}`).toISOString()
 }
 
 export function composeEventTimes(f: DateTimeFields): ComposedTimes {
