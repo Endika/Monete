@@ -44,7 +44,11 @@
     "wrongPin": "PIN incorrecte",
     "editResponse": "Editar",
     "deleteResponse": "Eliminar",
-    "addGuest": "Afegir convidat"
+    "addGuest": "Afegir convidat",
+    "childWord": "nen",
+    "childrenWord": "nens",
+    "adultWord": "adult",
+    "adultsWord": "adults"
   },
   "guest": {
     "weAreParentsOf": "Som els pares de…",
@@ -58,7 +62,8 @@
     "edit": "Editar",
     "editResponse": "Editar resposta",
     "addFamily": "Apuntar una altra família",
-    "yoursHint": "la teva"
+    "yoursHint": "la teva",
+    "child": "Nen"
   },
   "venue": {
     "totals": "Nens ({{children}}) · Adults ({{adults}})",

@@ -44,7 +44,11 @@
     "wrongPin": "PIN okerra",
     "editResponse": "Editatu",
     "deleteResponse": "Ezabatu",
-    "addGuest": "Gonbidatua gehitu"
+    "addGuest": "Gonbidatua gehitu",
+    "childWord": "haurra",
+    "childrenWord": "haurrak",
+    "adultWord": "heldua",
+    "adultsWord": "helduak"
   },
   "guest": {
     "weAreParentsOf": "Hauen gurasoak gara…",
@@ -58,7 +62,8 @@
     "edit": "Editatu",
     "editResponse": "Erantzuna editatu",
     "addFamily": "Beste familia bat gehitu",
-    "yoursHint": "zurea"
+    "yoursHint": "zurea",
+    "child": "Haurra"
   },
   "venue": {
     "totals": "Haurrak ({{children}}) · Helduak ({{adults}})",

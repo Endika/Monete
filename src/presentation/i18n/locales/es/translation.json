@@ -44,7 +44,11 @@
     "wrongPin": "PIN incorrecto",
     "editResponse": "Editar",
     "deleteResponse": "Eliminar",
-    "addGuest": "Añadir invitado"
+    "addGuest": "Añadir invitado",
+    "childWord": "niño",
+    "childrenWord": "niños",
+    "adultWord": "adulto",
+    "adultsWord": "adultos"
   },
   "guest": {
     "weAreParentsOf": "¡Somos los papás de…!",
@@ -58,7 +62,8 @@
     "edit": "Editar",
     "editResponse": "Editar respuesta",
     "addFamily": "Apuntar otra familia",
-    "yoursHint": "la tuya"
+    "yoursHint": "la tuya",
+    "child": "Peque"
   },
   "venue": {
     "totals": "Niños ({{children}}) · Adultos ({{adults}})",

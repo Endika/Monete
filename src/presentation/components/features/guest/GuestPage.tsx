@@ -183,6 +183,7 @@ export function GuestPage({ partyId }: GuestPageProps) {
             onEdit={(id) => {
               setMode({ editRsvpId: id })
               setSubmitted(false)
+              setSubmitError(null)
             }}
           />
 
@@ -193,6 +194,7 @@ export function GuestPage({ partyId }: GuestPageProps) {
                 {t('guest.editResponse')}
               </h3>
               <RsvpForm
+                key={mode.editRsvpId}
                 snapshot={snapshot}
                 initial={rsvpToInitial(editingRsvp)}
                 submitLabel={t('guest.editResponse')}
@@ -217,6 +219,7 @@ export function GuestPage({ partyId }: GuestPageProps) {
                 onClick={() => {
                   setMode('register')
                   setSubmitted(false)
+                  setSubmitError(null)
                 }}
               >
                 {t('guest.addFamily')}

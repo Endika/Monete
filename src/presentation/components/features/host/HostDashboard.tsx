@@ -101,7 +101,7 @@ export function HostDashboard({ partyId }: HostDashboardProps) {
     try {
       await container
         .resolve<EditPartyDetailsHandler>('editPartyDetails')
-        .execute({ partyId, allDay: false, ...details })
+        .execute({ partyId, ...details, allDay: details.allDay ?? false })
       await refresh()
     } catch (err) {
       handleError(err)
@@ -242,6 +242,7 @@ export function HostDashboard({ partyId }: HostDashboardProps) {
         {formState && (
           <Modal open onClose={() => setFormState(null)}>
             <RsvpForm
+              key={formState.mode === 'edit' ? formState.rsvpId : 'add'}
               snapshot={snapshot}
               initial={
                 formState.mode === 'edit'

@@ -26,7 +26,7 @@ export function ChildAnswers({ childQuestions, value, onChange, onRemove }: Chil
       {/* Child card header */}
       <div className="flex items-center justify-between">
         <span className="font-display text-sm font-bold text-cocoa/60 uppercase tracking-wider">
-          &#127881; Peque
+          &#127881; {t('guest.child')}
         </span>
         {onRemove && (
           <button

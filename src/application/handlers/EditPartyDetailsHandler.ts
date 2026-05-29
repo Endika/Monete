@@ -18,6 +18,7 @@ export class EditPartyDetailsHandler {
           startsAt: p.startsAt,
           endsAt: p.endsAt,
           requirements: p.requirements,
+          allDay: p.allDay,
         })
         .toSnapshot(),
     )

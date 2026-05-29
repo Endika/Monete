@@ -39,13 +39,13 @@ export function HeadcountView({
             {hc.totalChildren}
           </span>
           <span className="text-xs font-semibold text-cocoa/60 uppercase tracking-wider">
-            {hc.totalChildren === 1 ? 'niño' : 'niños'}
+            {t(hc.totalChildren === 1 ? 'host.childWord' : 'host.childrenWord')}
           </span>
         </div>
         <div className="flex-1 rounded-2xl bg-sky/15 border border-sky/40 px-4 py-3 flex flex-col items-center gap-1">
           <span className="font-display text-4xl font-extrabold text-cocoa">{hc.totalAdults}</span>
           <span className="text-xs font-semibold text-cocoa/60 uppercase tracking-wider">
-            {hc.totalAdults === 1 ? 'adulto' : 'adultos'}
+            {t(hc.totalAdults === 1 ? 'host.adultWord' : 'host.adultsWord')}
           </span>
         </div>
       </div>

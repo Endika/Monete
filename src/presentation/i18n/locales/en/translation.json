@@ -44,7 +44,11 @@
     "wrongPin": "Wrong PIN",
     "editResponse": "Edit",
     "deleteResponse": "Delete",
-    "addGuest": "Add guest"
+    "addGuest": "Add guest",
+    "childWord": "child",
+    "childrenWord": "children",
+    "adultWord": "adult",
+    "adultsWord": "adults"
   },
   "guest": {
     "weAreParentsOf": "We are the parents of…",
@@ -58,7 +62,8 @@
     "edit": "Edit",
     "editResponse": "Edit response",
     "addFamily": "Add another family",
-    "yoursHint": "yours"
+    "yoursHint": "yours",
+    "child": "Child"
   },
   "venue": {
     "totals": "Children ({{children}}) · Adults ({{adults}})",
