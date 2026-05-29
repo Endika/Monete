@@ -33,7 +33,7 @@ export function ParticipantList({ snapshot, yourRsvpId, onEdit }: ParticipantLis
               )}
             </div>
             <Button variant="ghost" onClick={() => onEdit(rsvp.id)}>
-              {t('guest.edit')}
+              {t('guest.thisIsUs')}
             </Button>
           </div>
 

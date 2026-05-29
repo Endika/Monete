@@ -177,6 +177,8 @@ export function GuestPage({ partyId }: GuestPageProps) {
       {/* RSVPs exist → participant list + actions */}
       {snapshot.rsvps.length > 0 && (
         <>
+          <h2 className="font-display text-lg font-bold text-cocoa">{t('guest.whichFamily')}</h2>
+
           <ParticipantList
             snapshot={snapshot}
             yourRsvpId={yourRsvpId}
@@ -201,6 +203,16 @@ export function GuestPage({ partyId }: GuestPageProps) {
                 onSubmit={(input) => handleUpdate(mode.editRsvpId, input)}
               />
               <ErrorBanner message={submitError} />
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => {
+                  setMode('view')
+                  setSubmitError(null)
+                }}
+              >
+                {t('common.back')}
+              </Button>
             </div>
           )}
 
@@ -209,10 +221,20 @@ export function GuestPage({ partyId }: GuestPageProps) {
             <div className="bg-white rounded-3xl shadow-[0_8px_32px_-8px_rgba(59,42,34,0.12)] p-6 flex flex-col gap-4">
               <RsvpForm snapshot={snapshot} onSubmit={handleRegister} />
               <ErrorBanner message={submitError} />
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => {
+                  setMode('view')
+                  setSubmitError(null)
+                }}
+              >
+                {t('common.back')}
+              </Button>
             </div>
           )}
 
-          {/* Add family button (visible when not already in register/edit mode) */}
+          {/* Not listed button (visible when not already in register/edit mode) */}
           {mode === 'view' && (
             <div className="flex justify-center">
               <Button
@@ -222,7 +244,7 @@ export function GuestPage({ partyId }: GuestPageProps) {
                   setSubmitError(null)
                 }}
               >
-                {t('guest.addFamily')}
+                {t('guest.notListed')}
               </Button>
             </div>
           )}
