@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/Endika/Monete/compare/v1.0.0...v1.0.1) (2026-05-29)
+
+
+### Bug Fixes
+
+* **routing:** build party links with base path ([2950f9b](https://github.com/Endika/Monete/commit/2950f9bc31bbaba3ddc89a1b46901f187db9b6d6))
+
 ## [1.0.0](https://github.com/Endika/Monete/compare/v0.1.0...v1.0.0) (2026-05-29)
 
 
