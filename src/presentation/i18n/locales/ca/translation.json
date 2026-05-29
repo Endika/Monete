@@ -64,5 +64,14 @@
     "allergies": "Al·lèrgies / intoleràncies",
     "dateOfBirth": "Data de naixement",
     "snack": "Berenar / menjar preferit"
+  },
+  "pwa": {
+    "offline": "Sense connexió — els canvis es sincronitzaran quan tornis.",
+    "updateAvailable": "Hi ha una nova versió de Monete disponible!",
+    "updateNow": "Actualitzar",
+    "installTitle": "Instal·la Monete al teu dispositiu",
+    "installButton": "Instal·lar",
+    "installDismiss": "Tancar",
+    "installIosHint": "Toca el botó Compartir i després «Afegir a la pantalla d'inici» per instal·lar Monete."
   }
 }

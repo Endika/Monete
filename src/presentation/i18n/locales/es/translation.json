@@ -64,5 +64,14 @@
     "allergies": "Alergias / intolerancias",
     "dateOfBirth": "Fecha de nacimiento",
     "snack": "Merienda / comida preferida"
+  },
+  "pwa": {
+    "offline": "Sin conexión — los cambios se sincronizarán cuando vuelvas.",
+    "updateAvailable": "¡Hay una nueva versión de Monete disponible!",
+    "updateNow": "Actualizar",
+    "installTitle": "Instala Monete en tu dispositivo",
+    "installButton": "Instalar",
+    "installDismiss": "Cerrar",
+    "installIosHint": "Toca el botón Compartir y luego «Añadir a pantalla de inicio» para instalar Monete."
   }
 }

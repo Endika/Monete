@@ -5,6 +5,9 @@ import { HomePage } from '@/presentation/components/features/home/HomePage'
 import { HostDashboard } from '@/presentation/components/features/host/HostDashboard'
 import { GuestPage } from '@/presentation/components/features/guest/GuestPage'
 import { Footer } from '@/presentation/components/common/Footer'
+import { OfflineBanner } from '@/presentation/components/features/pwa/OfflineBanner'
+import { UpdateBanner } from '@/presentation/components/features/pwa/UpdateBanner'
+import { InstallPrompt } from '@/presentation/components/features/pwa/InstallPrompt'
 
 interface Route {
   partyId: string | null
@@ -32,6 +35,9 @@ export default function App() {
 
   return (
     <ContainerProvider>
+      <OfflineBanner />
+      <UpdateBanner />
+      <InstallPrompt />
       {route.partyId ? (
         // NOTE: client-side schema version-gate deferred; server write-guard + PWA autoUpdate cover stale clients.
         <PartyProvider partyId={route.partyId}>

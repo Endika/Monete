@@ -64,5 +64,14 @@
     "allergies": "Alergiak / intolerantziak",
     "dateOfBirth": "Jaiotze-data",
     "snack": "Askaria / nahiago den janaria"
+  },
+  "pwa": {
+    "offline": "Konexiorik gabe — aldaketak sinkronizatuko dira itzultzean.",
+    "updateAvailable": "Moneteren bertsio berria prest dago!",
+    "updateNow": "Eguneratu",
+    "installTitle": "Instalatu Monete zure gailuan",
+    "installButton": "Instalatu",
+    "installDismiss": "Itxi",
+    "installIosHint": "Sakatu Partekatu botoia eta ondoren «Gehitu pantaila nagusira» Monete instalatzeko."
   }
 }
