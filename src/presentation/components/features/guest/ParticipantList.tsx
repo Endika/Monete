@@ -56,7 +56,14 @@ export function ParticipantList({ snapshot, yourRsvpId, onEdit }: ParticipantLis
                 key={child.id}
                 className="rounded-2xl bg-cream border border-cocoa/10 px-4 py-3 flex flex-col gap-1"
               >
-                <span className="font-display font-bold text-cocoa text-sm">🎉 {child.name}</span>
+                <span className="font-display font-bold text-cocoa text-sm flex items-center gap-1.5">
+                  🎉 {child.name}
+                  {child.isSibling && (
+                    <span className="rounded-full bg-mint/30 px-2 py-0.5 text-xs font-semibold text-cocoa/70 border border-mint/50">
+                      {t('guest.sibling')}
+                    </span>
+                  )}
+                </span>
                 {Object.entries(child.answers).map(([qId, answer]) => {
                   if (answer === null || answer === undefined || answer === '') return null
                   const q = questionById[qId]

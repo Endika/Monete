@@ -50,6 +50,16 @@ export function HeadcountView({
         </div>
       </div>
 
+      {/* Breakdown line */}
+      <p className="text-sm text-cocoa/70 font-body">
+        {t('venue.breakdown', {
+          children: hc.totalChildren,
+          invited: hc.totalInvited,
+          siblings: hc.totalSiblings,
+          adults: hc.totalAdults,
+        })}
+      </p>
+
       {/* Per-child rows */}
       {hc.children.length > 0 && (
         <ul className="flex flex-col gap-2">
@@ -60,6 +70,11 @@ export function HeadcountView({
             >
               <span className="font-display font-bold text-cocoa text-sm">{child.name}</span>
               <span className="text-xs text-cocoa/50 font-body">{child.parentsLabel}</span>
+              {child.isSibling && (
+                <span className="rounded-full bg-mint/30 px-2 py-0.5 text-xs font-semibold text-cocoa/70 border border-mint/50">
+                  {t('guest.sibling')}
+                </span>
+              )}
               {child.snack && (
                 <span className="rounded-full bg-banana/25 px-2.5 py-0.5 text-xs font-semibold text-cocoa border border-banana/50">
                   {child.snack}

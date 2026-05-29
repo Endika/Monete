@@ -15,7 +15,14 @@ export function formatVenueSummary(details: VenueSummaryDetails, hc: Headcount, 
   if (details.address) lines.push(`📍 ${details.address}`)
   if (details.requirements) lines.push(`⚠️ ${details.requirements}`)
   lines.push('')
-  lines.push(t('venue.totals', { children: hc.totalChildren, adults: hc.totalAdults }))
+  lines.push(
+    t('venue.breakdown', {
+      children: hc.totalChildren,
+      invited: hc.totalInvited,
+      siblings: hc.totalSiblings,
+      adults: hc.totalAdults,
+    }),
+  )
   for (const c of hc.children) {
     const parts = [c.name]
     if (c.snack) parts.push(t('venue.snack', { snack: c.snack }))

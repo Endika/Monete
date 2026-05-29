@@ -131,7 +131,10 @@ export function GuestPage({ partyId }: GuestPageProps) {
                   &#128205;
                 </span>
                 <a
-                  href={googleMapsUrl(snapshot.event.address)}
+                  href={googleMapsUrl(snapshot.event.address, {
+                    lat: snapshot.event.lat,
+                    lng: snapshot.event.lng,
+                  })}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={t('common.viewOnMaps')}
