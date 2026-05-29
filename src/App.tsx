@@ -1,0 +1,50 @@
+import { useEffect, useState } from 'react'
+import { ContainerProvider } from '@/presentation/context/ContainerProvider'
+import { PartyProvider } from '@/presentation/context/PartyContext'
+import { HomePage } from '@/presentation/components/features/home/HomePage'
+import { HostDashboard } from '@/presentation/components/features/host/HostDashboard'
+import { GuestPage } from '@/presentation/components/features/guest/GuestPage'
+import { Footer } from '@/presentation/components/common/Footer'
+
+interface Route {
+  partyId: string | null
+  host: boolean
+}
+
+function readRoute(): Route {
+  const params = new URL(window.location.href).searchParams
+  return { partyId: params.get('party'), host: params.get('host') === '1' }
+}
+
+export default function App() {
+  const [route, setRoute] = useState<Route>(() => readRoute())
+
+  useEffect(() => {
+    const handler = () => setRoute(readRoute())
+    window.addEventListener('popstate', handler)
+    return () => window.removeEventListener('popstate', handler)
+  }, [])
+
+  const goToParty = (id: string) => {
+    window.history.pushState({}, '', `/?party=${id}&host=1`)
+    setRoute(readRoute())
+  }
+
+  return (
+    <ContainerProvider>
+      {route.partyId ? (
+        // NOTE: client-side schema version-gate deferred; server write-guard + PWA autoUpdate cover stale clients.
+        <PartyProvider partyId={route.partyId}>
+          {route.host ? (
+            <HostDashboard partyId={route.partyId} />
+          ) : (
+            <GuestPage partyId={route.partyId} />
+          )}
+        </PartyProvider>
+      ) : (
+        <HomePage onCreated={goToParty} />
+      )}
+      <Footer />
+    </ContainerProvider>
+  )
+}
