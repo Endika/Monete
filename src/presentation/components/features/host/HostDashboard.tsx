@@ -6,13 +6,18 @@ import type { EditPartyDetailsHandler } from '@/application/handlers/EditPartyDe
 import type { UpsertQuestionHandler } from '@/application/handlers/UpsertQuestionHandler'
 import type { RemoveQuestionHandler } from '@/application/handlers/RemoveQuestionHandler'
 import type { SetEditPinHandler } from '@/application/handlers/SetEditPinHandler'
-import type { Question } from '@/domain/entities/Party'
+import type { SubmitRsvpHandler } from '@/application/handlers/SubmitRsvpHandler'
+import type { UpdateRsvpHandler } from '@/application/handlers/UpdateRsvpHandler'
+import type { RemoveRsvpHandler } from '@/application/handlers/RemoveRsvpHandler'
+import type { Question, AnswerMap } from '@/domain/entities/Party'
 import { PinGate } from '@/presentation/components/features/security/PinGate'
 import { PartyDetailsForm } from '@/presentation/components/features/host/PartyDetailsForm'
 import { QuestionBuilder } from '@/presentation/components/features/host/QuestionBuilder'
 import { Input } from '@/presentation/components/common/Input'
 import { Button } from '@/presentation/components/common/Button'
+import { Modal } from '@/presentation/components/common/Modal'
 import { ErrorBanner } from '@/presentation/components/common/ErrorBanner'
+import { RsvpForm } from '@/presentation/components/features/guest/RsvpForm'
 import { whatsAppShareUrl } from '@/presentation/utils/shareWhatsApp'
 import { HeadcountView } from '@/presentation/components/features/host/HeadcountView'
 
@@ -44,6 +49,26 @@ function SectionCard({
   )
 }
 
+type FormState = null | { mode: 'add' } | { mode: 'edit'; rsvpId: string }
+
+interface RsvpInput {
+  parentsLabel: string
+  familyAnswers: AnswerMap
+  children: { name: string; answers: AnswerMap }[]
+}
+
+function rsvpToInitial(r: {
+  parentsLabel: string
+  familyAnswers: AnswerMap
+  children: { id: string; name: string; answers: AnswerMap }[]
+}): RsvpInput {
+  return {
+    parentsLabel: r.parentsLabel,
+    familyAnswers: r.familyAnswers,
+    children: r.children.map((c) => ({ name: c.name, answers: c.answers })),
+  }
+}
+
 export function HostDashboard({ partyId }: HostDashboardProps) {
   const { t } = useTranslation()
   const { snapshot, loading, refresh } = useParty()
@@ -51,6 +76,7 @@ export function HostDashboard({ partyId }: HostDashboardProps) {
   const [error, setError] = useState<string | null>(null)
   const [newPin, setNewPin] = useState('')
   const [pinSaved, setPinSaved] = useState(false)
+  const [formState, setFormState] = useState<FormState>(null)
 
   if (loading)
     return <div className="p-8 text-center text-cocoa/60 font-body">{t('common.loading')}</div>
@@ -115,6 +141,37 @@ export function HostDashboard({ partyId }: HostDashboardProps) {
     }
   }
 
+  const handleAddRsvp = async (input: RsvpInput) => {
+    try {
+      await container.resolve<SubmitRsvpHandler>('submitRsvp').execute({ partyId, ...input })
+      setFormState(null)
+      await refresh()
+    } catch (err) {
+      handleError(err)
+    }
+  }
+
+  const handleUpdateRsvp = async (rsvpId: string, input: RsvpInput) => {
+    try {
+      await container
+        .resolve<UpdateRsvpHandler>('updateRsvp')
+        .execute({ partyId, rsvpId, ...input })
+      setFormState(null)
+      await refresh()
+    } catch (err) {
+      handleError(err)
+    }
+  }
+
+  const handleDeleteRsvp = async (rsvpId: string) => {
+    try {
+      await container.resolve<RemoveRsvpHandler>('removeRsvp').execute({ partyId, rsvpId })
+      await refresh()
+    } catch (err) {
+      handleError(err)
+    }
+  }
+
   const handleShareGuestLink = () => {
     const url = `${window.location.origin}${import.meta.env.BASE_URL}?party=${partyId}`
     window.open(whatsAppShareUrl(url), '_blank')
@@ -173,8 +230,33 @@ export function HostDashboard({ partyId }: HostDashboardProps) {
 
         {/* Headcount */}
         <SectionCard accent="mint">
-          <HeadcountView snapshot={snapshot} />
+          <HeadcountView
+            snapshot={snapshot}
+            onAddGuest={() => setFormState({ mode: 'add' })}
+            onEditRsvp={(id) => setFormState({ mode: 'edit', rsvpId: id })}
+            onDeleteRsvp={handleDeleteRsvp}
+          />
         </SectionCard>
+
+        {/* Add / edit RSVP modal */}
+        {formState && (
+          <Modal open onClose={() => setFormState(null)}>
+            <RsvpForm
+              snapshot={snapshot}
+              initial={
+                formState.mode === 'edit'
+                  ? rsvpToInitial(snapshot.rsvps.find((r) => r.id === formState.rsvpId)!)
+                  : undefined
+              }
+              submitLabel={formState.mode === 'edit' ? t('host.editResponse') : t('host.addGuest')}
+              onSubmit={
+                formState.mode === 'edit'
+                  ? (input) => handleUpdateRsvp(formState.rsvpId, input)
+                  : handleAddRsvp
+              }
+            />
+          </Modal>
+        )}
 
         {/* Share */}
         <Button type="button" onClick={handleShareGuestLink} className="w-full">
