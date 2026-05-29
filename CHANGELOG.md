@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.2.0](https://github.com/Endika/Monete/compare/v1.1.0...v1.2.0) (2026-05-29)
+
+
+### Features
+
+* **domain:** sibling flag, event coords, schema 3 ([d1969c6](https://github.com/Endika/Monete/commit/d1969c63597c2ac14634d6aad7fd506771752a4f))
+* **geo:** photon address search and maps coords link ([415f1c5](https://github.com/Endika/Monete/commit/415f1c5a5b6eea5a24245dff3edd0200a5965789))
+* **guest:** autofill first child and sibling checkbox ([46f4873](https://github.com/Endika/Monete/commit/46f4873ff5fb4ed77e58878f3fd658393b97cd00))
+* **guest:** which-family prompt, not-listed, back ([a78312b](https://github.com/Endika/Monete/commit/a78312b2803faa20d70f6694d1d78a9340c1bb5f))
+* **host:** sibling tags and invited/sibling breakdown ([7ea9756](https://github.com/Endika/Monete/commit/7ea975677895080fdfa0d503093925eb5c540354))
+* **i18n:** v1.2 keys and festive exclamation polish ([066476a](https://github.com/Endika/Monete/commit/066476a2654925c29eb81a0e8bebf63330a2f3fd))
+* **presentation:** headcount invited vs siblings ([774fd33](https://github.com/Endika/Monete/commit/774fd33811504ac1ebc3b32fdaf576fc96939d6a))
+* **ui:** clickable header logo with home nav ([a9d377c](https://github.com/Endika/Monete/commit/a9d377ce24691ed426d48df624d6db59802c167b))
+* **ui:** keyless address autocomplete with coords ([a437308](https://github.com/Endika/Monete/commit/a43730805dda17ad2ee42a919cbe2d77a0bd614d))
+
+
+### Bug Fixes
+
+* **calendar:** render menu in-flow so it is not clipped ([1249ec4](https://github.com/Endika/Monete/commit/1249ec49faa8f386dab9925fcad04ea3348ecc89))
+* **v1.2:** forward lat/lng, preserve isSibling on edit, autofill guard ([8659f93](https://github.com/Endika/Monete/commit/8659f935f17f10019df3807467eb7ada7a0084d4))
+
 ## [1.1.0](https://github.com/Endika/Monete/compare/v1.0.1...v1.1.0) (2026-05-29)
 
 
