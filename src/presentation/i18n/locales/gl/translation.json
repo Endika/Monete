@@ -8,7 +8,16 @@
     "startsAtLabel": "Data e hora",
     "endsAtLabel": "Hora de remate (opcional)",
     "requirementsLabel": "Requisitos / notas",
-    "submit": "Crear"
+    "submit": "Crear",
+    "myParties": "As miñas festas",
+    "organizing": "Organizas",
+    "attending": "Vas a",
+    "createNew": "Crear festa",
+    "dateLabel": "Data",
+    "fromTime": "De",
+    "toTime": "a",
+    "endsAnotherDay": "¿Remata outro día?",
+    "endDateLabel": "Data de remate"
   },
   "host": {
     "dashboardTitle": "Xestionar festa",
@@ -32,7 +41,10 @@
     "shareVenue": "Compartir lista do lugar",
     "pinLabel": "PIN",
     "unlock": "Desbloquear",
-    "wrongPin": "PIN incorrecto"
+    "wrongPin": "PIN incorrecto",
+    "editResponse": "Editar",
+    "deleteResponse": "Eliminar",
+    "addGuest": "Engadir convidado"
   },
   "guest": {
     "weAreParentsOf": "Somos os pais de…",
@@ -40,7 +52,13 @@
     "childName": "Nome do neno",
     "submit": "Enviar confirmación",
     "thanks": "Grazas! A túa confirmación foi enviada.",
-    "addToCalendar": "Engadir ao calendario"
+    "addToCalendar": "Engadir ao calendario",
+    "whosGoing": "Quen vai",
+    "yourResponse": "A túa resposta",
+    "edit": "Editar",
+    "editResponse": "Editar resposta",
+    "addFamily": "Apuntar outra familia",
+    "yoursHint": "a túa"
   },
   "venue": {
     "totals": "Nenos ({{children}}) · Adultos ({{adults}})",
@@ -57,7 +75,10 @@
     "updateRequired": "Actualiza a aplicación para ver esta festa.",
     "loading": "Cargando…",
     "edit": "Editar",
-    "pinSaved": "PIN gardado"
+    "pinSaved": "PIN gardado",
+    "delete": "Eliminar",
+    "confirmDelete": "Eliminar esta resposta?",
+    "viewOnMaps": "Ver en Google Maps"
   },
   "standard": {
     "adultsCount": "Cantos adultos van vir?",
@@ -73,5 +94,10 @@
     "installButton": "Instalar",
     "installDismiss": "Pechar",
     "installIosHint": "Toca o botón Compartir e logo «Engadir á pantalla de inicio» para instalar Monete."
+  },
+  "calendar": {
+    "addTo": "Engadir ao calendario",
+    "google": "Google Calendar",
+    "appleOutlook": "Apple / Outlook (.ics)"
   }
 }

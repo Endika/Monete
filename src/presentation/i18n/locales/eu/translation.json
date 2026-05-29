@@ -8,7 +8,16 @@
     "startsAtLabel": "Data eta ordua",
     "endsAtLabel": "Amaiera-ordua (aukerakoa)",
     "requirementsLabel": "Baldintzak / oharrak",
-    "submit": "Sortu"
+    "submit": "Sortu",
+    "myParties": "Nire festak",
+    "organizing": "Antolatzen ari zara",
+    "attending": "Joango zara",
+    "createNew": "Festa sortu",
+    "dateLabel": "Data",
+    "fromTime": "Hasiera",
+    "toTime": "arte",
+    "endsAnotherDay": "Beste egun batean amaitzen da?",
+    "endDateLabel": "Amaiera-data"
   },
   "host": {
     "dashboardTitle": "Festa kudeatu",
@@ -32,7 +41,10 @@
     "shareVenue": "Lekuaren zerrenda partekatu",
     "pinLabel": "PIN",
     "unlock": "Desblokeatu",
-    "wrongPin": "PIN okerra"
+    "wrongPin": "PIN okerra",
+    "editResponse": "Editatu",
+    "deleteResponse": "Ezabatu",
+    "addGuest": "Gonbidatua gehitu"
   },
   "guest": {
     "weAreParentsOf": "Hauen gurasoak gara…",
@@ -40,7 +52,13 @@
     "childName": "Haurraren izena",
     "submit": "Berrespena bidali",
     "thanks": "Eskerrik asko! Zure berrespena bidali da.",
-    "addToCalendar": "Egutegian gehitu"
+    "addToCalendar": "Egutegian gehitu",
+    "whosGoing": "Nor joango da",
+    "yourResponse": "Zure erantzuna",
+    "edit": "Editatu",
+    "editResponse": "Erantzuna editatu",
+    "addFamily": "Beste familia bat gehitu",
+    "yoursHint": "zurea"
   },
   "venue": {
     "totals": "Haurrak ({{children}}) · Helduak ({{adults}})",
@@ -57,7 +75,10 @@
     "updateRequired": "Eguneratu aplikazioa festa hau ikusteko.",
     "loading": "Kargatzen…",
     "edit": "Editatu",
-    "pinSaved": "PINa gordeta"
+    "pinSaved": "PINa gordeta",
+    "delete": "Ezabatu",
+    "confirmDelete": "Erantzun hau ezabatu?",
+    "viewOnMaps": "Google Maps-en ikusi"
   },
   "standard": {
     "adultsCount": "Zenbat heldu etorriko dira?",
@@ -73,5 +94,10 @@
     "installButton": "Instalatu",
     "installDismiss": "Itxi",
     "installIosHint": "Sakatu Partekatu botoia eta ondoren «Gehitu pantaila nagusira» Monete instalatzeko."
+  },
+  "calendar": {
+    "addTo": "Egutegira gehitu",
+    "google": "Google Calendar",
+    "appleOutlook": "Apple / Outlook (.ics)"
   }
 }

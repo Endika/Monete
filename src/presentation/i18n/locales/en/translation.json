@@ -8,7 +8,16 @@
     "startsAtLabel": "Date & time",
     "endsAtLabel": "End time (optional)",
     "requirementsLabel": "Requirements / notes",
-    "submit": "Create"
+    "submit": "Create",
+    "myParties": "My parties",
+    "organizing": "You're organizing",
+    "attending": "You're attending",
+    "createNew": "Create a party",
+    "dateLabel": "Date",
+    "fromTime": "From",
+    "toTime": "to",
+    "endsAnotherDay": "Ends another day?",
+    "endDateLabel": "End date"
   },
   "host": {
     "dashboardTitle": "Manage party",
@@ -32,7 +41,10 @@
     "shareVenue": "Share venue list",
     "pinLabel": "PIN",
     "unlock": "Unlock",
-    "wrongPin": "Wrong PIN"
+    "wrongPin": "Wrong PIN",
+    "editResponse": "Edit",
+    "deleteResponse": "Delete",
+    "addGuest": "Add guest"
   },
   "guest": {
     "weAreParentsOf": "We are the parents of…",
@@ -40,7 +52,13 @@
     "childName": "Child name",
     "submit": "Send RSVP",
     "thanks": "Thanks! Your RSVP was sent.",
-    "addToCalendar": "Add to calendar"
+    "addToCalendar": "Add to calendar",
+    "whosGoing": "Who's going",
+    "yourResponse": "Your response",
+    "edit": "Edit",
+    "editResponse": "Edit response",
+    "addFamily": "Add another family",
+    "yoursHint": "yours"
   },
   "venue": {
     "totals": "Children ({{children}}) · Adults ({{adults}})",
@@ -57,7 +75,10 @@
     "updateRequired": "Please update the app to view this party.",
     "loading": "Loading…",
     "edit": "Edit",
-    "pinSaved": "PIN saved"
+    "pinSaved": "PIN saved",
+    "delete": "Delete",
+    "confirmDelete": "Delete this response?",
+    "viewOnMaps": "View on Google Maps"
   },
   "standard": {
     "adultsCount": "How many adults are coming?",
@@ -73,5 +94,10 @@
     "installButton": "Install",
     "installDismiss": "Dismiss",
     "installIosHint": "Tap the Share button then «Add to Home Screen» to install Monete."
+  },
+  "calendar": {
+    "addTo": "Add to calendar",
+    "google": "Google Calendar",
+    "appleOutlook": "Apple / Outlook (.ics)"
   }
 }

@@ -8,7 +8,16 @@
     "startsAtLabel": "Data i hora",
     "endsAtLabel": "Hora de fi (opcional)",
     "requirementsLabel": "Requisits / notes",
-    "submit": "Crear"
+    "submit": "Crear",
+    "myParties": "Les meves festes",
+    "organizing": "Organitzes",
+    "attending": "Hi vas",
+    "createNew": "Crear festa",
+    "dateLabel": "Data",
+    "fromTime": "De",
+    "toTime": "a",
+    "endsAnotherDay": "Acaba un altre dia?",
+    "endDateLabel": "Data de fi"
   },
   "host": {
     "dashboardTitle": "Gestionar festa",
@@ -32,7 +41,10 @@
     "shareVenue": "Compartir llista del lloc",
     "pinLabel": "PIN",
     "unlock": "Desbloquejar",
-    "wrongPin": "PIN incorrecte"
+    "wrongPin": "PIN incorrecte",
+    "editResponse": "Editar",
+    "deleteResponse": "Eliminar",
+    "addGuest": "Afegir convidat"
   },
   "guest": {
     "weAreParentsOf": "Som els pares de…",
@@ -40,7 +52,13 @@
     "childName": "Nom del nen",
     "submit": "Enviar confirmació",
     "thanks": "Gràcies! La teva confirmació ha estat enviada.",
-    "addToCalendar": "Afegir al calendari"
+    "addToCalendar": "Afegir al calendari",
+    "whosGoing": "Qui hi va",
+    "yourResponse": "La teva resposta",
+    "edit": "Editar",
+    "editResponse": "Editar resposta",
+    "addFamily": "Apuntar una altra família",
+    "yoursHint": "la teva"
   },
   "venue": {
     "totals": "Nens ({{children}}) · Adults ({{adults}})",
@@ -57,7 +75,10 @@
     "updateRequired": "Actualitza l'aplicació per veure aquesta festa.",
     "loading": "Carregant…",
     "edit": "Edita",
-    "pinSaved": "PIN desat"
+    "pinSaved": "PIN desat",
+    "delete": "Eliminar",
+    "confirmDelete": "Eliminar aquesta resposta?",
+    "viewOnMaps": "Veure a Google Maps"
   },
   "standard": {
     "adultsCount": "Quants adults vindran?",
@@ -73,5 +94,10 @@
     "installButton": "Instal·lar",
     "installDismiss": "Tancar",
     "installIosHint": "Toca el botó Compartir i després «Afegir a la pantalla d'inici» per instal·lar Monete."
+  },
+  "calendar": {
+    "addTo": "Afegir al calendari",
+    "google": "Google Calendar",
+    "appleOutlook": "Apple / Outlook (.ics)"
   }
 }
