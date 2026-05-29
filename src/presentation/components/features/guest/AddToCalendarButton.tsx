@@ -1,37 +1,49 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/presentation/components/common/Button'
 import {
   buildGoogleCalendarUrl,
   buildIcs,
-  isAndroid,
   type CalendarEvent,
 } from '@/presentation/utils/calendarLink'
 
 interface Props {
   event: CalendarEvent
-  userAgent?: string
 }
 
-export function AddToCalendarButton({ event, userAgent }: Props) {
+export function AddToCalendarButton({ event }: Props) {
   const { t } = useTranslation()
-  const ua = userAgent ?? navigator.userAgent
+  const [open, setOpen] = useState(false)
 
-  function handleClick() {
-    if (isAndroid(ua)) {
-      window.open(buildGoogleCalendarUrl(event), '_blank')
-    } else {
-      const icsContent = buildIcs(event)
-      const blob = new Blob([icsContent], { type: 'text/calendar' })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = 'event.ics'
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-      URL.revokeObjectURL(url)
-    }
+  function handleGoogle() {
+    window.open(buildGoogleCalendarUrl(event), '_blank')
+    setOpen(false)
   }
 
-  return <Button onClick={handleClick}>{t('guest.addToCalendar')}</Button>
+  function handleIcs() {
+    const icsContent = buildIcs(event)
+    const a = document.createElement('a')
+    a.href = `data:text/calendar;charset=utf-8,${encodeURIComponent(icsContent)}`
+    a.download = 'event.ics'
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    setOpen(false)
+  }
+
+  return (
+    <div className="relative inline-block">
+      <Button onClick={() => setOpen((o) => !o)}>{t('calendar.addTo')}</Button>
+      {open && (
+        <div className="absolute left-0 top-full z-10 mt-2 flex flex-col gap-2 rounded-2xl border border-cocoa/10 bg-cream p-2 shadow-lg">
+          <Button type="button" variant="ghost" onClick={handleGoogle}>
+            {t('calendar.google')}
+          </Button>
+          <Button type="button" variant="ghost" onClick={handleIcs}>
+            {t('calendar.appleOutlook')}
+          </Button>
+        </div>
+      )}
+    </div>
+  )
 }
