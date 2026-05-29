@@ -23,6 +23,7 @@ export function Modal({
       >
         <div className="flex justify-end">
           <button
+            type="button"
             aria-label="Close"
             className="text-gray-400 hover:text-gray-600 text-xl leading-none"
             onClick={onClose}

@@ -54,7 +54,10 @@
     "save": "Guardar",
     "cancel": "Cancelar",
     "remove": "Eliminar",
-    "updateRequired": "Actualiza la aplicación para ver esta fiesta."
+    "updateRequired": "Actualiza la aplicación para ver esta fiesta.",
+    "loading": "Cargando…",
+    "edit": "Editar",
+    "pinSaved": "PIN guardado"
   },
   "standard": {
     "adultsCount": "¿Cuántos adultos vienen?",

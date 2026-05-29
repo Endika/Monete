@@ -138,7 +138,7 @@ export function QuestionBuilder({ questions, onUpsert, onRemove }: QuestionBuild
                 className="text-xs text-amber-600 hover:underline"
                 onClick={() => handleEdit(q)}
               >
-                Edit
+                {t('common.edit')}
               </button>
               <button
                 type="button"

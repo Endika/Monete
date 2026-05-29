@@ -26,8 +26,9 @@ export function HostDashboard({ partyId }: HostDashboardProps) {
   const container = useContainer()
   const [error, setError] = useState<string | null>(null)
   const [newPin, setNewPin] = useState('')
+  const [pinSaved, setPinSaved] = useState(false)
 
-  if (loading) return <div>{t('common.save')}</div>
+  if (loading) return <div>{t('common.loading')}</div>
   if (!snapshot) return <div>Not found</div>
 
   const handleError = (err: unknown) => {
@@ -82,6 +83,7 @@ export function HostDashboard({ partyId }: HostDashboardProps) {
         .execute({ partyId, pin: newPin || null })
       setNewPin('')
       await refresh()
+      setPinSaved(true)
     } catch (err) {
       handleError(err)
     }
@@ -99,7 +101,11 @@ export function HostDashboard({ partyId }: HostDashboardProps) {
 
         <ErrorBanner message={error} />
 
-        <PartyDetailsForm initial={snapshot.event} onSave={handleSaveDetails} />
+        <PartyDetailsForm
+          key={snapshot.updatedAt}
+          initial={snapshot.event}
+          onSave={handleSaveDetails}
+        />
 
         <QuestionBuilder
           questions={snapshot.questions}
@@ -113,11 +119,15 @@ export function HostDashboard({ partyId }: HostDashboardProps) {
             type="password"
             inputMode="numeric"
             value={newPin}
-            onChange={(e) => setNewPin(e.target.value)}
+            onChange={(e) => {
+              setNewPin(e.target.value)
+              setPinSaved(false)
+            }}
           />
           <Button type="button" onClick={handleSetPin}>
             {t('host.setPin')}
           </Button>
+          {pinSaved && <span>{t('common.pinSaved')}</span>}
         </div>
 
         <Button type="button" onClick={handleShareGuestLink}>

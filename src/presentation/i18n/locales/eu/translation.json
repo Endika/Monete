@@ -54,7 +54,10 @@
     "save": "Gorde",
     "cancel": "Utzi",
     "remove": "Ezabatu",
-    "updateRequired": "Eguneratu aplikazioa festa hau ikusteko."
+    "updateRequired": "Eguneratu aplikazioa festa hau ikusteko.",
+    "loading": "Kargatzen…",
+    "edit": "Editatu",
+    "pinSaved": "PINa gordeta"
   },
   "standard": {
     "adultsCount": "Zenbat heldu etorriko dira?",

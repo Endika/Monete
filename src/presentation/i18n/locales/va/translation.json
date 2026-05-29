@@ -54,7 +54,10 @@
     "save": "Guardar",
     "cancel": "Cancel·lar",
     "remove": "Eliminar",
-    "updateRequired": "Actualitza l'aplicació per a vore esta festa."
+    "updateRequired": "Actualitza l'aplicació per a vore esta festa.",
+    "loading": "Carregant…",
+    "edit": "Edita",
+    "pinSaved": "PIN guardat"
   },
   "standard": {
     "adultsCount": "Quants adults vindran?",

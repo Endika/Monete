@@ -48,7 +48,6 @@ export function GuestPage({ partyId }: GuestPageProps) {
       {submitted ? (
         <div className="flex flex-col gap-4">
           <p className="text-green-700 font-medium">{t('guest.thanks')}</p>
-          <AddToCalendarButton event={calendarEvent} />
         </div>
       ) : (
         <>

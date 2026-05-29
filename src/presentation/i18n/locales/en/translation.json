@@ -54,7 +54,10 @@
     "save": "Save",
     "cancel": "Cancel",
     "remove": "Remove",
-    "updateRequired": "Please update the app to view this party."
+    "updateRequired": "Please update the app to view this party.",
+    "loading": "Loading…",
+    "edit": "Edit",
+    "pinSaved": "PIN saved"
   },
   "standard": {
     "adultsCount": "How many adults are coming?",

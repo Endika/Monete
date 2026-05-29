@@ -1,4 +1,12 @@
-import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react'
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from 'react'
 import type { PartySnapshot } from '@/domain/entities/Party'
 import { useContainer } from '@/presentation/context/ContainerProvider'
 import { RefreshPartyHandler } from '@/application/handlers/RefreshPartyHandler'
@@ -48,9 +56,9 @@ export function PartyProvider({ partyId, children }: { partyId: string; children
     }
   }, [container, partyId])
 
-  const refresh = async () => {
+  const refresh = useCallback(async () => {
     if (refreshRef.current) await refreshRef.current()
-  }
+  }, [])
 
   return (
     <Ctx.Provider value={{ snapshot, version, loading, error, refresh }}>{children}</Ctx.Provider>

@@ -54,7 +54,10 @@
     "save": "Gardar",
     "cancel": "Cancelar",
     "remove": "Eliminar",
-    "updateRequired": "Actualiza a aplicación para ver esta festa."
+    "updateRequired": "Actualiza a aplicación para ver esta festa.",
+    "loading": "Cargando…",
+    "edit": "Editar",
+    "pinSaved": "PIN gardado"
   },
   "standard": {
     "adultsCount": "Cantos adultos van vir?",

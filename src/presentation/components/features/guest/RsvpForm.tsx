@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { uuidv7 } from 'uuidv7'
 import type { PartySnapshot, AnswerMap } from '@/domain/entities/Party'
 import { Input } from '@/presentation/components/common/Input'
 import { Button } from '@/presentation/components/common/Button'
@@ -16,6 +17,7 @@ interface RsvpFormProps {
 }
 
 interface ChildEntry {
+  id: string
   name: string
   answers: AnswerMap
 }
@@ -28,14 +30,14 @@ export function RsvpForm({ snapshot, onSubmit }: RsvpFormProps) {
 
   const [parentsLabel, setParentsLabel] = useState('')
   const [familyAnswers, setFamilyAnswers] = useState<AnswerMap>({})
-  const [children, setChildren] = useState<ChildEntry[]>([{ name: '', answers: {} }])
+  const [children, setChildren] = useState<ChildEntry[]>([{ id: uuidv7(), name: '', answers: {} }])
 
-  function updateChild(index: number, value: ChildEntry) {
-    setChildren((prev) => prev.map((c, i) => (i === index ? value : c)))
+  function updateChild(id: string, value: { name: string; answers: AnswerMap }) {
+    setChildren((prev) => prev.map((c) => (c.id === id ? { ...c, ...value } : c)))
   }
 
   function addChild() {
-    setChildren((prev) => [...prev, { name: '', answers: {} }])
+    setChildren((prev) => [...prev, { id: uuidv7(), name: '', answers: {} }])
   }
 
   function removeChild(index: number) {
@@ -44,7 +46,11 @@ export function RsvpForm({ snapshot, onSubmit }: RsvpFormProps) {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    onSubmit({ parentsLabel, familyAnswers, children })
+    onSubmit({
+      parentsLabel,
+      familyAnswers,
+      children: children.map(({ name, answers }) => ({ name, answers })),
+    })
   }
 
   return (
@@ -66,10 +72,10 @@ export function RsvpForm({ snapshot, onSubmit }: RsvpFormProps) {
 
       {children.map((child, i) => (
         <ChildAnswers
-          key={i}
+          key={child.id}
           childQuestions={childQuestions}
-          value={child}
-          onChange={(v) => updateChild(i, v)}
+          value={{ name: child.name, answers: child.answers }}
+          onChange={(v) => updateChild(child.id, v)}
           onRemove={children.length > 1 ? () => removeChild(i) : undefined}
         />
       ))}
