@@ -22,12 +22,12 @@
   },
   "host": {
     "dashboardTitle": "Gestionar festa",
-    "shareGuestLink": "Compartir enllaç de convidats",
+    "shareGuestLink": "Compartir enllaç de convidats/des",
     "questions": "Preguntes",
     "addQuestion": "Afegir pregunta",
     "standardQuestions": "Preguntes estàndard",
     "scopeFamily": "Per família",
-    "scopeChild": "Per nen",
+    "scopeChild": "Per nen/a",
     "typeSelect": "Opció",
     "typeText": "Text curt",
     "typeNumber": "Número",
@@ -45,16 +45,16 @@
     "wrongPin": "PIN incorrecte",
     "editResponse": "Editar",
     "deleteResponse": "Eliminar",
-    "addGuest": "Afegir convidat",
-    "childWord": "nen",
-    "childrenWord": "nens",
-    "adultWord": "adult",
-    "adultsWord": "adults"
+    "addGuest": "Afegir convidat/da",
+    "childWord": "nen/a",
+    "childrenWord": "nens/es",
+    "adultWord": "adult/a",
+    "adultsWord": "adults/es"
   },
   "guest": {
     "weAreParentsOf": "Som la família de…!",
-    "addChild": "Afegir un nen",
-    "childName": "Nom del nen",
+    "addChild": "Afegir un nen/a",
+    "childName": "Nom del nen/a",
     "submit": "Enviar confirmació",
     "thanks": "Gràcies! La teva confirmació ha estat enviada!",
     "addToCalendar": "Afegir al calendari",
@@ -72,8 +72,8 @@
     "sibling": "Germà/ana"
   },
   "venue": {
-    "totals": "Nens ({{children}}) · Adults ({{adults}})",
-    "breakdown": "Nens: {{children}} ({{invited}} convidats · {{siblings}} germans) · Adults: {{adults}}",
+    "totals": "Nens/es ({{children}}) · Adults/es ({{adults}})",
+    "breakdown": "Nens/es: {{children}} ({{invited}} convidats/des · {{siblings}} germans/anes) · Adults/es: {{adults}}",
     "snack": "berenar: {{snack}}",
     "allergies": "al·lèrgies: {{allergies}}"
   },
@@ -94,7 +94,7 @@
     "back": "Tornar"
   },
   "standard": {
-    "adultsCount": "Quants adults vindran?",
+    "adultsCount": "Quants adults/es vindran?",
     "allergies": "Al·lèrgies / intoleràncies",
     "dateOfBirth": "Data de naixement",
     "snack": "Berenar / menjar preferit"

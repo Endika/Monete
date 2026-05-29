@@ -22,12 +22,12 @@
   },
   "host": {
     "dashboardTitle": "Tu fiesta ✨",
-    "shareGuestLink": "Compartir enlace de invitados",
+    "shareGuestLink": "Compartir enlace de invitados/as",
     "questions": "Preguntas",
     "addQuestion": "Añadir pregunta",
     "standardQuestions": "Preguntas habituales",
     "scopeFamily": "Por familia",
-    "scopeChild": "Por niño",
+    "scopeChild": "Por niño/a",
     "typeSelect": "Opción",
     "typeText": "Texto corto",
     "typeNumber": "Número",
@@ -45,16 +45,16 @@
     "wrongPin": "PIN incorrecto",
     "editResponse": "Editar",
     "deleteResponse": "Eliminar",
-    "addGuest": "Añadir invitado",
-    "childWord": "niño",
-    "childrenWord": "niños",
-    "adultWord": "adulto",
-    "adultsWord": "adultos"
+    "addGuest": "Añadir invitado/a",
+    "childWord": "niño/a",
+    "childrenWord": "niños/as",
+    "adultWord": "adulto/a",
+    "adultsWord": "adultos/as"
   },
   "guest": {
     "weAreParentsOf": "¡Somos la familia de…!",
     "addChild": "Añadir otro peque",
-    "childName": "Nombre del niño",
+    "childName": "Nombre del niño/a",
     "submit": "Confirmar asistencia 🎉",
     "thanks": "¡Gracias! Ya estáis apuntados 🎊",
     "addToCalendar": "Añadir al calendario",
@@ -72,8 +72,8 @@
     "sibling": "Hermano/a"
   },
   "venue": {
-    "totals": "Niños ({{children}}) · Adultos ({{adults}})",
-    "breakdown": "Niños: {{children}} ({{invited}} invitados · {{siblings}} hermanos) · Adultos: {{adults}}",
+    "totals": "Niños/as ({{children}}) · Adultos/as ({{adults}})",
+    "breakdown": "Niños/as: {{children}} ({{invited}} invitados/as · {{siblings}} hermanos/as) · Adultos/as: {{adults}}",
     "snack": "merienda: {{snack}}",
     "allergies": "alergias: {{allergies}}"
   },
@@ -94,7 +94,7 @@
     "back": "Volver"
   },
   "standard": {
-    "adultsCount": "¿Cuántos adultos vienen?",
+    "adultsCount": "¿Cuántos adultos/as vienen?",
     "allergies": "Alergias / intolerancias",
     "dateOfBirth": "Fecha de nacimiento",
     "snack": "Merienda / comida preferida"

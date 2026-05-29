@@ -22,12 +22,12 @@
   },
   "host": {
     "dashboardTitle": "Xestionar festa",
-    "shareGuestLink": "Compartir ligazón de convidados",
+    "shareGuestLink": "Compartir ligazón de convidados/as",
     "questions": "Preguntas",
     "addQuestion": "Engadir pregunta",
     "standardQuestions": "Preguntas estándar",
     "scopeFamily": "Por familia",
-    "scopeChild": "Por neno",
+    "scopeChild": "Por neno/a",
     "typeSelect": "Opción",
     "typeText": "Texto curto",
     "typeNumber": "Número",
@@ -45,16 +45,16 @@
     "wrongPin": "PIN incorrecto",
     "editResponse": "Editar",
     "deleteResponse": "Eliminar",
-    "addGuest": "Engadir convidado",
-    "childWord": "neno",
-    "childrenWord": "nenos",
-    "adultWord": "adulto",
-    "adultsWord": "adultos"
+    "addGuest": "Engadir convidado/a",
+    "childWord": "neno/a",
+    "childrenWord": "nenos/as",
+    "adultWord": "adulto/a",
+    "adultsWord": "adultos/as"
   },
   "guest": {
     "weAreParentsOf": "Somos a familia de…!",
-    "addChild": "Engadir un neno",
-    "childName": "Nome do neno",
+    "addChild": "Engadir un neno/a",
+    "childName": "Nome do neno/a",
     "submit": "Enviar confirmación",
     "thanks": "Grazas! A túa confirmación foi enviada!",
     "addToCalendar": "Engadir ao calendario",
@@ -72,8 +72,8 @@
     "sibling": "Irmán/á"
   },
   "venue": {
-    "totals": "Nenos ({{children}}) · Adultos ({{adults}})",
-    "breakdown": "Nenos: {{children}} ({{invited}} convidados · {{siblings}} irmáns) · Adultos: {{adults}}",
+    "totals": "Nenos/as ({{children}}) · Adultos/as ({{adults}})",
+    "breakdown": "Nenos/as: {{children}} ({{invited}} convidados/as · {{siblings}} irmáns/ás) · Adultos/as: {{adults}}",
     "snack": "merenda: {{snack}}",
     "allergies": "alergias: {{allergies}}"
   },
@@ -94,7 +94,7 @@
     "back": "Volver"
   },
   "standard": {
-    "adultsCount": "Cantos adultos van vir?",
+    "adultsCount": "Cantos adultos/as van vir?",
     "allergies": "Alerxias / intolerancias",
     "dateOfBirth": "Data de nacemento",
     "snack": "Merenda / comida preferida"

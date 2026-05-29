@@ -22,12 +22,12 @@
   },
   "host": {
     "dashboardTitle": "Gestionar festa",
-    "shareGuestLink": "Compartir enllaç de convidats",
+    "shareGuestLink": "Compartir enllaç de convidats/des",
     "questions": "Preguntes",
     "addQuestion": "Afegir pregunta",
     "standardQuestions": "Preguntes estàndard",
     "scopeFamily": "Per família",
-    "scopeChild": "Per xiquet",
+    "scopeChild": "Per xiquet/a",
     "typeSelect": "Opció",
     "typeText": "Text curt",
     "typeNumber": "Número",
@@ -45,16 +45,16 @@
     "wrongPin": "PIN incorrecte",
     "editResponse": "Editar",
     "deleteResponse": "Eliminar",
-    "addGuest": "Afegir convidat",
-    "childWord": "xiquet",
-    "childrenWord": "xiquets",
-    "adultWord": "adult",
-    "adultsWord": "adults"
+    "addGuest": "Afegir convidat/da",
+    "childWord": "xiquet/a",
+    "childrenWord": "xiquets/es",
+    "adultWord": "adult/a",
+    "adultsWord": "adults/es"
   },
   "guest": {
     "weAreParentsOf": "Som la família de…!",
-    "addChild": "Afegir un xiquet",
-    "childName": "Nom del xiquet",
+    "addChild": "Afegir un xiquet/a",
+    "childName": "Nom del xiquet/a",
     "submit": "Enviar confirmació",
     "thanks": "Gràcies! La teua confirmació ha sigut enviada!",
     "addToCalendar": "Afegir al calendari",
@@ -72,8 +72,8 @@
     "sibling": "Germà/ana"
   },
   "venue": {
-    "totals": "Xiquets ({{children}}) · Adults ({{adults}})",
-    "breakdown": "Xiquets: {{children}} ({{invited}} convidats · {{siblings}} germans) · Adults: {{adults}}",
+    "totals": "Xiquets/es ({{children}}) · Adults/es ({{adults}})",
+    "breakdown": "Xiquets/es: {{children}} ({{invited}} convidats/des · {{siblings}} germans/anes) · Adults/es: {{adults}}",
     "snack": "berenar: {{snack}}",
     "allergies": "al·lèrgies: {{allergies}}"
   },
@@ -94,7 +94,7 @@
     "back": "Tornar"
   },
   "standard": {
-    "adultsCount": "Quants adults vindran?",
+    "adultsCount": "Quants adults/es vindran?",
     "allergies": "Al·lèrgies / intoleràncies",
     "dateOfBirth": "Data de naixement",
     "snack": "Berenar / menjar preferit"
