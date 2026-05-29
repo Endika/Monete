@@ -29,7 +29,10 @@
     "questionScope": "Scope",
     "setPin": "Set edit PIN",
     "headcount": "Headcount",
-    "shareVenue": "Share venue list"
+    "shareVenue": "Share venue list",
+    "pinLabel": "PIN",
+    "unlock": "Unlock",
+    "wrongPin": "Wrong PIN"
   },
   "guest": {
     "weAreParentsOf": "We are the parents of…",
