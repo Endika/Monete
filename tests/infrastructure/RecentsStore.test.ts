@@ -28,4 +28,11 @@ describe('RecentsStore', () => {
     s.addJoined({ id: 'p1', title: 'P', startsAt: '2026-06-20T17:00:00.000Z', rsvpId: 'r1' })
     expect(s.getJoined('p1')!.rsvpId).toBe('r1')
   })
+
+  it('removeJoined drops the entry for a party', () => {
+    const s = new RecentsStore(memStorage())
+    s.addJoined({ id: 'p1', title: 'P', startsAt: 'x', rsvpId: 'r1' })
+    s.removeJoined('p1')
+    expect(s.getJoined('p1')).toBeUndefined()
+  })
 })

@@ -45,6 +45,9 @@ export function GuestPage({ partyId }: GuestPageProps) {
   const [mode, setMode] = useState<Mode>('view')
   const [submitted, setSubmitted] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
+  const [claimedRsvpId, setClaimedRsvpId] = useState<string | null>(
+    () => recents.getJoined(partyId)?.rsvpId ?? null,
+  )
 
   if (loading)
     return <div className="p-8 text-center text-cocoa/60 font-body">{t('common.loading')}</div>
@@ -78,6 +81,7 @@ export function GuestPage({ partyId }: GuestPageProps) {
         startsAt: snapshot!.event.startsAt,
         rsvpId,
       })
+      setClaimedRsvpId(rsvpId)
       await refresh()
       setMode('view')
       setSubmitted(true)
@@ -106,8 +110,6 @@ export function GuestPage({ partyId }: GuestPageProps) {
       setSubmitError(e instanceof Error ? e.message : String(e))
     }
   }
-
-  const yourRsvpId = recents.getJoined(partyId)?.rsvpId
 
   const editingRsvp =
     typeof mode === 'object' ? (snapshot.rsvps.find((r) => r.id === mode.editRsvpId) ?? null) : null
@@ -188,11 +190,24 @@ export function GuestPage({ partyId }: GuestPageProps) {
 
           <ParticipantList
             snapshot={snapshot}
-            yourRsvpId={yourRsvpId}
+            yourRsvpId={claimedRsvpId ?? undefined}
+            onClaim={(rsvpId) => {
+              recents.addJoined({
+                id: partyId,
+                title: snapshot.event.title,
+                startsAt: snapshot.event.startsAt,
+                rsvpId,
+              })
+              setClaimedRsvpId(rsvpId)
+            }}
             onEdit={(id) => {
               setMode({ editRsvpId: id })
               setSubmitted(false)
               setSubmitError(null)
+            }}
+            onUnclaim={() => {
+              recents.removeJoined(partyId)
+              setClaimedRsvpId(null)
             }}
           />
 

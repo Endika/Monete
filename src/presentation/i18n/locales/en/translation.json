@@ -67,6 +67,7 @@
     "child": "Child",
     "whichFamily": "Are you one of these families?",
     "thisIsUs": "This is us",
+    "notUs": "This isn't us",
     "notListed": "I'm not on the list — register",
     "sibling": "Sibling"
   },

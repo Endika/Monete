@@ -51,4 +51,12 @@ export class RecentsStore {
   getJoined(partyId: string): JoinedEntry | undefined {
     return this.listJoined().find((e) => e.id === partyId)
   }
+  removeJoined(partyId: string): void {
+    const filtered = this.read<JoinedEntry>(JOINED_KEY).filter((e) => e.id !== partyId)
+    try {
+      this.storage.setItem(JOINED_KEY, JSON.stringify(filtered))
+    } catch {
+      /* storage full / unavailable — non-fatal */
+    }
+  }
 }
