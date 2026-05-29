@@ -18,10 +18,10 @@ export function Modal({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md rounded-3xl bg-white p-6 shadow-[0_12px_32px_-14px_rgba(180,90,60,0.30)]"
+        className="flex max-h-[90vh] w-full max-w-md flex-col overflow-y-auto rounded-3xl bg-white p-6 shadow-[0_12px_32px_-14px_rgba(180,90,60,0.30)]"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex justify-end">
+        <div className="sticky -top-6 -mx-6 -mt-6 flex justify-end bg-white/95 px-6 pb-1 pt-4 backdrop-blur-sm">
           <button
             type="button"
             aria-label="Close"
