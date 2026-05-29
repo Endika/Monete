@@ -14,6 +14,7 @@ import { Input } from '@/presentation/components/common/Input'
 import { Button } from '@/presentation/components/common/Button'
 import { ErrorBanner } from '@/presentation/components/common/ErrorBanner'
 import { whatsAppShareUrl } from '@/presentation/utils/shareWhatsApp'
+import { HeadcountView } from '@/presentation/components/features/host/HeadcountView'
 
 interface HostDashboardProps {
   partyId: string
@@ -123,7 +124,7 @@ export function HostDashboard({ partyId }: HostDashboardProps) {
           {t('host.shareGuestLink')}
         </Button>
 
-        {/* HeadcountView is wired in Task 27 */}
+        <HeadcountView snapshot={snapshot} />
       </div>
     </PinGate>
   )
