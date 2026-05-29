@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.1](https://github.com/Endika/Monete/compare/v1.6.0...v1.6.1) (2026-05-29)
+
+
+### Bug Fixes
+
+* **ui:** scrollable modal with sticky close button ([3b077a5](https://github.com/Endika/Monete/commit/3b077a5a7c27d0f8c60f7bc49fc1a44d5aea3098))
+
 ## [1.6.0](https://github.com/Endika/Monete/compare/v1.5.2...v1.6.0) (2026-05-29)
 
 
