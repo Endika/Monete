@@ -8,170 +8,244 @@ export function MonkeyMascot({ className }: { className?: string }) {
       role="img"
     >
       {/*
-       * HAND-DRAWN FREEHAND MONKEY
+       * CHILD'S CRAYON DRAWING of a happy monkey
        * ─────────────────────────────────────────────────────────────
        * Palette: fur #B0744A | outline #5A3A24 | peach #F0C9A0
        *          iris #D98E33 | pupil #3A2A20 | cheek #FF8FA8
        *          mouth #7A3B3B | tongue #FF6B81
        *
-       * Technique:
-       *  • Every shape is a cubic Bézier <path> with intentionally
-       *    uneven control points (3–8 px off-axis nudges) — no
-       *    geometric primitives for face structure.
-       *  • Fills rendered ~2–3 px offset from outlines so colour
-       *    "bleeds" like marker that doesn't stay in the lines.
-       *  • feTurbulence + feDisplacementMap adds ink-jitter bonus
-       *    where supported (baked wobble is the primary mechanism).
-       *  • Thick round-capped strokes of varying width = brush-pen.
+       * Technique — pushed hard into naive kid-crayon territory:
+       *  • STRONG asymmetry: left eye bigger/higher, right ear smaller/lower,
+       *    head lumpy, grin crooked (higher on left), eyebrows differ.
+       *  • Fills offset 6–12 px from outlines so colour bleeds OUTSIDE the lines.
+       *  • Stroke-width varies wildly: head outline 14px, right eye 7px.
+       *  • Scribble cheek hatching (back-and-forth crayon lines).
+       *  • Three wonky hair tufts — all different sizes, leaning different ways.
+       *  • feTurbulence scale 9 (fills) and 7 (outlines) for real jitter.
+       *  • Round caps/joins throughout.
        */}
 
       <defs>
-        <filter id="roughen" x="-8%" y="-8%" width="116%" height="116%">
+        {/* Strong crayon roughen — scale bumped for real jitter */}
+        <filter id="roughen" x="-12%" y="-12%" width="124%" height="124%">
           <feTurbulence
             type="turbulence"
-            baseFrequency="0.018 0.022"
-            numOctaves={3}
-            seed={7}
+            baseFrequency="0.025 0.030"
+            numOctaves={4}
+            seed={13}
             result="noise"
           />
           <feDisplacementMap
             in="SourceGraphic"
             in2="noise"
-            scale={5}
+            scale={9}
             xChannelSelector="R"
             yChannelSelector="G"
           />
         </filter>
-        <filter id="roughen-fill" x="-6%" y="-6%" width="112%" height="112%">
+        <filter id="roughen-fill" x="-10%" y="-10%" width="120%" height="120%">
           <feTurbulence
             type="turbulence"
-            baseFrequency="0.012 0.015"
-            numOctaves={2}
-            seed={3}
+            baseFrequency="0.018 0.022"
+            numOctaves={3}
+            seed={5}
             result="noise2"
           />
           <feDisplacementMap
             in="SourceGraphic"
             in2="noise2"
-            scale={3}
+            scale={7}
             xChannelSelector="R"
             yChannelSelector="G"
           />
         </filter>
       </defs>
 
-      {/* ── FILLS — painted slightly off-register behind outlines ── */}
+      {/* ── FILLS — big offsets so colour CLEARLY bleeds outside outlines ── */}
       <g filter="url(#roughen-fill)">
-        {/* Left ear fill — 3px nudge left+up */}
+        {/* LEFT EAR fill — nudged 8px left+up, noticeably bigger than right */}
         <path
-          d="M 95,223 C 44,207 18,243 23,291 C 28,338 73,366 126,348 C 160,336 173,303 160,266 C 148,228 126,218 95,223 Z"
+          d="M 82,206 C 28,186 -2,228 6,284 C 14,340 66,374 128,352 C 166,337 181,300 166,258 C 152,216 122,202 82,206 Z"
           fill="#B0744A"
         />
         {/* Left inner ear fill */}
         <path
-          d="M 100,245 C 70,237 54,257 58,290 C 62,320 88,336 116,326 C 138,318 146,294 136,268 C 126,246 112,242 100,245 Z"
+          d="M 90,232 C 58,222 40,246 46,284 C 52,320 82,340 118,328 C 144,319 154,292 142,262 C 130,238 114,232 90,232 Z"
           fill="#F0C9A0"
         />
 
-        {/* Right ear fill — 3px nudge right+up */}
+        {/* RIGHT EAR fill — smaller, lower (asymmetric!) */}
         <path
-          d="M 417,223 C 468,207 494,243 489,291 C 484,338 439,366 386,348 C 352,336 339,303 352,266 C 364,228 386,218 417,223 Z"
+          d="M 426,240 C 474,225 502,260 496,306 C 490,352 444,376 394,356 C 360,341 348,309 360,273 C 372,242 396,232 426,240 Z"
           fill="#B0744A"
         />
         {/* Right inner ear fill */}
         <path
-          d="M 412,245 C 442,237 458,257 454,290 C 450,320 424,336 396,326 C 374,318 366,294 376,268 C 386,246 400,242 412,245 Z"
+          d="M 420,262 C 450,252 466,272 460,306 C 456,338 428,354 400,342 C 378,332 370,308 382,278 C 392,256 406,252 420,262 Z"
           fill="#F0C9A0"
         />
 
-        {/* Head fill — slightly larger blob, 2px offset, bleeds behind outline */}
+        {/* HEAD fill — lumpy asymmetric blob offset 8px, left side lower */}
         <path
-          d="M 258,94 C 320,89 414,136 437,238 C 458,326 422,444 313,485 C 284,493 228,494 199,485 C 91,444 56,326 77,238 C 100,136 194,89 258,94 Z"
+          d="M 248,88 C 296,78 388,116 426,176 C 462,234 466,318 448,398 C 431,472 376,504 308,500 C 278,506 222,506 190,500 C 122,504 64,472 52,398 C 38,318 46,234 82,176 C 122,116 196,78 248,88 Z"
           fill="#B0744A"
         />
 
-        {/* Face-mask fill — offset 2px so peach bleeds slightly */}
+        {/* FACE MASK fill — offset 6px down+left, bleeds into fur */}
         <path
-          d="M 258,182 C 317,178 378,211 381,285 C 385,352 348,434 295,460 C 272,470 239,470 216,460 C 164,434 127,352 131,285 C 135,211 197,178 258,182 Z"
+          d="M 252,188 C 316,180 386,218 388,298 C 392,372 352,456 296,482 C 272,492 236,494 210,482 C 154,456 116,372 122,298 C 128,218 190,180 252,188 Z"
           fill="#F0C9A0"
         />
 
-        {/* Left cheek fill — offset 3px left */}
+        {/* LEFT CHEEK scribble blob — big, offset left, clearly outside outline */}
         <path
-          d="M 148,326 C 130,316 118,332 122,359 C 127,385 153,399 180,389 C 200,381 204,357 190,334 C 178,318 161,318 148,326 Z"
+          d="M 128,330 C 108,314 92,334 98,368 C 104,400 138,416 172,402 C 198,390 204,360 186,334 C 170,314 148,314 128,330 Z"
           fill="#FF8FA8"
-          opacity="0.75"
+          opacity="0.55"
+        />
+        {/* Cheek scribble lines — back-and-forth crayon hatching */}
+        <path
+          d="M 108,344 L 172,336"
+          stroke="#FF8FA8"
+          strokeWidth="5"
+          strokeLinecap="round"
+          fill="none"
+          opacity="0.7"
+        />
+        <path
+          d="M 100,358 L 180,354"
+          stroke="#FF8FA8"
+          strokeWidth="5"
+          strokeLinecap="round"
+          fill="none"
+          opacity="0.7"
+        />
+        <path
+          d="M 106,372 L 182,370"
+          stroke="#FF8FA8"
+          strokeWidth="4.5"
+          strokeLinecap="round"
+          fill="none"
+          opacity="0.65"
+        />
+        <path
+          d="M 116,386 L 176,386"
+          stroke="#FF8FA8"
+          strokeWidth="4"
+          strokeLinecap="round"
+          fill="none"
+          opacity="0.6"
         />
 
-        {/* Right cheek fill — offset 3px right */}
+        {/* RIGHT CHEEK scribble blob — offset right */}
         <path
-          d="M 364,326 C 382,316 394,332 390,359 C 385,385 359,399 332,389 C 312,381 308,357 322,334 C 334,318 350,318 364,326 Z"
+          d="M 382,336 C 402,320 418,340 412,374 C 406,406 372,422 340,408 C 314,396 310,364 328,340 C 344,320 364,320 382,336 Z"
           fill="#FF8FA8"
-          opacity="0.75"
+          opacity="0.55"
+        />
+        {/* Right cheek scribble lines */}
+        <path
+          d="M 404,350 L 330,344"
+          stroke="#FF8FA8"
+          strokeWidth="5"
+          strokeLinecap="round"
+          fill="none"
+          opacity="0.7"
+        />
+        <path
+          d="M 412,364 L 326,362"
+          stroke="#FF8FA8"
+          strokeWidth="5"
+          strokeLinecap="round"
+          fill="none"
+          opacity="0.7"
+        />
+        <path
+          d="M 408,378 L 328,378"
+          stroke="#FF8FA8"
+          strokeWidth="4.5"
+          strokeLinecap="round"
+          fill="none"
+          opacity="0.65"
+        />
+        <path
+          d="M 396,392 L 336,392"
+          stroke="#FF8FA8"
+          strokeWidth="4"
+          strokeLinecap="round"
+          fill="none"
+          opacity="0.6"
         />
 
-        {/* Muzzle fill — offset 2px down */}
+        {/* MUZZLE fill — offset 6px down, bleeds below muzzle outline */}
         <path
-          d="M 256,350 C 303,346 338,362 340,394 C 342,428 313,453 257,454 C 200,453 171,428 173,394 C 175,362 210,346 256,350 Z"
+          d="M 252,358 C 306,350 346,370 348,406 C 350,444 318,472 256,472 C 194,472 164,444 168,406 C 172,370 200,350 252,358 Z"
           fill="#F0C9A0"
         />
 
-        {/* Mouth interior fill */}
+        {/* MOUTH interior */}
         <path
-          d="M 198,393 C 208,424 230,448 255,450 C 280,448 303,424 314,393 C 298,408 279,416 257,416 C 234,416 215,408 198,393 Z"
+          d="M 192,404 C 204,438 228,464 255,466 C 282,464 308,438 320,404 C 302,422 280,430 256,430 C 232,430 210,422 192,404 Z"
           fill="#7A3B3B"
         />
-        {/* Teeth fill */}
+        {/* Teeth — lumpy white strip */}
         <path
-          d="M 206,396 C 217,410 235,416 256,416 C 277,416 295,410 306,396 C 292,407 275,410 256,410 C 237,410 220,407 206,396 Z"
+          d="M 200,408 C 215,424 234,430 256,430 C 278,430 298,424 314,408 C 296,420 276,424 256,424 C 236,424 216,420 200,408 Z"
           fill="white"
         />
-        {/* Tongue fill */}
+        {/* Tongue */}
         <path
-          d="M 234,420 C 234,410 245,405 256,405 C 267,405 278,410 278,420 C 278,436 268,442 256,442 C 244,442 234,436 234,420 Z"
+          d="M 228,432 C 228,420 242,414 256,414 C 270,414 284,420 284,432 C 284,452 272,460 256,460 C 240,460 228,452 228,432 Z"
           fill="#FF6B81"
         />
 
-        {/* Left eye white fill — offset 2px */}
+        {/* LEFT EYE fill — BIGGER, higher up (asymmetric!), offset 6px up+left */}
         <path
-          d="M 156,250 C 160,213 191,197 218,205 C 245,213 253,242 245,271 C 237,299 209,309 184,299 C 159,289 152,267 156,250 Z"
+          d="M 142,238 C 148,196 184,178 218,188 C 252,198 262,232 252,268 C 242,304 208,318 176,306 C 144,294 136,268 142,238 Z"
           fill="white"
         />
-        {/* Left iris fill */}
+        {/* Left iris — amber */}
         <path
-          d="M 177,249 C 181,231 196,223 211,227 C 226,231 232,245 228,264 C 224,281 209,287 195,283 C 181,279 175,265 177,249 Z"
+          d="M 166,240 C 172,218 192,208 212,214 C 232,220 240,238 234,262 C 228,284 208,292 188,286 C 168,280 160,262 166,240 Z"
           fill="#D98E33"
         />
 
-        {/* Right eye white fill — offset 2px */}
+        {/* RIGHT EYE fill — SMALLER, lower (asymmetric!), offset 6px down+right */}
         <path
-          d="M 356,250 C 352,213 321,197 294,205 C 267,213 259,242 267,271 C 275,299 303,309 328,299 C 353,289 360,267 356,250 Z"
+          d="M 368,270 C 362,232 330,214 298,224 C 266,234 256,266 266,298 C 276,328 308,340 336,328 C 364,316 374,292 368,270 Z"
           fill="white"
         />
-        {/* Right iris fill */}
+        {/* Right iris — slightly smaller */}
         <path
-          d="M 335,249 C 331,231 316,223 301,227 C 286,231 280,245 284,264 C 288,281 303,287 317,283 C 331,279 337,265 335,249 Z"
+          d="M 348,270 C 344,252 326,242 308,248 C 290,254 282,270 288,290 C 294,310 314,318 332,312 C 350,306 356,290 348,270 Z"
           fill="#D98E33"
         />
 
-        {/* Nose fill — lumpy rounded bump */}
+        {/* NOSE fill — big lumpy dark blob offset down */}
         <path
-          d="M 237,361 C 237,349 249,343 256,345 C 263,343 275,349 275,362 C 271,371 261,375 256,375 C 251,375 241,371 237,361 Z"
+          d="M 232,368 C 232,352 246,344 256,348 C 266,344 280,352 278,368 C 274,380 263,385 256,384 C 249,385 238,380 232,368 Z"
           fill="#5A3A24"
         />
 
-        {/* Hair tuft fills */}
+        {/* HAIR TUFTS fills — 3 wonky spikes, all different, kid-drawn */}
+        {/* Middle tuft — tallest, leans right */}
         <path
-          d="M 271,97 C 274,69 294,44 304,27 C 312,44 318,61 307,83 C 297,71 283,75 271,97 Z"
+          d="M 262,96 C 268,66 294,38 308,18 C 318,38 322,62 308,88 C 296,74 278,78 262,96 Z"
           fill="#5A3A24"
         />
+        {/* Left tuft — shorter, leans left */}
         <path
-          d="M 255,97 C 256,73 268,52 275,38 C 281,52 283,69 275,89 C 269,81 261,83 255,97 Z"
+          d="M 232,100 C 226,72 220,48 222,28 C 234,44 244,64 240,90 C 236,82 228,84 232,100 Z"
+          fill="#B0744A"
+        />
+        {/* Right tuft — medium, fattest */}
+        <path
+          d="M 284,94 C 292,68 308,50 316,36 C 322,50 322,68 312,88 C 306,78 292,80 284,94 Z"
           fill="#B0744A"
         />
       </g>
 
-      {/* ── OUTLINES — hand-drawn dark strokes with ink-jitter filter ── */}
+      {/* ── OUTLINES — thick uneven crayon strokes, variable widths ── */}
       <g
         filter="url(#roughen)"
         fill="none"
@@ -179,201 +253,167 @@ export function MonkeyMascot({ className }: { className?: string }) {
         strokeLinecap="round"
         strokeLinejoin="round"
       >
-        {/* Left ear outline — wobbly blob */}
+        {/* LEFT EAR outline — bigger, higher, stroke 12px */}
         <path
-          d="M 100,228 C 50,211 20,247 25,294 C 30,342 78,370 130,352 C 164,340 176,308 163,270 C 150,232 128,221 100,228 Z"
-          strokeWidth="7.5"
+          d="M 88,214 C 34,192 2,234 10,292 C 18,350 74,382 136,358 C 174,342 188,302 172,258 C 156,214 130,202 88,214 Z"
+          strokeWidth="12"
         />
         {/* Left inner ear */}
         <path
-          d="M 103,249 C 73,241 56,262 60,293 C 65,323 91,339 119,329 C 141,321 149,297 139,271 C 129,249 115,245 103,249 Z"
-          strokeWidth="4.5"
+          d="M 96,238 C 62,228 44,252 50,290 C 56,328 86,346 122,332 C 148,322 158,294 146,264 C 134,238 116,232 96,238 Z"
+          strokeWidth="6"
         />
 
-        {/* Right ear outline */}
+        {/* RIGHT EAR outline — smaller, lower, thinner stroke 9px */}
         <path
-          d="M 412,228 C 462,211 492,247 487,294 C 482,342 434,370 382,352 C 348,340 336,308 349,270 C 362,232 384,221 412,228 Z"
-          strokeWidth="7.5"
+          d="M 422,248 C 470,232 500,268 494,314 C 488,360 440,386 388,364 C 350,348 338,312 352,274 C 366,240 392,230 422,248 Z"
+          strokeWidth="9"
         />
         {/* Right inner ear */}
         <path
-          d="M 409,249 C 439,241 456,262 452,293 C 447,323 421,339 393,329 C 371,321 363,297 373,271 C 383,249 397,245 409,249 Z"
-          strokeWidth="4.5"
-        />
-
-        {/* Head outline — big wobbly blob, control points nudged irregularly */}
-        <path
-          d="M 258,97 C 304,90 378,118 416,172 C 450,222 456,298 440,370 C 425,442 372,487 310,486 C 284,494 228,494 202,486 C 140,487 87,442 72,370 C 56,298 62,222 96,172 C 134,118 208,90 258,97 Z"
-          strokeWidth="9"
-        />
-
-        {/* Face-mask outline */}
-        <path
-          d="M 257,185 C 312,180 375,214 379,287 C 384,354 347,435 295,461 C 272,471 240,471 217,461 C 165,435 128,354 133,287 C 137,214 198,180 257,185 Z"
-          strokeWidth="5.5"
-        />
-
-        {/* Muzzle outline — lumpy dome */}
-        <path
-          d="M 257,349 C 305,344 340,361 342,393 C 344,428 314,453 257,455 C 199,453 170,428 172,393 C 174,361 209,344 257,349 Z"
+          d="M 416,268 C 448,256 464,278 458,312 C 452,344 424,360 394,346 C 370,334 362,310 374,282 C 386,258 400,254 416,268 Z"
           strokeWidth="5"
+        />
+
+        {/* HEAD outline — strongly lumpy, asymmetric, heavy 14px stroke */}
+        <path
+          d="M 256,96 C 306,86 392,116 432,178 C 468,238 472,326 452,410 C 434,490 374,512 308,510 C 280,518 220,518 188,510 C 118,512 56,490 42,410 C 26,326 36,238 76,178 C 118,116 204,86 256,96 Z"
+          strokeWidth="14"
+        />
+
+        {/* FACE MASK outline — irregular blob */}
+        <path
+          d="M 254,194 C 316,186 384,226 386,306 C 390,380 350,468 294,494 C 270,506 232,506 206,494 C 148,468 108,380 116,306 C 124,226 190,186 254,194 Z"
+          strokeWidth="8"
+        />
+
+        {/* MUZZLE outline */}
+        <path
+          d="M 254,360 C 308,352 348,374 350,412 C 352,452 318,480 256,480 C 194,480 162,452 164,412 C 166,374 202,352 254,360 Z"
+          strokeWidth="7"
         />
 
         {/* Muzzle center crease */}
-        <path d="M 257,353 C 256,381 257,401 256,422" strokeWidth="2.5" opacity="0.3" />
+        <path d="M 256,364 C 254,394 257,416 254,440" strokeWidth="3" opacity="0.35" />
 
-        {/* Nose outline */}
+        {/* NOSE outline */}
         <path
-          d="M 238,362 C 238,349 250,343 256,345 C 263,343 275,349 275,363 C 271,372 261,376 256,376 C 251,376 241,372 238,362 Z"
-          strokeWidth="4"
+          d="M 234,370 C 234,354 248,346 256,350 C 264,346 278,354 278,370 C 274,382 264,387 256,386 C 248,387 238,382 234,370 Z"
+          strokeWidth="5.5"
         />
-
         {/* Nostril scratches */}
-        <path d="M 247,362 C 248,366 250,368" strokeWidth="2.5" opacity="0.6" />
-        <path d="M 265,362 C 264,366 262,368" strokeWidth="2.5" opacity="0.6" />
+        <path d="M 244,368 C 246,374 249,378" strokeWidth="3" opacity="0.55" />
+        <path d="M 268,368 C 266,374 263,378" strokeWidth="3" opacity="0.55" />
 
-        {/* Grin outline — wide wobbly arc */}
+        {/* CROOKED GRIN — wide, asymmetric, higher on left than right */}
         <path
-          d="M 199,393 C 208,425 231,449 256,451 C 281,449 304,425 315,393 C 299,408 280,416 257,416 C 234,416 214,408 199,393 Z"
-          strokeWidth="5"
+          d="M 186,400 C 196,436 224,464 254,466 C 284,464 312,436 324,408 C 306,426 282,434 256,434 C 230,434 206,424 186,400 Z"
+          strokeWidth="7"
         />
-
         {/* Teeth divider */}
         <path
-          d="M 212,402 C 232,408 256,410 280,408 C 296,406 304,402"
-          strokeWidth="2"
+          d="M 198,412 C 222,420 256,424 284,420 C 302,416 316,412"
+          strokeWidth="2.5"
           opacity="0.4"
         />
-
-        {/* Tongue center groove */}
+        {/* Tongue groove */}
         <path
-          d="M 256,408 C 255,420 257,430 256,440"
-          strokeWidth="2.5"
+          d="M 256,422 C 254,436 257,448 255,460"
+          strokeWidth="3"
           stroke="#D44060"
-          opacity="0.6"
+          opacity="0.55"
         />
 
-        {/* Left eye outline — wobbly almond */}
+        {/* LEFT EYE outline — BIGGER, rounder, higher, thick 10px stroke */}
         <path
-          d="M 157,252 C 161,214 192,198 219,207 C 246,214 254,243 246,272 C 238,300 209,310 184,300 C 159,290 153,268 157,252 Z"
-          strokeWidth="6.5"
+          d="M 148,244 C 154,202 190,184 224,196 C 258,206 268,240 256,278 C 244,316 206,328 172,316 C 138,304 130,274 148,244 Z"
+          strokeWidth="10"
         />
-        {/* Left iris outline */}
+        {/* Left pupil */}
         <path
-          d="M 178,250 C 182,232 197,224 212,228 C 227,232 233,246 229,265 C 225,282 210,288 196,284 C 182,280 176,266 178,250 Z"
-          strokeWidth="3"
-        />
-        {/* Left pupil — lumpy blob not circle */}
-        <path
-          d="M 194,244 C 200,238 212,240 216,250 C 220,260 216,270 208,272 C 200,274 192,268 190,258 C 188,248 190,244 194,244 Z"
+          d="M 184,234 C 194,224 214,228 220,244 C 226,260 220,276 208,278 C 196,280 184,272 182,258 C 180,244 180,234 184,234 Z"
           strokeWidth="2"
           fill="#3A2A20"
           stroke="#3A2A20"
         />
-        {/* Left eye shine dabs */}
-        <path d="M 192,242 C 194,240 198,241 198,244" stroke="white" strokeWidth="5" fill="none" />
+        {/* Left eye shine */}
+        <path d="M 182,232 C 186,228 192,230 192,236" stroke="white" strokeWidth="7" fill="none" />
         <path
-          d="M 211,261 C 213,260 215,262"
+          d="M 208,258 C 212,256 215,259"
+          stroke="white"
+          strokeWidth="4.5"
+          fill="none"
+          opacity="0.8"
+        />
+
+        {/* RIGHT EYE outline — SMALLER, lower, thinner 7px stroke */}
+        <path
+          d="M 364,278 C 358,238 326,220 294,230 C 262,240 252,272 262,306 C 272,338 306,350 334,336 C 362,322 370,298 364,278 Z"
+          strokeWidth="7"
+        />
+        {/* Right pupil — smaller than left */}
+        <path
+          d="M 294,250 C 304,240 320,244 326,260 C 332,276 326,290 314,292 C 302,294 292,284 290,268 C 288,254 290,250 294,250 Z"
+          strokeWidth="2"
+          fill="#3A2A20"
+          stroke="#3A2A20"
+        />
+        {/* Right eye shine */}
+        <path
+          d="M 292,248 C 296,244 302,246 302,252"
+          stroke="white"
+          strokeWidth="5.5"
+          fill="none"
+        />
+        <path
+          d="M 314,270 C 318,268 320,271"
           stroke="white"
           strokeWidth="3.5"
           fill="none"
           opacity="0.8"
         />
 
-        {/* Right eye outline */}
+        {/* LEFT EYEBROW — thick sweeping arch, tilted, kid's rough stroke */}
         <path
-          d="M 355,252 C 351,214 320,198 293,207 C 266,214 258,243 266,272 C 274,300 303,310 328,300 C 353,290 359,268 355,252 Z"
-          strokeWidth="6.5"
-        />
-        {/* Right iris outline */}
-        <path
-          d="M 334,250 C 330,232 315,224 300,228 C 285,232 279,246 283,265 C 287,282 302,288 316,284 C 330,280 336,266 334,250 Z"
+          d="M 136,222 C 152,194 188,180 232,194 C 236,200 238,206 234,210 C 192,196 158,208 142,234 C 138,230 134,226 136,222 Z"
+          fill="#5A3A24"
+          stroke="#5A3A24"
           strokeWidth="3"
         />
-        {/* Right pupil */}
-        <path
-          d="M 298,244 C 304,238 316,240 320,250 C 324,260 320,270 312,272 C 304,274 296,268 294,258 C 292,248 294,244 298,244 Z"
-          strokeWidth="2"
-          fill="#3A2A20"
-          stroke="#3A2A20"
-        />
-        {/* Right eye shine dabs */}
-        <path d="M 296,242 C 298,240 302,241 302,244" stroke="white" strokeWidth="5" fill="none" />
-        <path
-          d="M 315,261 C 317,260 319,262"
-          stroke="white"
-          strokeWidth="3.5"
-          fill="none"
-          opacity="0.8"
-        />
 
-        {/* Left eyebrow — thick wobbly marker swipe */}
+        {/* RIGHT EYEBROW — different angle/thickness from left (asymmetric!) */}
         <path
-          d="M 154,219 C 168,195 196,185 232,196 C 234,200 236,205 234,207 C 200,197 172,207 158,229 C 155,226 153,222 154,219 Z"
+          d="M 374,234 C 358,208 328,196 290,208 C 286,212 284,218 288,222 C 326,210 354,222 366,244 C 370,240 374,236 374,234 Z"
           fill="#5A3A24"
           stroke="#5A3A24"
-          strokeWidth="2"
+          strokeWidth="3"
         />
 
-        {/* Right eyebrow — mirrored wobbly swipe */}
+        {/* HAIR TUFTS outlines — three wonky spikes, all different */}
+        {/* Middle spike — leans right, tallest */}
         <path
-          d="M 358,219 C 344,195 316,185 280,196 C 278,200 276,205 278,207 C 312,197 340,207 354,229 C 357,226 359,222 358,219 Z"
+          d="M 264,98 C 270,68 296,40 310,20 C 320,40 324,64 310,90 C 298,76 280,80 264,98 Z"
+          strokeWidth="7"
           fill="#5A3A24"
-          stroke="#5A3A24"
-          strokeWidth="2"
         />
-
-        {/* Hair tuft outlines — spiky wiggly strands */}
+        {/* Left spike — shorter, leans left */}
         <path
-          d="M 271,98 C 274,70 295,44 305,27 C 313,44 319,62 308,84 C 298,72 284,76 271,98 Z"
+          d="M 230,102 C 224,74 218,50 220,30 C 232,46 242,66 238,92 C 234,84 226,86 230,102 Z"
           strokeWidth="5"
-          fill="#5A3A24"
+          fill="#B0744A"
         />
+        {/* Right spike — medium, fattest */}
         <path
-          d="M 254,98 C 255,74 267,53 274,39 C 280,53 282,70 274,90 C 268,82 260,84 254,98 Z"
-          strokeWidth="4"
+          d="M 286,96 C 294,70 310,52 318,38 C 326,52 326,70 314,90 C 308,80 294,82 286,96 Z"
+          strokeWidth="5"
           fill="#B0744A"
         />
 
-        {/* Cheek hatching — loose parallel scratches for hand-drawn blush texture */}
-        {/* Left cheek hatch lines */}
-        <path
-          d="M 138,348 C 148,342 162,344 170,354"
-          stroke="#FF8FA8"
-          strokeWidth="2.5"
-          opacity="0.55"
-        />
-        <path
-          d="M 134,360 C 146,354 164,356 178,365"
-          stroke="#FF8FA8"
-          strokeWidth="2.5"
-          opacity="0.55"
-        />
-        <path
-          d="M 138,372 C 150,368 165,370 174,378"
-          stroke="#FF8FA8"
-          strokeWidth="2"
-          opacity="0.45"
-        />
-        {/* Right cheek hatch lines */}
-        <path
-          d="M 374,348 C 364,342 350,344 342,354"
-          stroke="#FF8FA8"
-          strokeWidth="2.5"
-          opacity="0.55"
-        />
-        <path
-          d="M 378,360 C 366,354 348,356 334,365"
-          stroke="#FF8FA8"
-          strokeWidth="2.5"
-          opacity="0.55"
-        />
-        <path
-          d="M 374,372 C 362,368 347,370 338,378"
-          stroke="#FF8FA8"
-          strokeWidth="2"
-          opacity="0.45"
-        />
+        {/* WHISKERS — simple stick lines, kid-drawn style */}
+        <path d="M 210,390 L 148,376" strokeWidth="4" opacity="0.5" />
+        <path d="M 210,398 L 146,394" strokeWidth="3.5" opacity="0.45" />
+        <path d="M 302,390 L 364,376" strokeWidth="4" opacity="0.5" />
+        <path d="M 302,398 L 366,394" strokeWidth="3.5" opacity="0.45" />
       </g>
     </svg>
   )
