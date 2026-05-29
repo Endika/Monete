@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.3.0](https://github.com/Endika/Monete/compare/v1.2.0...v1.3.0) (2026-05-29)
+
+
+### Features
+
+* **guest:** claim your family via this-is-us, with un-claim ([c5e2393](https://github.com/Endika/Monete/commit/c5e239336a2cefdf75fa8c39925e73ead967e982))
+
+
+### Bug Fixes
+
+* **ui:** use LanguageSwitcher (flag icons) in footer ([a643ff2](https://github.com/Endika/Monete/commit/a643ff25a8b1c059518a3c01fa796c8787dd765c))
+
 ## [1.2.0](https://github.com/Endika/Monete/compare/v1.1.0...v1.2.0) (2026-05-29)
 
 
