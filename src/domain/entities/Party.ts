@@ -113,6 +113,7 @@ export class Party {
   static restore(s: PartySnapshot): Party {
     const backfilled: PartySnapshot = {
       ...s,
+      event: { ...s.event },
       questions: (s.questions ?? []).map((q) => ({
         ...q,
         options: q.options ?? [],
@@ -217,13 +218,13 @@ export class Party {
       const name = c.name.trim()
       if (name.length < 1) throw new Error('Rsvp: each child needs a name')
       checkAnswers(childQuestions, c.answers, name)
-      return { id: uuidv7(), name, answers: c.answers }
+      return { id: uuidv7(), name, answers: { ...c.answers } }
     })
 
     return {
       id: uuidv7(),
       parentsLabel,
-      familyAnswers: input.familyAnswers,
+      familyAnswers: { ...input.familyAnswers },
       children,
       createdAt: input.now ?? new Date().toISOString(),
     }

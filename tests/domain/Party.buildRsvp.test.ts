@@ -78,6 +78,22 @@ describe('Party.buildRsvp', () => {
     ).toThrow(/required/i)
   })
 
+  it('does not keep references to the caller answer maps', () => {
+    const p = partyWithQuestions()
+    const [adults, snack] = p.toSnapshot().questions
+    const familyAnswers = { [adults!.id]: 1 }
+    const childAnswers = { [snack!.id]: 'Pizza' }
+    const rsvp = p.buildRsvp({
+      parentsLabel: 'P',
+      familyAnswers,
+      children: [{ name: 'Leo', answers: childAnswers }],
+    })
+    familyAnswers[adults!.id] = 999
+    childAnswers[snack!.id] = 'Hot dog'
+    expect(rsvp.familyAnswers[adults!.id]).toBe(1)
+    expect(rsvp.children[0]!.answers[snack!.id]).toBe('Pizza')
+  })
+
   it('rejects a select answer not in the option list', () => {
     const p = partyWithQuestions()
     const [adults, snack] = p.toSnapshot().questions
