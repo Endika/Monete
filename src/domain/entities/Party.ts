@@ -195,6 +195,26 @@ export class Party {
     return new Party(this.id, { ...this.s, questions, updatedAt: now ?? new Date().toISOString() })
   }
 
+  private validateAnswers(questions: Question[], answers: AnswerMap, who: string): void {
+    for (const q of questions) {
+      const v = answers[q.id]
+      const empty = v === null || v === undefined || v === ''
+      if (q.required && empty) throw new Error(`Rsvp: "${q.label}" is required for ${who}`)
+      if (!empty && q.type === 'select' && !q.options.includes(String(v)))
+        throw new Error(`Rsvp: "${String(v)}" is not a valid option for "${q.label}"`)
+    }
+  }
+
+  private buildChildren(children: { name: string; answers: AnswerMap }[]): Child[] {
+    const childQuestions = this.s.questions.filter((q) => q.scope === 'child')
+    return children.map((c) => {
+      const name = c.name.trim()
+      if (name.length < 1) throw new Error('Rsvp: each child needs a name')
+      this.validateAnswers(childQuestions, c.answers, name)
+      return { id: uuidv7(), name, answers: { ...c.answers } }
+    })
+  }
+
   buildRsvp(input: {
     parentsLabel: string
     familyAnswers: AnswerMap
@@ -206,25 +226,8 @@ export class Party {
     if (input.children.length < 1) throw new Error('Rsvp: at least one child is required')
 
     const familyQuestions = this.s.questions.filter((q) => q.scope === 'family')
-    const childQuestions = this.s.questions.filter((q) => q.scope === 'child')
-
-    const checkAnswers = (questions: Question[], answers: AnswerMap, who: string) => {
-      for (const q of questions) {
-        const v = answers[q.id]
-        const empty = v === null || v === undefined || v === ''
-        if (q.required && empty) throw new Error(`Rsvp: "${q.label}" is required for ${who}`)
-        if (!empty && q.type === 'select' && !q.options.includes(String(v)))
-          throw new Error(`Rsvp: "${String(v)}" is not a valid option for "${q.label}"`)
-      }
-    }
-
-    checkAnswers(familyQuestions, input.familyAnswers, 'the family')
-    const children: Child[] = input.children.map((c) => {
-      const name = c.name.trim()
-      if (name.length < 1) throw new Error('Rsvp: each child needs a name')
-      checkAnswers(childQuestions, c.answers, name)
-      return { id: uuidv7(), name, answers: { ...c.answers } }
-    })
+    this.validateAnswers(familyQuestions, input.familyAnswers, 'the family')
+    const children = this.buildChildren(input.children)
 
     return {
       id: uuidv7(),
@@ -233,6 +236,39 @@ export class Party {
       children,
       createdAt: input.now ?? new Date().toISOString(),
     }
+  }
+
+  updateRsvp(
+    rsvpId: string,
+    input: {
+      parentsLabel: string
+      familyAnswers: AnswerMap
+      children: { name: string; answers: AnswerMap }[]
+    },
+    now?: string,
+  ): Party {
+    const existing = this.s.rsvps.find((r) => r.id === rsvpId)
+    if (!existing) throw new Error('Rsvp: not found')
+    const parentsLabel = input.parentsLabel.trim()
+    if (parentsLabel.length < 1) throw new Error('Rsvp: parentsLabel is required')
+    if (input.children.length < 1) throw new Error('Rsvp: at least one child is required')
+    const familyQuestions = this.s.questions.filter((q) => q.scope === 'family')
+    this.validateAnswers(familyQuestions, input.familyAnswers, 'the family')
+    const children = this.buildChildren(input.children)
+    const updated: Rsvp = {
+      ...existing,
+      parentsLabel,
+      familyAnswers: { ...input.familyAnswers },
+      children,
+    }
+    const rsvps = this.s.rsvps.map((r) => (r.id === rsvpId ? updated : r))
+    return new Party(this.id, { ...this.s, rsvps, updatedAt: now ?? new Date().toISOString() })
+  }
+
+  removeRsvp(rsvpId: string, now?: string): Party {
+    if (!this.s.rsvps.some((r) => r.id === rsvpId)) throw new Error('Rsvp: not found')
+    const rsvps = this.s.rsvps.filter((r) => r.id !== rsvpId)
+    return new Party(this.id, { ...this.s, rsvps, updatedAt: now ?? new Date().toISOString() })
   }
 
   toSnapshot(): PartySnapshot {
