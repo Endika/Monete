@@ -262,8 +262,8 @@ export function GuestPage({ partyId }: GuestPageProps) {
             </div>
           )}
 
-          {/* Not listed button (visible when not already in register/edit mode) */}
-          {mode === 'view' && (
+          {/* Not listed button — only when in view mode AND no family claimed yet */}
+          {mode === 'view' && !claimedRsvpId && (
             <div className="flex justify-center">
               <Button
                 onClick={() => {
