@@ -1,3 +1,4 @@
+import { uuidv7 } from 'uuidv7'
 import { PartyId } from '@/domain/value-objects/PartyId'
 
 export const QUESTION_TYPES = ['select', 'text', 'number', 'date'] as const
@@ -146,6 +147,46 @@ export class Party {
       editPin: hash,
       updatedAt: now ?? new Date().toISOString(),
     })
+  }
+
+  private static normalizeQuestionFields(input: Omit<Question, 'id'>): Omit<Question, 'id'> {
+    const label = input.label.trim()
+    if (label.length < 1 || label.length > 120)
+      throw new Error('Question: label must be 1..120 chars')
+    const options =
+      input.type === 'select' ? input.options.map((o) => o.trim()).filter(Boolean) : []
+    if (input.type === 'select' && options.length < 1)
+      throw new Error('Question: select needs at least one option')
+    return {
+      kind: input.kind,
+      type: input.type,
+      scope: input.scope,
+      label,
+      options,
+      required: input.required,
+    }
+  }
+
+  addQuestion(input: Omit<Question, 'id'>, now?: string): Party {
+    const fields = Party.normalizeQuestionFields(input)
+    const question: Question = { id: uuidv7(), ...fields }
+    return new Party(this.id, {
+      ...this.s,
+      questions: [...this.s.questions, question],
+      updatedAt: now ?? new Date().toISOString(),
+    })
+  }
+
+  updateQuestion(id: string, input: Omit<Question, 'id'>, now?: string): Party {
+    if (!this.s.questions.some((q) => q.id === id)) throw new Error('Question: not found')
+    const fields = Party.normalizeQuestionFields(input)
+    const questions = this.s.questions.map((q) => (q.id === id ? { id, ...fields } : q))
+    return new Party(this.id, { ...this.s, questions, updatedAt: now ?? new Date().toISOString() })
+  }
+
+  removeQuestion(id: string, now?: string): Party {
+    const questions = this.s.questions.filter((q) => q.id !== id)
+    return new Party(this.id, { ...this.s, questions, updatedAt: now ?? new Date().toISOString() })
   }
 
   toSnapshot(): PartySnapshot {
