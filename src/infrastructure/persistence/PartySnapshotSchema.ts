@@ -22,6 +22,7 @@ const QuestionSchema = z.object({
 const ChildSchema = z.object({
   id: z.string(),
   name: z.string(),
+  isSibling: z.boolean().default(false),
   answers: AnswerMapSchema,
 })
 
@@ -40,6 +41,8 @@ const EventDetailsSchema = z.object({
   endsAt: z.string().nullable().default(null),
   requirements: z.string().default(''),
   allDay: z.boolean().default(false),
+  lat: z.number().nullable().default(null),
+  lng: z.number().nullable().default(null),
 })
 
 /**

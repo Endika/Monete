@@ -7,6 +7,8 @@ export const CreatePartySchema = z.object({
   endsAt: z.string().datetime().nullable().default(null),
   requirements: z.string().trim().max(1000).default(''),
   allDay: z.boolean().default(false),
+  lat: z.number().nullable().optional().default(null),
+  lng: z.number().nullable().optional().default(null),
 })
 
-export type CreatePartyInput = z.infer<typeof CreatePartySchema>
+export type CreatePartyInput = z.input<typeof CreatePartySchema>

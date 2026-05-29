@@ -7,5 +7,7 @@ export const EditPartyDetailsSchema = z.object({
   endsAt: z.string().datetime().nullable().default(null),
   requirements: z.string().trim().max(1000).default(''),
   allDay: z.boolean().default(false),
+  lat: z.number().nullable().optional().default(null),
+  lng: z.number().nullable().optional().default(null),
 })
-export type EditPartyDetailsInput = z.infer<typeof EditPartyDetailsSchema>
+export type EditPartyDetailsInput = z.input<typeof EditPartyDetailsSchema>

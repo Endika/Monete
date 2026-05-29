@@ -6,7 +6,13 @@ export const UpdateRsvpSchema = z.object({
   parentsLabel: z.string().trim().min(1).max(120),
   familyAnswers: AnswerMap,
   children: z
-    .array(z.object({ name: z.string().trim().min(1).max(60), answers: AnswerMap }))
+    .array(
+      z.object({
+        name: z.string().trim().min(1).max(60),
+        answers: AnswerMap,
+        isSibling: z.boolean().optional().default(false),
+      }),
+    )
     .min(1),
 })
-export type UpdateRsvpInput = z.infer<typeof UpdateRsvpSchema>
+export type UpdateRsvpInput = z.input<typeof UpdateRsvpSchema>

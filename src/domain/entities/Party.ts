@@ -32,6 +32,7 @@ export type AnswerMap = Record<string, AnswerValue>
 export interface Child {
   id: string
   name: string
+  isSibling: boolean
   answers: AnswerMap // answers to scope === 'child' questions, keyed by question id
 }
 
@@ -50,6 +51,8 @@ export interface EventDetails {
   endsAt: string | null
   requirements: string
   allDay: boolean
+  lat: number | null
+  lng: number | null
 }
 
 export interface PartySnapshot {
@@ -69,6 +72,8 @@ export interface CreatePartyInput {
   endsAt: string | null
   requirements: string
   allDay?: boolean
+  lat?: number | null
+  lng?: number | null
   id?: PartyId
   now?: string
 }
@@ -80,6 +85,8 @@ function normalizeDetails(input: {
   endsAt: string | null
   requirements: string
   allDay?: boolean
+  lat?: number | null
+  lng?: number | null
 }): EventDetails {
   const title = input.title.trim()
   if (title.length < 1 || title.length > 100) throw new Error('Party: title must be 1..100 chars')
@@ -90,6 +97,8 @@ function normalizeDetails(input: {
     endsAt: input.endsAt,
     requirements: input.requirements.trim(),
     allDay: input.allDay ?? false,
+    lat: input.lat ?? null,
+    lng: input.lng ?? null,
   }
 }
 
@@ -117,7 +126,12 @@ export class Party {
   static restore(s: PartySnapshot): Party {
     const backfilled: PartySnapshot = {
       ...s,
-      event: { ...s.event, allDay: s.event.allDay ?? false },
+      event: {
+        ...s.event,
+        allDay: s.event.allDay ?? false,
+        lat: s.event.lat ?? null,
+        lng: s.event.lng ?? null,
+      },
       questions: (s.questions ?? []).map((q) => ({
         ...q,
         options: q.options ?? [],
@@ -126,7 +140,11 @@ export class Party {
       rsvps: (s.rsvps ?? []).map((r) => ({
         ...r,
         familyAnswers: r.familyAnswers ?? {},
-        children: (r.children ?? []).map((c) => ({ ...c, answers: c.answers ?? {} })),
+        children: (r.children ?? []).map((c) => ({
+          ...c,
+          answers: c.answers ?? {},
+          isSibling: c.isSibling ?? false,
+        })),
       })),
       editPin: s.editPin ?? null,
     }
@@ -140,6 +158,8 @@ export class Party {
     endsAt: string | null
     requirements: string
     allDay?: boolean
+    lat?: number | null
+    lng?: number | null
     now?: string
   }): Party {
     const event = normalizeDetails(input)
@@ -205,20 +225,22 @@ export class Party {
     }
   }
 
-  private buildChildren(children: { name: string; answers: AnswerMap }[]): Child[] {
+  private buildChildren(
+    children: { name: string; answers: AnswerMap; isSibling?: boolean }[],
+  ): Child[] {
     const childQuestions = this.s.questions.filter((q) => q.scope === 'child')
     return children.map((c) => {
       const name = c.name.trim()
       if (name.length < 1) throw new Error('Rsvp: each child needs a name')
       this.validateAnswers(childQuestions, c.answers, name)
-      return { id: uuidv7(), name, answers: { ...c.answers } }
+      return { id: uuidv7(), name, isSibling: c.isSibling ?? false, answers: { ...c.answers } }
     })
   }
 
   buildRsvp(input: {
     parentsLabel: string
     familyAnswers: AnswerMap
-    children: { name: string; answers: AnswerMap }[]
+    children: { name: string; answers: AnswerMap; isSibling?: boolean }[]
     now?: string
   }): Rsvp {
     const parentsLabel = input.parentsLabel.trim()
@@ -243,7 +265,7 @@ export class Party {
     input: {
       parentsLabel: string
       familyAnswers: AnswerMap
-      children: { name: string; answers: AnswerMap }[]
+      children: { name: string; answers: AnswerMap; isSibling?: boolean }[]
     },
     now?: string,
   ): Party {
