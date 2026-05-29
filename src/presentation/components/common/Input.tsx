@@ -8,11 +8,15 @@ export function Input({
 }: { label?: string } & InputHTMLAttributes<HTMLInputElement>) {
   const inputId = id ?? (label ? label.toLowerCase().replace(/\s+/g, '-') : undefined)
   return (
-    <label className="flex flex-col gap-1">
-      {label && <span className="text-sm font-medium text-gray-700">{label}</span>}
+    <label className="flex flex-col gap-1.5">
+      {label && (
+        <span className="text-sm font-semibold font-display text-cocoa/80 tracking-wide">
+          {label}
+        </span>
+      )}
       <input
         id={inputId}
-        className={`w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 ${className}`}
+        className={`w-full rounded-2xl border-2 border-cocoa/15 bg-white px-4 py-2.5 text-sm text-cocoa placeholder:text-cocoa/40 transition-all duration-150 focus:border-raspberry focus:outline-none focus:ring-2 focus:ring-raspberry/25 ${className}`}
         {...rest}
       />
     </label>

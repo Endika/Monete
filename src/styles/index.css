@@ -1,7 +1,20 @@
 @import 'tailwindcss';
 
+@theme {
+  --color-cream: #fff7ee;
+  --color-cocoa: #3b2a22;
+  --color-raspberry: #ff4d79;
+  --color-banana: #ffc53d;
+  --color-mint: #34d399;
+  --color-sky: #56a8ff;
+  --color-grape: #a66cff;
+
+  --font-display: 'Baloo 2', ui-rounded, system-ui, sans-serif;
+  --font-body: 'Nunito', ui-rounded, system-ui, sans-serif;
+}
+
 :root {
-  color-scheme: dark;
+  color-scheme: light;
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 
@@ -13,8 +26,26 @@ body {
 }
 
 body {
-  background-color: #020617; /* slate-950 */
-  color: #f1f5f9; /* slate-100 */
+  background-color: #fff7ee; /* cream */
+  color: #3b2a22; /* cocoa */
+  font-family: var(--font-body);
+
+  /* Subtle confetti dot texture layered on the cream */
+  background-image:
+    radial-gradient(circle, #ff4d7922 1.5px, transparent 1.5px),
+    radial-gradient(circle, #ffc53d1a 1.5px, transparent 1.5px),
+    radial-gradient(circle, #34d3991a 1.5px, transparent 1.5px),
+    radial-gradient(circle, #56a8ff18 1.5px, transparent 1.5px);
+  background-size:
+    40px 40px,
+    60px 60px,
+    55px 55px,
+    70px 70px;
+  background-position:
+    0 0,
+    20px 30px,
+    10px 10px,
+    35px 5px;
 }
 
 @supports (padding: env(safe-area-inset-top)) {
@@ -22,4 +53,96 @@ body {
     padding-top: env(safe-area-inset-top);
     padding-bottom: env(safe-area-inset-bottom);
   }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+}
+
+/* Floating confetti specks */
+@keyframes float-a {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateY(-14px) rotate(18deg);
+    opacity: 0.8;
+  }
+}
+@keyframes float-b {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateY(-10px) rotate(-12deg);
+    opacity: 0.7;
+  }
+}
+@keyframes float-c {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translateY(-18px) rotate(22deg);
+    opacity: 0.75;
+  }
+}
+
+.confetti-speck {
+  position: fixed;
+  pointer-events: none;
+  border-radius: 2px;
+  z-index: 0;
+}
+.confetti-speck-a {
+  width: 8px;
+  height: 8px;
+  background-color: #ff4d79;
+  top: 12%;
+  left: 6%;
+  animation: float-a 4.2s ease-in-out infinite;
+}
+.confetti-speck-b {
+  width: 6px;
+  height: 10px;
+  background-color: #ffc53d;
+  top: 22%;
+  right: 8%;
+  animation: float-b 5.1s ease-in-out infinite;
+}
+.confetti-speck-c {
+  width: 10px;
+  height: 6px;
+  background-color: #34d399;
+  top: 65%;
+  left: 4%;
+  animation: float-c 4.7s ease-in-out infinite;
+}
+.confetti-speck-d {
+  width: 7px;
+  height: 7px;
+  background-color: #a66cff;
+  top: 75%;
+  right: 5%;
+  border-radius: 50%;
+  animation: float-a 6s ease-in-out infinite reverse;
+}
+.confetti-speck-e {
+  width: 5px;
+  height: 9px;
+  background-color: #56a8ff;
+  top: 40%;
+  right: 3%;
+  animation: float-b 3.8s ease-in-out infinite;
 }
