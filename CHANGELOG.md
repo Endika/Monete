@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/Endika/Monete/compare/v1.6.1...v1.7.0) (2026-05-29)
+
+
+### Features
+
+* **i18n:** inclusive child/adult/guest wording (es/gl/ca/va) ([5041b18](https://github.com/Endika/Monete/commit/5041b18c18115a56d8b7572b67926f9f68fa77bf))
+
 ## [1.6.1](https://github.com/Endika/Monete/compare/v1.6.0...v1.6.1) (2026-05-29)
 
 
