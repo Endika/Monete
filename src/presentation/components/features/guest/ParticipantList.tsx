@@ -51,11 +51,11 @@ export function ParticipantList({
                     {t('guest.notUs')}
                   </Button>
                 </div>
-              ) : (
+              ) : !yourRsvpId ? (
                 <Button variant="ghost" onClick={() => onClaim(rsvp.id)}>
                   {t('guest.thisIsUs')}
                 </Button>
-              )}
+              ) : null}
             </div>
 
             {/* Family-level answers */}
