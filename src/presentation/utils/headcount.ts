@@ -5,10 +5,13 @@ export interface ChildRow {
   parentsLabel: string
   snack: string | null
   allergies: string | null
+  isSibling: boolean
 }
 
 export interface Headcount {
   totalChildren: number
+  totalInvited: number
+  totalSiblings: number
   totalAdults: number
   children: ChildRow[]
 }
@@ -39,8 +42,11 @@ export function computeHeadcount(party: PartySnapshot): Headcount {
             ? String(c.answers[allergiesQ.id])
             : null
           : null,
+        isSibling: c.isSibling ?? false,
       })
     }
   }
-  return { totalChildren: children.length, totalAdults, children }
+  const totalInvited = children.filter((c) => !c.isSibling).length
+  const totalSiblings = children.filter((c) => c.isSibling).length
+  return { totalChildren: children.length, totalInvited, totalSiblings, totalAdults, children }
 }
