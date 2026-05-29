@@ -11,6 +11,7 @@ import { ParticipantList } from './ParticipantList'
 import { MonkeyMascot } from '@/presentation/components/common/MonkeyMascot'
 import { Button } from '@/presentation/components/common/Button'
 import { googleMapsUrl } from '@/shared/utils/googleMapsUrl'
+import { MapEmbed } from '@/presentation/components/features/event/MapEmbed'
 import { RecentsStore } from '@/infrastructure/persistence/RecentsStore'
 import type { AnswerMap } from '@/domain/entities/Party'
 
@@ -156,6 +157,11 @@ export function GuestPage({ partyId }: GuestPageProps) {
               {snapshot.event.requirements}
             </div>
           )}
+          <MapEmbed
+            address={snapshot.event.address}
+            lat={snapshot.event.lat}
+            lng={snapshot.event.lng}
+          />
           <div className="pt-1">
             <AddToCalendarButton event={calendarEvent} />
           </div>
