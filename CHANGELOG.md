@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/Endika/Monete/compare/v1.5.2...v1.6.0) (2026-05-29)
+
+
+### Features
+
+* **i18n:** inclusive 'we are the family of' label ([48deca5](https://github.com/Endika/Monete/commit/48deca50386d9b76f9b75ab55bd50e3b0394db49))
+
 ## [1.5.2](https://github.com/Endika/Monete/compare/v1.5.1...v1.5.2) (2026-05-29)
 
 
