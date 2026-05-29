@@ -127,6 +127,27 @@ export class Party {
     return new Party(PartyId.of(s.id), backfilled)
   }
 
+  editDetails(input: {
+    title: string
+    address: string
+    startsAt: string
+    endsAt: string | null
+    requirements: string
+    now?: string
+  }): Party {
+    const event = normalizeDetails(input)
+    const now = input.now ?? new Date().toISOString()
+    return new Party(this.id, { ...this.s, event, updatedAt: now })
+  }
+
+  setEditPin(hash: string | null, now?: string): Party {
+    return new Party(this.id, {
+      ...this.s,
+      editPin: hash,
+      updatedAt: now ?? new Date().toISOString(),
+    })
+  }
+
   toSnapshot(): PartySnapshot {
     return structuredClone(this.s)
   }
