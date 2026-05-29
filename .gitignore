@@ -19,3 +19,6 @@ pnpm-debug.log*
 Thumbs.db
 
 *.local
+
+# Internal planning notes (specs/plans) live outside the repo (../Monete-notes)
+docs/superpowers/
