@@ -24,6 +24,9 @@
     "typeDate": "Date",
     "optionsLabel": "Options",
     "requiredLabel": "Required",
+    "questionLabel": "Label",
+    "questionType": "Type",
+    "questionScope": "Scope",
     "setPin": "Set edit PIN",
     "headcount": "Headcount",
     "shareVenue": "Share venue list"
