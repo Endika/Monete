@@ -23,6 +23,9 @@ export function formatVenueSummary(details: VenueSummaryDetails, hc: Headcount, 
       adults: hc.totalAdults,
     }),
   )
+  for (const { label, total } of hc.extraTotals) {
+    lines.push(`${label}: ${total}`)
+  }
   for (const c of hc.children) {
     const parts = [c.name]
     if (c.snack) parts.push(t('venue.snack', { snack: c.snack }))

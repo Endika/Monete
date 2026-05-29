@@ -14,6 +14,7 @@ export interface Headcount {
   totalSiblings: number
   totalAdults: number
   children: ChildRow[]
+  extraTotals: { label: string; total: number }[]
 }
 
 function findByKind(questions: Question[], kind: Question['kind']): Question | undefined {
@@ -48,5 +49,23 @@ export function computeHeadcount(party: PartySnapshot): Headcount {
   }
   const totalInvited = children.filter((c) => !c.isSibling).length
   const totalSiblings = children.filter((c) => c.isSibling).length
-  return { totalChildren: children.length, totalInvited, totalSiblings, totalAdults, children }
+
+  const extraTotals = party.questions
+    .filter((q) => q.scope === 'family' && q.type === 'number' && q.kind !== 'adultsCount')
+    .map((q) => ({
+      label: q.label,
+      total: party.rsvps.reduce((sum, r) => {
+        const v = r.familyAnswers[q.id]
+        return sum + (typeof v === 'number' ? v : Number(v) || 0)
+      }, 0),
+    }))
+
+  return {
+    totalChildren: children.length,
+    totalInvited,
+    totalSiblings,
+    totalAdults,
+    children,
+    extraTotals,
+  }
 }

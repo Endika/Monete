@@ -16,6 +16,7 @@ describe('formatVenueSummary', () => {
         { name: 'Leo', parentsLabel: 'Fam A', snack: 'Pizza', allergies: 'Nuts', isSibling: false },
         { name: 'Mia', parentsLabel: 'Fam B', snack: 'Hot dog', allergies: null, isSibling: true },
       ],
+      extraTotals: [],
     }
     const text = formatVenueSummary(
       {

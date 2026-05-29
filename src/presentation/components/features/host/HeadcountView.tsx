@@ -60,6 +60,20 @@ export function HeadcountView({
         })}
       </p>
 
+      {/* Extra numeric family question totals */}
+      {hc.extraTotals.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {hc.extraTotals.map(({ label, total }) => (
+            <span
+              key={label}
+              className="rounded-full bg-mint/25 border border-mint/50 px-3 py-1 text-sm font-semibold text-cocoa"
+            >
+              {label}: {total}
+            </span>
+          ))}
+        </div>
+      )}
+
       {/* Per-child rows */}
       {hc.children.length > 0 && (
         <ul className="flex flex-col gap-2">
