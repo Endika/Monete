@@ -14,6 +14,12 @@ interface RsvpFormProps {
     familyAnswers: AnswerMap
     children: { name: string; answers: AnswerMap }[]
   }) => void
+  initial?: {
+    parentsLabel: string
+    familyAnswers: AnswerMap
+    children: { name: string; answers: AnswerMap }[]
+  }
+  submitLabel?: string
 }
 
 interface ChildEntry {
@@ -22,15 +28,19 @@ interface ChildEntry {
   answers: AnswerMap
 }
 
-export function RsvpForm({ snapshot, onSubmit }: RsvpFormProps) {
+export function RsvpForm({ snapshot, onSubmit, initial, submitLabel }: RsvpFormProps) {
   const { t } = useTranslation()
 
   const familyQuestions = snapshot.questions.filter((q) => q.scope === 'family')
   const childQuestions = snapshot.questions.filter((q) => q.scope === 'child')
 
-  const [parentsLabel, setParentsLabel] = useState('')
-  const [familyAnswers, setFamilyAnswers] = useState<AnswerMap>({})
-  const [children, setChildren] = useState<ChildEntry[]>([{ id: uuidv7(), name: '', answers: {} }])
+  const [parentsLabel, setParentsLabel] = useState(initial?.parentsLabel ?? '')
+  const [familyAnswers, setFamilyAnswers] = useState<AnswerMap>(initial?.familyAnswers ?? {})
+  const [children, setChildren] = useState<ChildEntry[]>(
+    initial?.children?.length
+      ? initial.children.map((c) => ({ id: uuidv7(), name: c.name, answers: c.answers }))
+      : [{ id: uuidv7(), name: '', answers: {} }],
+  )
 
   function updateChild(id: string, value: { name: string; answers: AnswerMap }) {
     setChildren((prev) => prev.map((c) => (c.id === id ? { ...c, ...value } : c)))
@@ -89,7 +99,7 @@ export function RsvpForm({ snapshot, onSubmit }: RsvpFormProps) {
         {t('guest.addChild')}
       </Button>
 
-      <Button type="submit">{t('guest.submit')}</Button>
+      <Button type="submit">{submitLabel ?? t('guest.submit')}</Button>
     </form>
   )
 }
