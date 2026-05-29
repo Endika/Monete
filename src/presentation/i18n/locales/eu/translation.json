@@ -2,9 +2,10 @@
   "home": {
     "title": "Monete",
     "subtitle": "Baiezta haurren urtebetetze-festara joatea",
-    "createCta": "Festa bat sortu",
+    "createCta": "Sortu zure festa!",
     "titleLabel": "Festaren izenburua",
     "addressLabel": "Helbidea",
+    "addressPlaceholder": "Bilatu helbidea…",
     "startsAtLabel": "Data eta ordua",
     "endsAtLabel": "Amaiera-ordua (aukerakoa)",
     "requirementsLabel": "Baldintzak / oharrak",
@@ -51,11 +52,11 @@
     "adultsWord": "helduak"
   },
   "guest": {
-    "weAreParentsOf": "Hauen gurasoak gara…",
+    "weAreParentsOf": "Hauen gurasoak gara…!",
     "addChild": "Haur bat gehitu",
     "childName": "Haurraren izena",
     "submit": "Berrespena bidali",
-    "thanks": "Eskerrik asko! Zure berrespena bidali da.",
+    "thanks": "Eskerrik asko! Zure berrespena bidali da!",
     "addToCalendar": "Egutegian gehitu",
     "whosGoing": "Nor joango da",
     "yourResponse": "Zure erantzuna",
@@ -63,10 +64,15 @@
     "editResponse": "Erantzuna editatu",
     "addFamily": "Beste familia bat gehitu",
     "yoursHint": "zurea",
-    "child": "Haurra"
+    "child": "Haurra",
+    "whichFamily": "Familia hauetako bat zarete?",
+    "thisIsUs": "Gu gara",
+    "notListed": "Ez nago zerrendan — apuntatu",
+    "sibling": "Anai-arreba"
   },
   "venue": {
     "totals": "Haurrak ({{children}}) · Helduak ({{adults}})",
+    "breakdown": "Haurrak: {{children}} ({{invited}} gonbidatuta · {{siblings}} anai-arreba) · Helduak: {{adults}}",
     "snack": "askaria: {{snack}}",
     "allergies": "alergiak: {{allergies}}"
   },
@@ -83,7 +89,8 @@
     "pinSaved": "PINa gordeta",
     "delete": "Ezabatu",
     "confirmDelete": "Erantzun hau ezabatu?",
-    "viewOnMaps": "Google Maps-en ikusi"
+    "viewOnMaps": "Google Maps-en ikusi",
+    "back": "Itzuli"
   },
   "standard": {
     "adultsCount": "Zenbat heldu etorriko dira?",

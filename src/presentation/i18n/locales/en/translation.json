@@ -5,6 +5,7 @@
     "createCta": "Create a party",
     "titleLabel": "Party title",
     "addressLabel": "Address",
+    "addressPlaceholder": "Search address…",
     "startsAtLabel": "Date & time",
     "endsAtLabel": "End time (optional)",
     "requirementsLabel": "Requirements / notes",
@@ -63,10 +64,15 @@
     "editResponse": "Edit response",
     "addFamily": "Add another family",
     "yoursHint": "yours",
-    "child": "Child"
+    "child": "Child",
+    "whichFamily": "Are you one of these families?",
+    "thisIsUs": "This is us",
+    "notListed": "I'm not on the list — register",
+    "sibling": "Sibling"
   },
   "venue": {
     "totals": "Children ({{children}}) · Adults ({{adults}})",
+    "breakdown": "Children: {{children}} ({{invited}} invited · {{siblings}} siblings) · Adults: {{adults}}",
     "snack": "snack: {{snack}}",
     "allergies": "allergies: {{allergies}}"
   },
@@ -83,7 +89,8 @@
     "pinSaved": "PIN saved",
     "delete": "Delete",
     "confirmDelete": "Delete this response?",
-    "viewOnMaps": "View on Google Maps"
+    "viewOnMaps": "View on Google Maps",
+    "back": "Back"
   },
   "standard": {
     "adultsCount": "How many adults are coming?",

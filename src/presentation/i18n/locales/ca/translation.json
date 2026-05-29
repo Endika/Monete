@@ -2,9 +2,10 @@
   "home": {
     "title": "Monete",
     "subtitle": "Confirma l'assistència a aniversaris infantils",
-    "createCta": "Crear una festa",
+    "createCta": "Crea la teva festa!",
     "titleLabel": "Títol de la festa",
     "addressLabel": "Adreça",
+    "addressPlaceholder": "Cerca l'adreça…",
     "startsAtLabel": "Data i hora",
     "endsAtLabel": "Hora de fi (opcional)",
     "requirementsLabel": "Requisits / notes",
@@ -51,11 +52,11 @@
     "adultsWord": "adults"
   },
   "guest": {
-    "weAreParentsOf": "Som els pares de…",
+    "weAreParentsOf": "Som els pares de…!",
     "addChild": "Afegir un nen",
     "childName": "Nom del nen",
     "submit": "Enviar confirmació",
-    "thanks": "Gràcies! La teva confirmació ha estat enviada.",
+    "thanks": "Gràcies! La teva confirmació ha estat enviada!",
     "addToCalendar": "Afegir al calendari",
     "whosGoing": "Qui hi va",
     "yourResponse": "La teva resposta",
@@ -63,10 +64,15 @@
     "editResponse": "Editar resposta",
     "addFamily": "Apuntar una altra família",
     "yoursHint": "la teva",
-    "child": "Nen"
+    "child": "Nen",
+    "whichFamily": "Sou d'alguna d'aquestes famílies?",
+    "thisIsUs": "Som nosaltres",
+    "notListed": "No sóc a la llista — apuntar-me",
+    "sibling": "Germà/ana"
   },
   "venue": {
     "totals": "Nens ({{children}}) · Adults ({{adults}})",
+    "breakdown": "Nens: {{children}} ({{invited}} convidats · {{siblings}} germans) · Adults: {{adults}}",
     "snack": "berenar: {{snack}}",
     "allergies": "al·lèrgies: {{allergies}}"
   },
@@ -83,7 +89,8 @@
     "pinSaved": "PIN desat",
     "delete": "Eliminar",
     "confirmDelete": "Eliminar aquesta resposta?",
-    "viewOnMaps": "Veure a Google Maps"
+    "viewOnMaps": "Veure a Google Maps",
+    "back": "Tornar"
   },
   "standard": {
     "adultsCount": "Quants adults vindran?",

@@ -5,6 +5,7 @@
     "createCta": "¡Crea tu fiesta!",
     "titleLabel": "Título de la fiesta",
     "addressLabel": "Dirección",
+    "addressPlaceholder": "Busca la dirección…",
     "startsAtLabel": "Fecha y hora",
     "endsAtLabel": "Hora de fin (opcional)",
     "requirementsLabel": "Requisitos / notas",
@@ -63,10 +64,15 @@
     "editResponse": "Editar respuesta",
     "addFamily": "Apuntar otra familia",
     "yoursHint": "la tuya",
-    "child": "Peque"
+    "child": "Peque",
+    "whichFamily": "¿Sois una de estas familias?",
+    "thisIsUs": "Somos nosotros",
+    "notListed": "No estoy en la lista — apuntarme",
+    "sibling": "Hermano/a"
   },
   "venue": {
     "totals": "Niños ({{children}}) · Adultos ({{adults}})",
+    "breakdown": "Niños: {{children}} ({{invited}} invitados · {{siblings}} hermanos) · Adultos: {{adults}}",
     "snack": "merienda: {{snack}}",
     "allergies": "alergias: {{allergies}}"
   },
@@ -83,7 +89,8 @@
     "pinSaved": "PIN guardado",
     "delete": "Eliminar",
     "confirmDelete": "¿Eliminar esta respuesta?",
-    "viewOnMaps": "Ver en Google Maps"
+    "viewOnMaps": "Ver en Google Maps",
+    "back": "Volver"
   },
   "standard": {
     "adultsCount": "¿Cuántos adultos vienen?",
