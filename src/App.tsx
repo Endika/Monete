@@ -29,7 +29,7 @@ export default function App() {
   }, [])
 
   const goToParty = (id: string) => {
-    window.history.pushState({}, '', `/?party=${id}&host=1`)
+    window.history.pushState({}, '', `${import.meta.env.BASE_URL}?party=${id}&host=1`)
     setRoute(readRoute())
   }
 

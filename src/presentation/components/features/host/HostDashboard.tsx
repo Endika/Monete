@@ -115,7 +115,7 @@ export function HostDashboard({ partyId }: HostDashboardProps) {
   }
 
   const handleShareGuestLink = () => {
-    const url = `${window.location.origin}/?party=${partyId}`
+    const url = `${window.location.origin}${import.meta.env.BASE_URL}?party=${partyId}`
     window.open(whatsAppShareUrl(url), '_blank')
   }
 
