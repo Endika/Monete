@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/Endika/Monete/compare/v1.3.0...v1.4.0) (2026-05-29)
+
+
+### Features
+
+* **map:** embedded google map with keyless fallback ([a18f631](https://github.com/Endika/Monete/commit/a18f6316951af9f3827c64b93ddf9c5b3cf99de8))
+
 ## [1.3.0](https://github.com/Endika/Monete/compare/v1.2.0...v1.3.0) (2026-05-29)
 
 
