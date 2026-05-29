@@ -1,5 +1,34 @@
 # Changelog
 
+## [1.1.0](https://github.com/Endika/Monete/compare/v1.0.1...v1.1.0) (2026-05-29)
+
+
+### Features
+
+* **application:** rsvp edit/remove handlers + allDay dtos ([7922e2a](https://github.com/Endika/Monete/commit/7922e2acb3de225ec86aa5939c966dd832403182))
+* **calendar:** two reliable add-to-calendar options ([9dbe924](https://github.com/Endika/Monete/commit/9dbe924fdf228c33142714c3d49b472318d2b7fe))
+* **db:** party_sizes monitoring view migration ([4762eea](https://github.com/Endika/Monete/commit/4762eeab2b59c1d1c1ef111f465757f0fed38bff))
+* **domain:** add allDay to event details, bump schema to 2 ([afef3a2](https://github.com/Endika/Monete/commit/afef3a2b49f3bf7765e80cd7d7556a40b90a436e))
+* **domain:** update and remove rsvp by id ([df05f87](https://github.com/Endika/Monete/commit/df05f8746e6c3875d6b0ebbd46a99177d5b21dc0))
+* **guest:** participant list, open edit, add another family ([f4c0add](https://github.com/Endika/Monete/commit/f4c0add291c18b03c4256ef9d8cd832dc2d0e9c0))
+* **home:** my-parties dashboard (organizing/attending) ([c7e1ff9](https://github.com/Endika/Monete/commit/c7e1ff954e9b09ee6a581954adfaa4325f9c1c14))
+* **host:** add/edit/delete participant responses ([e3eb903](https://github.com/Endika/Monete/commit/e3eb9030169c7bb087bb02a125ae8bba04665c35))
+* **i18n:** keys for my-parties, edit, calendar, maps ([a75d4de](https://github.com/Endika/Monete/commit/a75d4de180567e3006137023eafff5620b5dbac3))
+* **i18n:** language switcher with flag icons ([9409230](https://github.com/Endika/Monete/commit/9409230b0876b6e58f0dac3d6dde19d8d3f13d6d))
+* **persistence:** device-local recents store ([2a5e591](https://github.com/Endika/Monete/commit/2a5e59178481b0a3e1ad94c2f1648552d4073f4b))
+* **persistence:** rsvp edit/remove migration and repo test ([a5581c8](https://github.com/Endika/Monete/commit/a5581c8a368769c449e64395169b4b13f05ffd6e))
+* **persistence:** update/remove rsvp on repository ([991f3e3](https://github.com/Endika/Monete/commit/991f3e3a73ec2c00f4527d27481b4988330f5836))
+* **ui:** date-first time fields and maps address link ([1eab6c7](https://github.com/Endika/Monete/commit/1eab6c765cc98a878e5f9c21bc1f03a1c6ba95bc))
+* **util:** all-day calendar (.ics and google) ([412a8f6](https://github.com/Endika/Monete/commit/412a8f6cf1378c960709b7f7fce81e6db8cf1889))
+* **util:** event date/time compose and split ([fa7f1d5](https://github.com/Endika/Monete/commit/fa7f1d55c53078b6ac56b834d6ee292bd2997a2d))
+* **util:** google maps search url ([541b2d4](https://github.com/Endika/Monete/commit/541b2d4b991f05e04a33c5a4ca1c911986d32f0a))
+
+
+### Bug Fixes
+
+* **util:** store event times as utc iso for dto validity ([6eafdfb](https://github.com/Endika/Monete/commit/6eafdfb8b285bbbbb237b47c9aec4883fe33c0f4))
+* **v1.1:** forward allDay, reseed edit form, i18n hardcoded labels ([3769a70](https://github.com/Endika/Monete/commit/3769a70b8bb586888a0bbbdb71d1aa56cc8a2916))
+
 ## [1.0.1](https://github.com/Endika/Monete/compare/v1.0.0...v1.0.1) (2026-05-29)
 
 
