@@ -78,10 +78,12 @@ export function PartyDetailsForm({ initial, onSave }: PartyDetailsFormProps) {
         value={endsAt}
         onChange={(e) => setEndsAt(e.target.value)}
       />
-      <label className="flex flex-col gap-1">
-        <span className="text-sm font-medium text-gray-700">{t('home.requirementsLabel')}</span>
+      <label className="flex flex-col gap-1.5">
+        <span className="text-sm font-semibold font-display text-cocoa/80 tracking-wide">
+          {t('home.requirementsLabel')}
+        </span>
         <textarea
-          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+          className="w-full rounded-2xl border-2 border-cocoa/15 bg-white px-4 py-2.5 text-sm text-cocoa placeholder:text-cocoa/40 transition-all duration-150 focus:border-raspberry focus:outline-none focus:ring-2 focus:ring-raspberry/25"
           value={requirements}
           onChange={(e) => setRequirements(e.target.value)}
           rows={3}

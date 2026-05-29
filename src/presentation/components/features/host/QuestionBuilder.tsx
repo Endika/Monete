@@ -27,6 +27,15 @@ const DEFAULT_FORM: FormState = {
   required: false,
 }
 
+// Rotating accent colours for preset chips
+const PRESET_CHIP_COLORS = [
+  'bg-banana/20 text-cocoa border border-banana hover:bg-banana/40',
+  'bg-mint/20 text-cocoa border border-mint hover:bg-mint/40',
+  'bg-sky/20 text-cocoa border border-sky hover:bg-sky/40',
+  'bg-grape/20 text-cocoa border border-grape hover:bg-grape/40',
+  'bg-raspberry/15 text-cocoa border border-raspberry hover:bg-raspberry/30',
+]
+
 export function QuestionBuilder({ questions, onUpsert, onRemove }: QuestionBuilderProps) {
   const { t } = useTranslation()
   const [showForm, setShowForm] = useState(false)
@@ -94,16 +103,19 @@ export function QuestionBuilder({ questions, onUpsert, onRemove }: QuestionBuild
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-5">
+      {/* Standard question preset chips */}
       {availablePresets.length > 0 && (
         <div className="flex flex-col gap-2">
-          <span className="text-sm font-medium text-gray-700">{t('host.standardQuestions')}</span>
+          <span className="text-sm font-semibold font-display text-cocoa/80">
+            {t('host.standardQuestions')}
+          </span>
           <div className="flex flex-wrap gap-2">
-            {availablePresets.map((preset) => (
+            {availablePresets.map((preset, idx) => (
               <button
                 key={preset.kind}
                 type="button"
-                className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm hover:bg-gray-50"
+                className={`rounded-full px-4 py-1.5 text-sm font-semibold font-display transition-all duration-150 cursor-pointer ${PRESET_CHIP_COLORS[idx % PRESET_CHIP_COLORS.length]}`}
                 onClick={() => handlePreset(preset)}
               >
                 {t(preset.labelKey)}
@@ -113,18 +125,19 @@ export function QuestionBuilder({ questions, onUpsert, onRemove }: QuestionBuild
         </div>
       )}
 
+      {/* Existing questions list */}
       {questions.length > 0 && (
         <ul className="flex flex-col gap-2">
           {questions.map((q) => (
             <li
               key={q.id}
-              className="flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-2"
+              className="flex items-center gap-2 rounded-2xl bg-cream border border-cocoa/10 px-4 py-3"
             >
-              <span className="flex-1 text-sm">{q.label}</span>
-              <span className="rounded bg-gray-100 px-2 py-0.5 text-xs text-gray-600">
+              <span className="flex-1 text-sm font-body text-cocoa font-medium">{q.label}</span>
+              <span className="rounded-full bg-grape/15 px-2.5 py-0.5 text-xs font-semibold text-grape">
                 {q.scope === 'family' ? t('host.scopeFamily') : t('host.scopeChild')}
               </span>
-              <span className="rounded bg-gray-100 px-2 py-0.5 text-xs text-gray-600">
+              <span className="rounded-full bg-sky/15 px-2.5 py-0.5 text-xs font-semibold text-sky">
                 {q.type === 'select'
                   ? t('host.typeSelect')
                   : q.type === 'text'
@@ -135,14 +148,14 @@ export function QuestionBuilder({ questions, onUpsert, onRemove }: QuestionBuild
               </span>
               <button
                 type="button"
-                className="text-xs text-amber-600 hover:underline"
+                className="text-xs font-semibold text-banana hover:underline"
                 onClick={() => handleEdit(q)}
               >
                 {t('common.edit')}
               </button>
               <button
                 type="button"
-                className="text-xs text-red-600 hover:underline"
+                className="text-xs font-semibold text-raspberry hover:underline"
                 onClick={() => onRemove(q.id)}
               >
                 {t('common.remove')}
@@ -159,20 +172,23 @@ export function QuestionBuilder({ questions, onUpsert, onRemove }: QuestionBuild
       )}
 
       {showForm && (
-        <div className="flex flex-col gap-3 rounded-lg border border-gray-200 p-4">
+        <div className="flex flex-col gap-4 rounded-2xl border-2 border-cocoa/10 bg-cream p-5">
           <Input
             label={t('host.questionLabel')}
             value={form.label}
             onChange={(e) => setForm((f) => ({ ...f, label: e.target.value }))}
           />
 
-          <label className="flex flex-col gap-1">
-            <span className="text-sm font-medium text-gray-700">{t('host.questionType')}</span>
+          <label className="flex flex-col gap-1.5">
+            <span className="text-sm font-semibold font-display text-cocoa/80 tracking-wide">
+              {t('host.questionType')}
+            </span>
             <select
               id="question-type"
+              aria-label={t('host.questionType')}
               value={form.type}
               onChange={(e) => setForm((f) => ({ ...f, type: e.target.value as QuestionType }))}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+              className="w-full rounded-2xl border-2 border-cocoa/15 bg-white px-4 py-2.5 text-sm text-cocoa focus:border-raspberry focus:outline-none focus:ring-2 focus:ring-raspberry/25"
             >
               <option value="select">{t('host.typeSelect')}</option>
               <option value="text">{t('host.typeText')}</option>
@@ -181,13 +197,16 @@ export function QuestionBuilder({ questions, onUpsert, onRemove }: QuestionBuild
             </select>
           </label>
 
-          <label className="flex flex-col gap-1">
-            <span className="text-sm font-medium text-gray-700">{t('host.questionScope')}</span>
+          <label className="flex flex-col gap-1.5">
+            <span className="text-sm font-semibold font-display text-cocoa/80 tracking-wide">
+              {t('host.questionScope')}
+            </span>
             <select
               id="question-scope"
+              aria-label={t('host.questionScope')}
               value={form.scope}
               onChange={(e) => setForm((f) => ({ ...f, scope: e.target.value as QuestionScope }))}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+              className="w-full rounded-2xl border-2 border-cocoa/15 bg-white px-4 py-2.5 text-sm text-cocoa focus:border-raspberry focus:outline-none focus:ring-2 focus:ring-raspberry/25"
             >
               <option value="family">{t('host.scopeFamily')}</option>
               <option value="child">{t('host.scopeChild')}</option>
@@ -203,12 +222,12 @@ export function QuestionBuilder({ questions, onUpsert, onRemove }: QuestionBuild
             />
           )}
 
-          <label className="flex items-center gap-2 text-sm">
+          <label className="flex items-center gap-2 text-sm font-body text-cocoa">
             <input
               type="checkbox"
               checked={form.required}
               onChange={(e) => setForm((f) => ({ ...f, required: e.target.checked }))}
-              className="rounded border-gray-300"
+              className="rounded border-cocoa/30 accent-raspberry"
             />
             {t('host.requiredLabel')}
           </label>
@@ -217,13 +236,9 @@ export function QuestionBuilder({ questions, onUpsert, onRemove }: QuestionBuild
             <Button type="button" onClick={handleSave}>
               {t('common.save')}
             </Button>
-            <button
-              type="button"
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50"
-              onClick={handleCancel}
-            >
+            <Button type="button" variant="ghost" onClick={handleCancel}>
               {t('common.cancel')}
-            </button>
+            </Button>
           </div>
         </div>
       )}

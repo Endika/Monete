@@ -20,6 +20,30 @@ interface HostDashboardProps {
   partyId: string
 }
 
+function SectionCard({
+  children,
+  accent,
+}: {
+  children: React.ReactNode
+  accent?: 'banana' | 'mint' | 'sky' | 'grape' | 'raspberry'
+}) {
+  const borderMap: Record<string, string> = {
+    banana: 'border-l-banana',
+    mint: 'border-l-mint',
+    sky: 'border-l-sky',
+    grape: 'border-l-grape',
+    raspberry: 'border-l-raspberry',
+  }
+  const border = accent ? borderMap[accent] : ''
+  return (
+    <div
+      className={`bg-white rounded-3xl shadow-[0_4px_20px_-4px_rgba(59,42,34,0.10)] p-6 ${accent ? `border-l-4 ${border}` : ''}`}
+    >
+      {children}
+    </div>
+  )
+}
+
 export function HostDashboard({ partyId }: HostDashboardProps) {
   const { t } = useTranslation()
   const { snapshot, loading, refresh } = useParty()
@@ -28,8 +52,9 @@ export function HostDashboard({ partyId }: HostDashboardProps) {
   const [newPin, setNewPin] = useState('')
   const [pinSaved, setPinSaved] = useState(false)
 
-  if (loading) return <div>{t('common.loading')}</div>
-  if (!snapshot) return <div>Not found</div>
+  if (loading)
+    return <div className="p-8 text-center text-cocoa/60 font-body">{t('common.loading')}</div>
+  if (!snapshot) return <div className="p-8 text-center text-cocoa/60 font-body">Not found</div>
 
   const handleError = (err: unknown) => {
     if (err instanceof Error && (err as Error & { code?: string }).code === 'STALE_CLIENT') {
@@ -96,45 +121,64 @@ export function HostDashboard({ partyId }: HostDashboardProps) {
 
   return (
     <PinGate partyId={partyId} pinHash={snapshot.editPin}>
-      <div className="mx-auto max-w-lg px-4 py-10 flex flex-col gap-8">
-        <h1 className="text-2xl font-bold text-gray-900">{t('host.dashboardTitle')}</h1>
+      <div className="mx-auto max-w-lg px-4 py-10 flex flex-col gap-6">
+        <h1 className="font-display text-3xl font-extrabold text-cocoa">
+          {t('host.dashboardTitle')}
+        </h1>
 
         <ErrorBanner message={error} />
 
-        <PartyDetailsForm
-          key={snapshot.updatedAt}
-          initial={snapshot.event}
-          onSave={handleSaveDetails}
-        />
-
-        <QuestionBuilder
-          questions={snapshot.questions}
-          onUpsert={handleUpsertQuestion}
-          onRemove={handleRemoveQuestion}
-        />
-
-        <div className="flex flex-col gap-2">
-          <Input
-            label={t('host.setPin')}
-            type="password"
-            inputMode="numeric"
-            value={newPin}
-            onChange={(e) => {
-              setNewPin(e.target.value)
-              setPinSaved(false)
-            }}
+        {/* Party details */}
+        <SectionCard accent="banana">
+          <PartyDetailsForm
+            key={snapshot.updatedAt}
+            initial={snapshot.event}
+            onSave={handleSaveDetails}
           />
-          <Button type="button" onClick={handleSetPin}>
-            {t('host.setPin')}
-          </Button>
-          {pinSaved && <span>{t('common.pinSaved')}</span>}
-        </div>
+        </SectionCard>
 
-        <Button type="button" onClick={handleShareGuestLink}>
+        {/* Questions */}
+        <SectionCard accent="grape">
+          <h2 className="font-display text-lg font-bold text-cocoa mb-4">{t('host.questions')}</h2>
+          <QuestionBuilder
+            questions={snapshot.questions}
+            onUpsert={handleUpsertQuestion}
+            onRemove={handleRemoveQuestion}
+          />
+        </SectionCard>
+
+        {/* PIN */}
+        <SectionCard accent="sky">
+          <h2 className="font-display text-lg font-bold text-cocoa mb-4">{t('host.setPin')}</h2>
+          <div className="flex flex-col gap-3">
+            <Input
+              label={t('host.setPin')}
+              type="password"
+              inputMode="numeric"
+              value={newPin}
+              onChange={(e) => {
+                setNewPin(e.target.value)
+                setPinSaved(false)
+              }}
+            />
+            <Button type="button" onClick={handleSetPin}>
+              {t('host.setPin')}
+            </Button>
+            {pinSaved && (
+              <span className="text-sm font-semibold text-mint">{t('common.pinSaved')}</span>
+            )}
+          </div>
+        </SectionCard>
+
+        {/* Headcount */}
+        <SectionCard accent="mint">
+          <HeadcountView snapshot={snapshot} />
+        </SectionCard>
+
+        {/* Share */}
+        <Button type="button" onClick={handleShareGuestLink} className="w-full">
           {t('host.shareGuestLink')}
         </Button>
-
-        <HeadcountView snapshot={snapshot} />
       </div>
     </PinGate>
   )

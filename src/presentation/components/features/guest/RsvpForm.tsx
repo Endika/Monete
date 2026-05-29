@@ -54,13 +54,15 @@ export function RsvpForm({ snapshot, onSubmit }: RsvpFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+      {/* Parent identification */}
       <Input
         label={t('guest.weAreParentsOf')}
         value={parentsLabel}
         onChange={(e) => setParentsLabel(e.target.value)}
       />
 
+      {/* Family-level questions */}
       {familyQuestions.map((q) => (
         <QuestionInput
           key={q.id}
@@ -70,17 +72,20 @@ export function RsvpForm({ snapshot, onSubmit }: RsvpFormProps) {
         />
       ))}
 
-      {children.map((child, i) => (
-        <ChildAnswers
-          key={child.id}
-          childQuestions={childQuestions}
-          value={{ name: child.name, answers: child.answers }}
-          onChange={(v) => updateChild(child.id, v)}
-          onRemove={children.length > 1 ? () => removeChild(i) : undefined}
-        />
-      ))}
+      {/* Per-child sections */}
+      <div className="flex flex-col gap-3">
+        {children.map((child, i) => (
+          <ChildAnswers
+            key={child.id}
+            childQuestions={childQuestions}
+            value={{ name: child.name, answers: child.answers }}
+            onChange={(v) => updateChild(child.id, v)}
+            onRemove={children.length > 1 ? () => removeChild(i) : undefined}
+          />
+        ))}
+      </div>
 
-      <Button type="button" onClick={addChild}>
+      <Button type="button" variant="ghost" onClick={addChild}>
         {t('guest.addChild')}
       </Button>
 

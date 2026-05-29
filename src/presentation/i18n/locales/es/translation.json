@@ -1,8 +1,8 @@
 {
   "home": {
     "title": "Monete",
-    "subtitle": "Confirma asistencia a cumpleaños infantiles",
-    "createCta": "Crear una fiesta",
+    "subtitle": "Organiza el cumple y reúne a los peques sin líos 🎉",
+    "createCta": "¡Crea tu fiesta!",
     "titleLabel": "Título de la fiesta",
     "addressLabel": "Dirección",
     "startsAtLabel": "Fecha y hora",
@@ -11,11 +11,11 @@
     "submit": "Crear"
   },
   "host": {
-    "dashboardTitle": "Gestionar fiesta",
+    "dashboardTitle": "Tu fiesta ✨",
     "shareGuestLink": "Compartir enlace de invitados",
     "questions": "Preguntas",
     "addQuestion": "Añadir pregunta",
-    "standardQuestions": "Preguntas estándar",
+    "standardQuestions": "Preguntas habituales",
     "scopeFamily": "Por familia",
     "scopeChild": "Por niño",
     "typeSelect": "Opción",
@@ -27,19 +27,19 @@
     "questionLabel": "Etiqueta",
     "questionType": "Tipo",
     "questionScope": "Ámbito",
-    "setPin": "Establecer PIN de edición",
-    "headcount": "Recuento de asistentes",
+    "setPin": "PIN de edición",
+    "headcount": "¿Quién viene? 🎈",
     "shareVenue": "Compartir lista del lugar",
     "pinLabel": "PIN",
     "unlock": "Desbloquear",
     "wrongPin": "PIN incorrecto"
   },
   "guest": {
-    "weAreParentsOf": "Somos los papás de…",
-    "addChild": "Añadir un niño",
+    "weAreParentsOf": "¡Somos los papás de…!",
+    "addChild": "Añadir otro peque",
     "childName": "Nombre del niño",
-    "submit": "Enviar confirmación",
-    "thanks": "¡Gracias! Tu confirmación ha sido enviada.",
+    "submit": "Confirmar asistencia 🎉",
+    "thanks": "¡Gracias! Ya estáis apuntados 🎊",
     "addToCalendar": "Añadir al calendario"
   },
   "venue": {

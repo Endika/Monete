@@ -45,17 +45,18 @@ export function VenueSummaryModal({ snapshot, onClose }: VenueSummaryModalProps)
   return (
     <Modal open onClose={onClose}>
       <div className="flex flex-col gap-4">
+        <h2 className="font-display text-lg font-bold text-cocoa">{t('host.shareVenue')}</h2>
         <textarea
           readOnly
           value={text}
           rows={12}
-          className="w-full rounded-lg border border-gray-200 p-3 text-sm font-mono text-gray-800 resize-none focus:outline-none"
+          className="w-full rounded-2xl border-2 border-cocoa/15 bg-cream p-4 text-sm font-mono text-cocoa resize-none focus:outline-none"
         />
         <div className="flex gap-2">
           <Button type="button" onClick={handleCopy}>
             {copied ? t('common.copied') : t('common.copy')}
           </Button>
-          <Button type="button" onClick={handleShare}>
+          <Button type="button" variant="ghost" onClick={handleShare}>
             {t('common.shareWhatsApp')}
           </Button>
         </div>

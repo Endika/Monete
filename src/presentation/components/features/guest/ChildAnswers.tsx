@@ -22,14 +22,22 @@ export function ChildAnswers({ childQuestions, value, onChange, onRemove }: Chil
   }
 
   return (
-    <div className="flex flex-col gap-3 rounded-lg border border-gray-200 p-4">
-      {onRemove && (
-        <div className="flex justify-end">
-          <button type="button" className="text-xs text-red-600 hover:underline" onClick={onRemove}>
+    <div className="flex flex-col gap-3 rounded-2xl bg-cream border-2 border-cocoa/10 p-5">
+      {/* Child card header */}
+      <div className="flex items-center justify-between">
+        <span className="font-display text-sm font-bold text-cocoa/60 uppercase tracking-wider">
+          &#127881; Peque
+        </span>
+        {onRemove && (
+          <button
+            type="button"
+            className="text-xs font-semibold text-raspberry hover:underline"
+            onClick={onRemove}
+          >
             {t('common.remove')}
           </button>
-        </div>
-      )}
+        )}
+      </div>
       <Input
         label={t('guest.childName')}
         value={value.name}

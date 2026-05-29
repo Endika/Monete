@@ -15,29 +15,51 @@ export function HeadcountView({ snapshot }: HeadcountViewProps) {
   const [showSummary, setShowSummary] = useState(false)
 
   return (
-    <div className="flex flex-col gap-4">
-      <h2 className="text-lg font-semibold text-gray-900">{t('host.headcount')}</h2>
+    <div className="flex flex-col gap-5">
+      <h2 className="font-display text-lg font-bold text-cocoa">{t('host.headcount')}</h2>
 
-      <p className="text-sm text-gray-600">
-        {t('venue.totals', { children: hc.totalChildren, adults: hc.totalAdults })}
-      </p>
+      {/* Big friendly totals */}
+      <div className="flex gap-4">
+        <div className="flex-1 rounded-2xl bg-banana/20 border border-banana/40 px-4 py-3 flex flex-col items-center gap-1">
+          <span className="font-display text-4xl font-extrabold text-cocoa">
+            {hc.totalChildren}
+          </span>
+          <span className="text-xs font-semibold text-cocoa/60 uppercase tracking-wider">
+            {hc.totalChildren === 1 ? 'niño' : 'niños'}
+          </span>
+        </div>
+        <div className="flex-1 rounded-2xl bg-sky/15 border border-sky/40 px-4 py-3 flex flex-col items-center gap-1">
+          <span className="font-display text-4xl font-extrabold text-cocoa">{hc.totalAdults}</span>
+          <span className="text-xs font-semibold text-cocoa/60 uppercase tracking-wider">
+            {hc.totalAdults === 1 ? 'adulto' : 'adultos'}
+          </span>
+        </div>
+      </div>
 
-      <ul className="flex flex-col gap-2">
-        {hc.children.map((child, i) => (
-          <li key={i} className="flex flex-wrap items-center gap-2 text-sm">
-            <span className="font-medium text-gray-900">{child.name}</span>
-            <span className="text-gray-500">{child.parentsLabel}</span>
-            {child.snack && (
-              <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-800">
-                {child.snack}
-              </span>
-            )}
-            {child.allergies && (
-              <span className="text-xs font-medium text-red-600">{child.allergies}</span>
-            )}
-          </li>
-        ))}
-      </ul>
+      {/* Per-child rows */}
+      {hc.children.length > 0 && (
+        <ul className="flex flex-col gap-2">
+          {hc.children.map((child, i) => (
+            <li
+              key={i}
+              className="flex flex-wrap items-center gap-2 rounded-2xl bg-cream border border-cocoa/10 px-4 py-3"
+            >
+              <span className="font-display font-bold text-cocoa text-sm">{child.name}</span>
+              <span className="text-xs text-cocoa/50 font-body">{child.parentsLabel}</span>
+              {child.snack && (
+                <span className="rounded-full bg-banana/25 px-2.5 py-0.5 text-xs font-semibold text-cocoa border border-banana/50">
+                  {child.snack}
+                </span>
+              )}
+              {child.allergies && (
+                <span className="rounded-full bg-raspberry/15 px-2.5 py-0.5 text-xs font-semibold text-raspberry border border-raspberry/30">
+                  {child.allergies}
+                </span>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
 
       <Button type="button" onClick={() => setShowSummary(true)}>
         {t('host.shareVenue')}
