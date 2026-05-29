@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.1](https://github.com/Endika/Monete/compare/v1.5.0...v1.5.1) (2026-05-29)
+
+
+### Bug Fixes
+
+* **guest:** show 'this is us' only when no family claimed ([b2f92ae](https://github.com/Endika/Monete/commit/b2f92ae58681805e54830457076d7248adbfb1b7))
+
 ## [1.5.0](https://github.com/Endika/Monete/compare/v1.4.0...v1.5.0) (2026-05-29)
 
 
