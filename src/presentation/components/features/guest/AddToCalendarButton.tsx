@@ -32,10 +32,10 @@ export function AddToCalendarButton({ event }: Props) {
   }
 
   return (
-    <div className="relative inline-block">
+    <div className="flex flex-col gap-2 items-start">
       <Button onClick={() => setOpen((o) => !o)}>{t('calendar.addTo')}</Button>
       {open && (
-        <div className="absolute left-0 top-full z-10 mt-2 flex flex-col gap-2 rounded-2xl border border-cocoa/10 bg-cream p-2 shadow-lg">
+        <div className="flex flex-col gap-2 rounded-2xl border border-cocoa/10 bg-cream p-2 shadow-lg w-full max-w-xs">
           <Button type="button" variant="ghost" onClick={handleGoogle}>
             {t('calendar.google')}
           </Button>
