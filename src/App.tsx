@@ -5,6 +5,7 @@ import { HomePage } from '@/presentation/components/features/home/HomePage'
 import { HostDashboard } from '@/presentation/components/features/host/HostDashboard'
 import { GuestPage } from '@/presentation/components/features/guest/GuestPage'
 import { Footer } from '@/presentation/components/common/Footer'
+import { AppHeader } from '@/presentation/components/common/AppHeader'
 import { OfflineBanner } from '@/presentation/components/features/pwa/OfflineBanner'
 import { UpdateBanner } from '@/presentation/components/features/pwa/UpdateBanner'
 import { InstallPrompt } from '@/presentation/components/features/pwa/InstallPrompt'
@@ -33,6 +34,11 @@ export default function App() {
     setRoute(readRoute())
   }
 
+  const goHome = () => {
+    window.history.pushState({}, '', import.meta.env.BASE_URL)
+    setRoute(readRoute())
+  }
+
   const openParty = (id: string, host: boolean) => {
     window.history.pushState(
       {},
@@ -44,6 +50,7 @@ export default function App() {
 
   return (
     <ContainerProvider>
+      <AppHeader onHome={goHome} />
       <OfflineBanner />
       <UpdateBanner />
       <InstallPrompt />
