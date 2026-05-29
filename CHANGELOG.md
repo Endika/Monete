@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/Endika/Monete/compare/v1.4.0...v1.5.0) (2026-05-29)
+
+
+### Features
+
+* **geo:** google places autocomplete with photon fallback ([6b3c4b6](https://github.com/Endika/Monete/commit/6b3c4b6675a21b7df679c3a818d729af0ae58e99))
+
 ## [1.4.0](https://github.com/Endika/Monete/compare/v1.3.0...v1.4.0) (2026-05-29)
 
 
