@@ -19,7 +19,7 @@ describe('RsvpForm v1.2', () => {
   it('auto-fills the first child name from the parents-of field', async () => {
     const onSubmit = vi.fn()
     render(<RsvpForm snapshot={snap()} onSubmit={onSubmit} />)
-    await userEvent.type(screen.getByLabelText(/parents of/i), 'Leo')
+    await userEvent.type(screen.getByLabelText(/family of/i), 'Leo')
     await userEvent.click(screen.getByRole('button', { name: /send rsvp/i }))
     expect(onSubmit).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -31,7 +31,7 @@ describe('RsvpForm v1.2', () => {
   it('marks an added child as sibling by default', async () => {
     const onSubmit = vi.fn()
     render(<RsvpForm snapshot={snap()} onSubmit={onSubmit} />)
-    await userEvent.type(screen.getByLabelText(/parents of/i), 'Leo')
+    await userEvent.type(screen.getByLabelText(/family of/i), 'Leo')
     await userEvent.click(screen.getByRole('button', { name: /add a child/i }))
     const names = screen.getAllByLabelText(/child name/i)
     await userEvent.type(names[1]!, 'Mia')

@@ -36,7 +36,7 @@ describe('RsvpForm', () => {
   it('collects family + per-child answers and submits', async () => {
     const onSubmit = vi.fn()
     render(<RsvpForm snapshot={snap()} onSubmit={onSubmit} />)
-    await userEvent.type(screen.getByLabelText(/parents of/i), 'Parents of Leo')
+    await userEvent.type(screen.getByLabelText(/family of/i), 'Parents of Leo')
     await userEvent.type(screen.getByLabelText(/adults/i), '2')
     await userEvent.clear(screen.getByLabelText(/child name/i))
     await userEvent.type(screen.getByLabelText(/child name/i), 'Leo')
