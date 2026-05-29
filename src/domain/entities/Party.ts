@@ -189,6 +189,46 @@ export class Party {
     return new Party(this.id, { ...this.s, questions, updatedAt: now ?? new Date().toISOString() })
   }
 
+  buildRsvp(input: {
+    parentsLabel: string
+    familyAnswers: AnswerMap
+    children: { name: string; answers: AnswerMap }[]
+    now?: string
+  }): Rsvp {
+    const parentsLabel = input.parentsLabel.trim()
+    if (parentsLabel.length < 1) throw new Error('Rsvp: parentsLabel is required')
+    if (input.children.length < 1) throw new Error('Rsvp: at least one child is required')
+
+    const familyQuestions = this.s.questions.filter((q) => q.scope === 'family')
+    const childQuestions = this.s.questions.filter((q) => q.scope === 'child')
+
+    const checkAnswers = (questions: Question[], answers: AnswerMap, who: string) => {
+      for (const q of questions) {
+        const v = answers[q.id]
+        const empty = v === null || v === undefined || v === ''
+        if (q.required && empty) throw new Error(`Rsvp: "${q.label}" is required for ${who}`)
+        if (!empty && q.type === 'select' && !q.options.includes(String(v)))
+          throw new Error(`Rsvp: "${String(v)}" is not a valid option for "${q.label}"`)
+      }
+    }
+
+    checkAnswers(familyQuestions, input.familyAnswers, 'the family')
+    const children: Child[] = input.children.map((c) => {
+      const name = c.name.trim()
+      if (name.length < 1) throw new Error('Rsvp: each child needs a name')
+      checkAnswers(childQuestions, c.answers, name)
+      return { id: uuidv7(), name, answers: c.answers }
+    })
+
+    return {
+      id: uuidv7(),
+      parentsLabel,
+      familyAnswers: input.familyAnswers,
+      children,
+      createdAt: input.now ?? new Date().toISOString(),
+    }
+  }
+
   toSnapshot(): PartySnapshot {
     return structuredClone(this.s)
   }
