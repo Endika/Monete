@@ -116,7 +116,8 @@
     "installTitle": "Instal·la Monete al teu dispositiu",
     "installButton": "Instal·lar",
     "installDismiss": "Tancar",
-    "installIosHint": "Toca el botó Compartir i després «Afegir a la pantalla d'inici» per instal·lar Monete."
+    "installIosHint": "Toca el botó Compartir i després «Afegir a la pantalla d'inici» per instal·lar Monete.",
+    "installApp": "Instal·la l'app"
   },
   "calendar": {
     "addTo": "Afegir al calendari",

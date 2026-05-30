@@ -1,33 +1,14 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/presentation/components/common/Button'
-
-interface BeforeInstallPromptEvent extends Event {
-  prompt: () => Promise<void>
-  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>
-}
+import { useInstallPrompt } from '@/presentation/hooks/useInstallPrompt'
 
 const DISMISS_KEY = 'monete.installDismissed'
 
-function isStandalone(): boolean {
-  if (typeof window === 'undefined') return false
-  const standaloneViaMatchMedia =
-    typeof window.matchMedia === 'function' &&
-    window.matchMedia('(display-mode: standalone)').matches
-  // iOS Safari
-  const standaloneViaNavigator =
-    (window.navigator as unknown as { standalone?: boolean }).standalone === true
-  return standaloneViaMatchMedia || standaloneViaNavigator
-}
-
-function isIos(): boolean {
-  if (typeof window === 'undefined') return false
-  return /iphone|ipad|ipod/i.test(window.navigator.userAgent)
-}
-
 export function InstallPrompt() {
   const { t } = useTranslation()
-  const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null)
+  const { canInstall, isIos, isStandalone, promptInstall } = useInstallPrompt()
+
   const [dismissed, setDismissed] = useState(() => {
     try {
       return localStorage.getItem(DISMISS_KEY) === 'true'
@@ -35,18 +16,6 @@ export function InstallPrompt() {
       return false
     }
   })
-  // iOS: no beforeinstallprompt — show the hint if it's iOS Safari and not installed
-  const [showIosHint] = useState(() => isIos() && !isStandalone())
-
-  useEffect(() => {
-    if (isStandalone()) return
-    function onBeforeInstall(e: Event) {
-      e.preventDefault()
-      setDeferred(e as BeforeInstallPromptEvent)
-    }
-    window.addEventListener('beforeinstallprompt', onBeforeInstall)
-    return () => window.removeEventListener('beforeinstallprompt', onBeforeInstall)
-  }, [])
 
   function dismiss() {
     setDismissed(true)
@@ -58,17 +27,14 @@ export function InstallPrompt() {
   }
 
   async function install() {
-    if (!deferred) return
-    await deferred.prompt()
-    await deferred.userChoice
-    setDeferred(null)
+    await promptInstall()
     dismiss()
   }
 
-  if (dismissed || isStandalone()) return null
+  if (dismissed || isStandalone) return null
 
   // Android / desktop Chromium: native prompt available
-  if (deferred) {
+  if (canInstall) {
     return (
       <div
         role="region"
@@ -92,7 +58,7 @@ export function InstallPrompt() {
   }
 
   // iOS: share-sheet instructions only (no programmatic install)
-  if (showIosHint) {
+  if (isIos) {
     return (
       <div
         role="region"

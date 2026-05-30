@@ -116,7 +116,8 @@
     "installTitle": "Install Monete on your device",
     "installButton": "Install",
     "installDismiss": "Dismiss",
-    "installIosHint": "Tap the Share button then «Add to Home Screen» to install Monete."
+    "installIosHint": "Tap the Share button then «Add to Home Screen» to install Monete.",
+    "installApp": "Install app"
   },
   "calendar": {
     "addTo": "Add to calendar",

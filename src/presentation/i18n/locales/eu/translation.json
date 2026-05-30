@@ -116,7 +116,8 @@
     "installTitle": "Instalatu Monete zure gailuan",
     "installButton": "Instalatu",
     "installDismiss": "Itxi",
-    "installIosHint": "Sakatu Partekatu botoia eta ondoren «Gehitu pantaila nagusira» Monete instalatzeko."
+    "installIosHint": "Sakatu Partekatu botoia eta ondoren «Gehitu pantaila nagusira» Monete instalatzeko.",
+    "installApp": "Instalatu aplikazioa"
   },
   "calendar": {
     "addTo": "Egutegira gehitu",
