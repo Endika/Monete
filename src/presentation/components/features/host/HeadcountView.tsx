@@ -84,9 +84,9 @@ export function HeadcountView({
       {/* Per-child rows */}
       {hc.children.length > 0 && (
         <ul className="flex flex-col gap-2">
-          {hc.children.map((child, i) => (
+          {hc.children.map((child) => (
             <li
-              key={i}
+              key={child.id}
               className="flex flex-wrap items-center gap-2 rounded-2xl bg-cream border border-cocoa/10 px-4 py-3"
             >
               <span className="font-display font-bold text-cocoa text-sm">{child.name}</span>

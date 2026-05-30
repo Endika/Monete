@@ -1,6 +1,7 @@
 import type { PartySnapshot, Question } from '@/domain/entities/Party'
 
 export interface ChildRow {
+  id: string
   name: string
   parentsLabel: string
   snack: string | null
@@ -37,6 +38,7 @@ export function computeHeadcount(party: PartySnapshot): Headcount {
     }
     for (const c of r.children) {
       children.push({
+        id: c.id,
         name: c.name,
         parentsLabel: r.parentsLabel,
         snack: snackQ ? (c.answers[snackQ.id] != null ? String(c.answers[snackQ.id]) : null) : null,

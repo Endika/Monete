@@ -14,6 +14,7 @@ describe('formatVenueSummary', () => {
       totalAdults: 3,
       children: [
         {
+          id: 'c1',
           name: 'Leo',
           parentsLabel: 'Fam A',
           snack: 'Pizza',
@@ -22,6 +23,7 @@ describe('formatVenueSummary', () => {
           isBirthday: true,
         },
         {
+          id: 'c2',
           name: 'Mia',
           parentsLabel: 'Fam B',
           snack: 'Hot dog',
