@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.8.0](https://github.com/Endika/Monete/compare/v1.7.0...v1.8.0) (2026-05-30)
+
+
+### Features
+
+* **host:** explicit remove-PIN button and status ([0b9ee00](https://github.com/Endika/Monete/commit/0b9ee00741526a963714803bd4da2c62780bea65))
+* **host:** show numeric family question totals in headcount ([06b4a5b](https://github.com/Endika/Monete/commit/06b4a5bf2c1bbc6c2a4465420124ee04b3253788))
+* **pwa:** install-app affordance in footer via shared hook ([4023501](https://github.com/Endika/Monete/commit/4023501d195f168014de54dc26587ab559796580))
+* **ui:** pin-gate help text and example placeholders ([1e0eaf8](https://github.com/Endika/Monete/commit/1e0eaf873744dd0ae5b6e2b213ffc3d7ae653e5c))
+* **ui:** saving/saved feedback on save and submit buttons ([3b0dae6](https://github.com/Endika/Monete/commit/3b0dae61330d91b6ee8c3e8f93d4c147be4c70b9))
+
+
+### Bug Fixes
+
+* **ui:** propagate submit errors and clean up saving timer ([cd66b64](https://github.com/Endika/Monete/commit/cd66b6459ea06906f0f88c168818ac6550f53242))
+
 ## [1.7.0](https://github.com/Endika/Monete/compare/v1.6.1...v1.7.0) (2026-05-29)
 
 
