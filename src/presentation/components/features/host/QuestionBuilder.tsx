@@ -82,7 +82,7 @@ export function QuestionBuilder({ questions, onUpsert, onRemove }: QuestionBuild
             .map((s) => s.trim())
             .filter(Boolean)
         : []
-    void run(async () => {
+    run(async () => {
       await onUpsert({
         kind: editingId ? editingKind : 'custom',
         type: form.type,
@@ -96,7 +96,7 @@ export function QuestionBuilder({ questions, onUpsert, onRemove }: QuestionBuild
       setEditingId(null)
       setEditingKind('custom')
       setShowForm(false)
-    })
+    }).catch(() => {})
   }
 
   function handleCancel() {

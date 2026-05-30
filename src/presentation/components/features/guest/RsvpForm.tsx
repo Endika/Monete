@@ -85,13 +85,13 @@ export function RsvpForm({ snapshot, onSubmit, initial, submitLabel }: RsvpFormP
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    void run(async () => {
+    run(async () => {
       await onSubmit({
         parentsLabel,
         familyAnswers,
         children: children.map(({ name, answers, isSibling }) => ({ name, answers, isSibling })),
       })
-    })
+    }).catch(() => {})
   }
 
   return (

@@ -49,9 +49,9 @@ export function PartyDetailsForm({ initial, onSave }: PartyDetailsFormProps) {
 
   const handleSave = () => {
     const { startsAt, endsAt, allDay } = composeEventTimes(fields)
-    void run(async () => {
+    run(async () => {
       await onSave({ title, address, startsAt, endsAt, requirements, allDay, lat, lng })
-    })
+    }).catch(() => {})
   }
 
   return (

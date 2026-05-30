@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 type Status = 'idle' | 'submitting' | 'saved'
 
@@ -8,6 +8,12 @@ export function useSubmitting(): {
 } {
   const [status, setStatus] = useState<Status>('idle')
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (timer.current) clearTimeout(timer.current)
+    }
+  }, [])
 
   const run = async (fn: () => Promise<void>) => {
     if (timer.current) clearTimeout(timer.current)

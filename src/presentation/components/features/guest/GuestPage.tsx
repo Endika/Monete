@@ -89,6 +89,7 @@ export function GuestPage({ partyId }: GuestPageProps) {
       setSubmitError(null)
     } catch (e) {
       setSubmitError(e instanceof Error ? e.message : String(e))
+      throw e
     }
   }
 
@@ -109,6 +110,7 @@ export function GuestPage({ partyId }: GuestPageProps) {
       setSubmitError(null)
     } catch (e) {
       setSubmitError(e instanceof Error ? e.message : String(e))
+      throw e
     }
   }
 

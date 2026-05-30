@@ -101,6 +101,8 @@ export function HostDashboard({ partyId }: HostDashboardProps) {
     endsAt: string | null
     requirements: string
     allDay?: boolean
+    lat: number | null
+    lng: number | null
   }) => {
     try {
       await container
@@ -109,6 +111,7 @@ export function HostDashboard({ partyId }: HostDashboardProps) {
       await refresh()
     } catch (err) {
       handleError(err)
+      throw err
     }
   }
 
@@ -118,6 +121,7 @@ export function HostDashboard({ partyId }: HostDashboardProps) {
       await refresh()
     } catch (err) {
       handleError(err)
+      throw err
     }
   }
 
@@ -161,6 +165,7 @@ export function HostDashboard({ partyId }: HostDashboardProps) {
       await refresh()
     } catch (err) {
       handleError(err)
+      throw err
     }
   }
 
@@ -173,6 +178,7 @@ export function HostDashboard({ partyId }: HostDashboardProps) {
       await refresh()
     } catch (err) {
       handleError(err)
+      throw err
     }
   }
 
