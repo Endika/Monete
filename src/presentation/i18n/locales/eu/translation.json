@@ -99,7 +99,9 @@
     "delete": "Ezabatu",
     "confirmDelete": "Erantzun hau ezabatu?",
     "viewOnMaps": "Google Maps-en ikusi",
-    "back": "Itzuli"
+    "back": "Itzuli",
+    "saving": "Gordetzen…",
+    "saved": "Gordeta ✓"
   },
   "standard": {
     "adultsCount": "Zenbat heldu etorriko dira?",

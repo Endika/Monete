@@ -11,6 +11,7 @@ import { AddressAutocomplete } from '@/presentation/components/features/event/Ad
 import { composeEventTimes } from '@/shared/utils/eventDateTime'
 import type { DateTimeFields as DateTimeFieldsType } from '@/shared/utils/eventDateTime'
 import { RecentsStore } from '@/infrastructure/persistence/RecentsStore'
+import { useSubmitting } from '@/presentation/hooks/useSubmitting'
 import { PartyList } from './PartyList'
 
 interface HomePageProps {
@@ -28,6 +29,7 @@ function CreateForm({
 }) {
   const { t } = useTranslation()
   const container = useContainer()
+  const { status, run } = useSubmitting()
 
   const [title, setTitle] = useState('')
   const [address, setAddress] = useState('')
@@ -46,19 +48,21 @@ function CreateForm({
     e.preventDefault()
     if (!fields.startDate) return
     try {
-      const { startsAt, endsAt, allDay } = composeEventTimes(fields)
-      const result = await container.resolve<CreatePartyHandler>('createParty').execute({
-        title,
-        address,
-        startsAt,
-        endsAt,
-        requirements,
-        allDay,
-        lat,
-        lng,
+      await run(async () => {
+        const { startsAt, endsAt, allDay } = composeEventTimes(fields)
+        const result = await container.resolve<CreatePartyHandler>('createParty').execute({
+          title,
+          address,
+          startsAt,
+          endsAt,
+          requirements,
+          allDay,
+          lat,
+          lng,
+        })
+        recents.addHosted({ id: result.party.id, title, startsAt })
+        onSuccess(result.party.id, title, startsAt)
       })
-      recents.addHosted({ id: result.party.id, title, startsAt })
-      onSuccess(result.party.id, title, startsAt)
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err))
     }
@@ -102,8 +106,12 @@ function CreateForm({
             rows={3}
           />
         </label>
-        <Button type="submit" className="mt-2 w-full">
-          {t('home.submit')}
+        <Button type="submit" className="mt-2 w-full" disabled={status === 'submitting'}>
+          {status === 'submitting'
+            ? t('common.saving')
+            : status === 'saved'
+              ? t('common.saved')
+              : t('home.submit')}
         </Button>
       </form>
     </div>

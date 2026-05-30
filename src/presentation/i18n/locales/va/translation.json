@@ -99,7 +99,9 @@
     "delete": "Eliminar",
     "confirmDelete": "Eliminar esta resposta?",
     "viewOnMaps": "Vore a Google Maps",
-    "back": "Tornar"
+    "back": "Tornar",
+    "saving": "Guardant…",
+    "saved": "Guardat ✓"
   },
   "standard": {
     "adultsCount": "Quants adults/es vindran?",

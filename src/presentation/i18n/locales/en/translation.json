@@ -99,7 +99,9 @@
     "delete": "Delete",
     "confirmDelete": "Delete this response?",
     "viewOnMaps": "View on Google Maps",
-    "back": "Back"
+    "back": "Back",
+    "saving": "Saving…",
+    "saved": "Saved ✓"
   },
   "standard": {
     "adultsCount": "How many adults are coming?",

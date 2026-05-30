@@ -4,10 +4,11 @@ import type { Question, QuestionType, QuestionScope } from '@/domain/entities/Pa
 import { Input } from '@/presentation/components/common/Input'
 import { Button } from '@/presentation/components/common/Button'
 import { STANDARD_QUESTIONS } from './standardQuestions'
+import { useSubmitting } from '@/presentation/hooks/useSubmitting'
 
 interface QuestionBuilderProps {
   questions: Question[]
-  onUpsert: (q: Omit<Question, 'id'> & { questionId?: string }) => void
+  onUpsert: (q: Omit<Question, 'id'> & { questionId?: string }) => void | Promise<void>
   onRemove: (questionId: string) => void
 }
 
@@ -38,6 +39,7 @@ const PRESET_CHIP_COLORS = [
 
 export function QuestionBuilder({ questions, onUpsert, onRemove }: QuestionBuilderProps) {
   const { t } = useTranslation()
+  const { status, run } = useSubmitting()
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editingKind, setEditingKind] = useState<Question['kind']>('custom')
@@ -80,19 +82,21 @@ export function QuestionBuilder({ questions, onUpsert, onRemove }: QuestionBuild
             .map((s) => s.trim())
             .filter(Boolean)
         : []
-    onUpsert({
-      kind: editingId ? editingKind : 'custom',
-      type: form.type,
-      scope: form.scope,
-      label: form.label,
-      options,
-      required: form.required,
-      ...(editingId ? { questionId: editingId } : {}),
+    void run(async () => {
+      await onUpsert({
+        kind: editingId ? editingKind : 'custom',
+        type: form.type,
+        scope: form.scope,
+        label: form.label,
+        options,
+        required: form.required,
+        ...(editingId ? { questionId: editingId } : {}),
+      })
+      setForm(DEFAULT_FORM)
+      setEditingId(null)
+      setEditingKind('custom')
+      setShowForm(false)
     })
-    setForm(DEFAULT_FORM)
-    setEditingId(null)
-    setEditingKind('custom')
-    setShowForm(false)
   }
 
   function handleCancel() {
@@ -234,8 +238,12 @@ export function QuestionBuilder({ questions, onUpsert, onRemove }: QuestionBuild
           </label>
 
           <div className="flex gap-2">
-            <Button type="button" onClick={handleSave}>
-              {t('common.save')}
+            <Button type="button" onClick={handleSave} disabled={status === 'submitting'}>
+              {status === 'submitting'
+                ? t('common.saving')
+                : status === 'saved'
+                  ? t('common.saved')
+                  : t('common.save')}
             </Button>
             <Button type="button" variant="ghost" onClick={handleCancel}>
               {t('common.cancel')}

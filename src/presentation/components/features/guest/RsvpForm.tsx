@@ -6,6 +6,7 @@ import { Input } from '@/presentation/components/common/Input'
 import { Button } from '@/presentation/components/common/Button'
 import { ChildAnswers } from './ChildAnswers'
 import { QuestionInput } from './QuestionInput'
+import { useSubmitting } from '@/presentation/hooks/useSubmitting'
 
 interface RsvpFormProps {
   snapshot: PartySnapshot
@@ -13,7 +14,7 @@ interface RsvpFormProps {
     parentsLabel: string
     familyAnswers: AnswerMap
     children: { name: string; answers: AnswerMap; isSibling: boolean }[]
-  }) => void
+  }) => void | Promise<void>
   initial?: {
     parentsLabel: string
     familyAnswers: AnswerMap
@@ -31,6 +32,7 @@ interface ChildEntry {
 
 export function RsvpForm({ snapshot, onSubmit, initial, submitLabel }: RsvpFormProps) {
   const { t } = useTranslation()
+  const { status, run } = useSubmitting()
 
   const familyQuestions = snapshot.questions.filter((q) => q.scope === 'family')
   const childQuestions = snapshot.questions.filter((q) => q.scope === 'child')
@@ -83,10 +85,12 @@ export function RsvpForm({ snapshot, onSubmit, initial, submitLabel }: RsvpFormP
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    onSubmit({
-      parentsLabel,
-      familyAnswers,
-      children: children.map(({ name, answers, isSibling }) => ({ name, answers, isSibling })),
+    void run(async () => {
+      await onSubmit({
+        parentsLabel,
+        familyAnswers,
+        children: children.map(({ name, answers, isSibling }) => ({ name, answers, isSibling })),
+      })
     })
   }
 
@@ -127,7 +131,13 @@ export function RsvpForm({ snapshot, onSubmit, initial, submitLabel }: RsvpFormP
         {t('guest.addChild')}
       </Button>
 
-      <Button type="submit">{submitLabel ?? t('guest.submit')}</Button>
+      <Button type="submit" disabled={status === 'submitting'}>
+        {status === 'submitting'
+          ? t('common.saving')
+          : status === 'saved'
+            ? t('common.saved')
+            : (submitLabel ?? t('guest.submit'))}
+      </Button>
     </form>
   )
 }

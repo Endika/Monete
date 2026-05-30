@@ -99,7 +99,9 @@
     "delete": "Eliminar",
     "confirmDelete": "¿Eliminar esta respuesta?",
     "viewOnMaps": "Ver en Google Maps",
-    "back": "Volver"
+    "back": "Volver",
+    "saving": "Guardando…",
+    "saved": "Guardado ✓"
   },
   "standard": {
     "adultsCount": "¿Cuántos adultos/as vienen?",

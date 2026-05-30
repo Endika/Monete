@@ -6,6 +6,7 @@ import { DateTimeFields } from '@/presentation/components/features/event/DateTim
 import { AddressAutocomplete } from '@/presentation/components/features/event/AddressAutocomplete'
 import { composeEventTimes, splitEventTimes } from '@/shared/utils/eventDateTime'
 import type { DateTimeFields as DateTimeFieldsType } from '@/shared/utils/eventDateTime'
+import { useSubmitting } from '@/presentation/hooks/useSubmitting'
 
 interface PartyDetailsFormProps {
   initial: {
@@ -27,11 +28,12 @@ interface PartyDetailsFormProps {
     allDay: boolean
     lat: number | null
     lng: number | null
-  }) => void
+  }) => void | Promise<void>
 }
 
 export function PartyDetailsForm({ initial, onSave }: PartyDetailsFormProps) {
   const { t } = useTranslation()
+  const { status, run } = useSubmitting()
   const [title, setTitle] = useState(initial.title)
   const [address, setAddress] = useState(initial.address)
   const [lat, setLat] = useState<number | null>(initial.lat ?? null)
@@ -47,7 +49,9 @@ export function PartyDetailsForm({ initial, onSave }: PartyDetailsFormProps) {
 
   const handleSave = () => {
     const { startsAt, endsAt, allDay } = composeEventTimes(fields)
-    onSave({ title, address, startsAt, endsAt, requirements, allDay, lat, lng })
+    void run(async () => {
+      await onSave({ title, address, startsAt, endsAt, requirements, allDay, lat, lng })
+    })
   }
 
   return (
@@ -83,8 +87,12 @@ export function PartyDetailsForm({ initial, onSave }: PartyDetailsFormProps) {
           rows={3}
         />
       </label>
-      <Button type="button" onClick={handleSave}>
-        {t('common.save')}
+      <Button type="button" onClick={handleSave} disabled={status === 'submitting'}>
+        {status === 'submitting'
+          ? t('common.saving')
+          : status === 'saved'
+            ? t('common.saved')
+            : t('common.save')}
       </Button>
     </div>
   )

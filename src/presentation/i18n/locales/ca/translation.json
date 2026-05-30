@@ -99,7 +99,9 @@
     "delete": "Eliminar",
     "confirmDelete": "Eliminar aquesta resposta?",
     "viewOnMaps": "Veure a Google Maps",
-    "back": "Tornar"
+    "back": "Tornar",
+    "saving": "Desant…",
+    "saved": "Desat ✓"
   },
   "standard": {
     "adultsCount": "Quants adults/es vindran?",

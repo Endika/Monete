@@ -99,7 +99,9 @@
     "delete": "Eliminar",
     "confirmDelete": "Eliminar esta resposta?",
     "viewOnMaps": "Ver en Google Maps",
-    "back": "Volver"
+    "back": "Volver",
+    "saving": "Gardando…",
+    "saved": "Gardado ✓"
   },
   "standard": {
     "adultsCount": "Cantos adultos/as van vir?",
