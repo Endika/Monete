@@ -5,10 +5,16 @@ import { QuestionInput } from './QuestionInput'
 
 interface ChildAnswersProps {
   childQuestions: Question[]
-  value: { name: string; answers: AnswerMap; isSibling: boolean }
-  onChange: (v: { name: string; answers: AnswerMap; isSibling: boolean }) => void
+  value: { name: string; answers: AnswerMap; isSibling: boolean; isBirthday: boolean }
+  onChange: (v: {
+    name: string
+    answers: AnswerMap
+    isSibling: boolean
+    isBirthday: boolean
+  }) => void
   onRemove?: () => void
   showSibling?: boolean
+  showBirthday?: boolean
 }
 
 export function ChildAnswers({
@@ -17,6 +23,7 @@ export function ChildAnswers({
   onChange,
   onRemove,
   showSibling,
+  showBirthday,
 }: ChildAnswersProps) {
   const { t } = useTranslation()
 
@@ -50,6 +57,16 @@ export function ChildAnswers({
         value={value.name}
         onChange={(e) => handleNameChange(e.target.value)}
       />
+      {showBirthday && (
+        <label className="flex items-center gap-2 text-sm text-cocoa">
+          <input
+            type="checkbox"
+            checked={value.isBirthday}
+            onChange={() => onChange({ ...value, isBirthday: !value.isBirthday })}
+          />
+          {t('guest.birthday')}
+        </label>
+      )}
       {showSibling && (
         <label className="flex items-center gap-2 text-sm text-cocoa">
           <input

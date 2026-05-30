@@ -24,7 +24,7 @@ type Mode = 'view' | 'register' | { editRsvpId: string }
 function rsvpToInitial(rsvp: {
   parentsLabel: string
   familyAnswers: AnswerMap
-  children: { name: string; answers: AnswerMap; isSibling: boolean }[]
+  children: { name: string; answers: AnswerMap; isSibling: boolean; isBirthday: boolean }[]
 }) {
   return {
     parentsLabel: rsvp.parentsLabel,
@@ -33,6 +33,7 @@ function rsvpToInitial(rsvp: {
       name: c.name,
       answers: c.answers,
       isSibling: c.isSibling,
+      isBirthday: c.isBirthday,
     })),
   }
 }
@@ -70,7 +71,7 @@ export function GuestPage({ partyId }: GuestPageProps) {
   async function handleRegister(input: {
     parentsLabel: string
     familyAnswers: AnswerMap
-    children: { name: string; answers: AnswerMap; isSibling: boolean }[]
+    children: { name: string; answers: AnswerMap; isSibling: boolean; isBirthday: boolean }[]
   }) {
     try {
       const { rsvpId } = await container
@@ -98,7 +99,7 @@ export function GuestPage({ partyId }: GuestPageProps) {
     input: {
       parentsLabel: string
       familyAnswers: AnswerMap
-      children: { name: string; answers: AnswerMap; isSibling: boolean }[]
+      children: { name: string; answers: AnswerMap; isSibling: boolean; isBirthday: boolean }[]
     },
   ) {
     try {
@@ -117,6 +118,12 @@ export function GuestPage({ partyId }: GuestPageProps) {
   const editingRsvp =
     typeof mode === 'object' ? (snapshot.rsvps.find((r) => r.id === mode.editRsvpId) ?? null) : null
 
+  const celebrantNames = [
+    ...new Set(
+      snapshot.rsvps.flatMap((r) => r.children.filter((c) => c.isBirthday).map((c) => c.name)),
+    ),
+  ]
+
   return (
     <div className="mx-auto max-w-lg px-4 py-10 flex flex-col gap-6">
       {/* Event header card */}
@@ -127,6 +134,11 @@ export function GuestPage({ partyId }: GuestPageProps) {
           <h1 className="font-display text-3xl font-extrabold text-cocoa leading-tight">
             {snapshot.event.title}
           </h1>
+          {celebrantNames.length > 0 && (
+            <p className="font-display text-base font-bold text-raspberry">
+              {t('guest.celebrating', { names: celebrantNames.join(', ') })}
+            </p>
+          )}
           <div className="flex flex-col gap-1.5">
             <p className="text-sm text-cocoa/70 font-body flex items-center gap-1.5">
               <span aria-hidden className="text-raspberry">

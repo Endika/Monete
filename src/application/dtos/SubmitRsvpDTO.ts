@@ -10,6 +10,7 @@ export const SubmitRsvpSchema = z.object({
         name: z.string().trim().min(1).max(60),
         answers: AnswerMap,
         isSibling: z.boolean().optional().default(false),
+        isBirthday: z.boolean().optional().default(false),
       }),
     )
     .min(1),

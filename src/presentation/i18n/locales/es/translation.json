@@ -57,7 +57,8 @@
     "childWord": "niño/a",
     "childrenWord": "niños/as",
     "adultWord": "adulto/a",
-    "adultsWord": "adultos/as"
+    "adultsWord": "adultos/as",
+    "birthdayKids": "Cumpleañeros/as"
   },
   "guest": {
     "weAreParentsOf": "¡Somos la familia de…!",
@@ -77,7 +78,9 @@
     "thisIsUs": "Somos nosotros",
     "notUs": "Esta no es la nuestra",
     "notListed": "No estoy en la lista — apuntarme",
-    "sibling": "Hermano/a"
+    "sibling": "Hermano/a",
+    "birthday": "Cumpleañero/a 🎂",
+    "celebrating": "¡Cumple de {{names}}! 🎂"
   },
   "venue": {
     "totals": "Niños/as ({{children}}) · Adultos/as ({{adults}})",

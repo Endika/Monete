@@ -54,13 +54,19 @@ type FormState = null | { mode: 'add' } | { mode: 'edit'; rsvpId: string }
 interface RsvpInput {
   parentsLabel: string
   familyAnswers: AnswerMap
-  children: { name: string; answers: AnswerMap; isSibling: boolean }[]
+  children: { name: string; answers: AnswerMap; isSibling: boolean; isBirthday: boolean }[]
 }
 
 function rsvpToInitial(r: {
   parentsLabel: string
   familyAnswers: AnswerMap
-  children: { id: string; name: string; answers: AnswerMap; isSibling?: boolean }[]
+  children: {
+    id: string
+    name: string
+    answers: AnswerMap
+    isSibling?: boolean
+    isBirthday?: boolean
+  }[]
 }): RsvpInput {
   return {
     parentsLabel: r.parentsLabel,
@@ -69,6 +75,7 @@ function rsvpToInitial(r: {
       name: c.name,
       answers: c.answers,
       isSibling: c.isSibling ?? false,
+      isBirthday: c.isBirthday ?? false,
     })),
   }
 }
@@ -273,6 +280,7 @@ export function HostDashboard({ partyId }: HostDashboardProps) {
             <RsvpForm
               key={formState.mode === 'edit' ? formState.rsvpId : 'add'}
               snapshot={snapshot}
+              allowBirthday
               initial={
                 formState.mode === 'edit'
                   ? rsvpToInitial(snapshot.rsvps.find((r) => r.id === formState.rsvpId)!)

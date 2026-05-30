@@ -79,6 +79,11 @@ export function ParticipantList({
                 >
                   <span className="font-display font-bold text-cocoa text-sm flex items-center gap-1.5">
                     🎉 {child.name}
+                    {child.isBirthday && (
+                      <span className="rounded-full bg-raspberry/15 px-2 py-0.5 text-xs font-semibold text-raspberry border border-raspberry/30">
+                        {t('guest.birthday')}
+                      </span>
+                    )}
                     {child.isSibling && (
                       <span className="rounded-full bg-mint/30 px-2 py-0.5 text-xs font-semibold text-cocoa/70 border border-mint/50">
                         {t('guest.sibling')}

@@ -34,6 +34,29 @@ describe('v1.2 model', () => {
     expect(rsvp.children[1]!.isSibling).toBe(true)
   })
 
+  it('carries isBirthday on children (default false, explicit true preserved through update + snapshot)', () => {
+    const p = base()
+    const rsvp = p.buildRsvp({
+      parentsLabel: 'F',
+      familyAnswers: {},
+      children: [
+        { name: 'Leo', answers: {}, isBirthday: true },
+        { name: 'Mia', answers: {} },
+      ],
+      now: 'x',
+    })
+    expect(rsvp.children[0]!.isBirthday).toBe(true)
+    expect(rsvp.children[1]!.isBirthday).toBe(false)
+
+    const restored = Party.restore({ ...p.toSnapshot(), rsvps: [rsvp] })
+    const updated = restored.updateRsvp(rsvp.id, {
+      parentsLabel: 'F',
+      familyAnswers: {},
+      children: [{ name: 'Leo', answers: {}, isBirthday: true }],
+    })
+    expect(updated.toSnapshot().rsvps[0]!.children[0]!.isBirthday).toBe(true)
+  })
+
   it('backfills missing lat/lng and isSibling on parse', () => {
     const parsed = parsePartySnapshot({
       id: 'abc1234',
@@ -59,5 +82,6 @@ describe('v1.2 model', () => {
     expect(parsed.event.lat).toBeNull()
     expect(parsed.event.lng).toBeNull()
     expect(parsed.rsvps[0]!.children[0]!.isSibling).toBe(false)
+    expect(parsed.rsvps[0]!.children[0]!.isBirthday).toBe(false)
   })
 })

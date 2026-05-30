@@ -60,6 +60,13 @@ export function HeadcountView({
         })}
       </p>
 
+      {/* Birthday kids line */}
+      {hc.birthdayNames.length > 0 && (
+        <p className="text-sm font-semibold text-raspberry font-body">
+          🎂 {t('host.birthdayKids')}: {hc.birthdayNames.join(', ')}
+        </p>
+      )}
+
       {/* Extra numeric family question totals */}
       {hc.extraTotals.length > 0 && (
         <div className="flex flex-wrap gap-2">
@@ -84,6 +91,11 @@ export function HeadcountView({
             >
               <span className="font-display font-bold text-cocoa text-sm">{child.name}</span>
               <span className="text-xs text-cocoa/50 font-body">{child.parentsLabel}</span>
+              {child.isBirthday && (
+                <span className="rounded-full bg-raspberry/15 px-2 py-0.5 text-xs font-semibold text-raspberry border border-raspberry/30">
+                  🎂 {t('guest.birthday')}
+                </span>
+              )}
               {child.isSibling && (
                 <span className="rounded-full bg-mint/30 px-2 py-0.5 text-xs font-semibold text-cocoa/70 border border-mint/50">
                   {t('guest.sibling')}

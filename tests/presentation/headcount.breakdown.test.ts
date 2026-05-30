@@ -34,4 +34,31 @@ describe('headcount breakdown', () => {
     expect(hc.totalAdults).toBe(2)
     expect(hc.children[1]!.isSibling).toBe(true)
   })
+
+  it('collects deduped birthdayNames and flags ChildRow.isBirthday', () => {
+    const p = Party.create({
+      title: 'P',
+      address: 'A',
+      startsAt: '2026-06-20T17:00:00.000Z',
+      endsAt: null,
+      requirements: '',
+    })
+    const r1 = p.buildRsvp({
+      parentsLabel: 'F1',
+      familyAnswers: {},
+      children: [
+        { name: 'Leo', answers: {}, isBirthday: true },
+        { name: 'Mia', answers: {} },
+      ],
+    })
+    const r2 = p.buildRsvp({
+      parentsLabel: 'F2',
+      familyAnswers: {},
+      children: [{ name: 'Leo', answers: {}, isBirthday: true }],
+    })
+    const hc = computeHeadcount({ ...p.toSnapshot(), rsvps: [r1, r2] })
+    expect(hc.children[0]!.isBirthday).toBe(true)
+    expect(hc.children[1]!.isBirthday).toBe(false)
+    expect(hc.birthdayNames).toEqual(['Leo'])
+  })
 })

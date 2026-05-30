@@ -33,6 +33,7 @@ export interface Child {
   id: string
   name: string
   isSibling: boolean
+  isBirthday: boolean
   answers: AnswerMap // answers to scope === 'child' questions, keyed by question id
 }
 
@@ -144,6 +145,7 @@ export class Party {
           ...c,
           answers: c.answers ?? {},
           isSibling: c.isSibling ?? false,
+          isBirthday: c.isBirthday ?? false,
         })),
       })),
       editPin: s.editPin ?? null,
@@ -226,21 +228,27 @@ export class Party {
   }
 
   private buildChildren(
-    children: { name: string; answers: AnswerMap; isSibling?: boolean }[],
+    children: { name: string; answers: AnswerMap; isSibling?: boolean; isBirthday?: boolean }[],
   ): Child[] {
     const childQuestions = this.s.questions.filter((q) => q.scope === 'child')
     return children.map((c) => {
       const name = c.name.trim()
       if (name.length < 1) throw new Error('Rsvp: each child needs a name')
       this.validateAnswers(childQuestions, c.answers, name)
-      return { id: uuidv7(), name, isSibling: c.isSibling ?? false, answers: { ...c.answers } }
+      return {
+        id: uuidv7(),
+        name,
+        isSibling: c.isSibling ?? false,
+        isBirthday: c.isBirthday ?? false,
+        answers: { ...c.answers },
+      }
     })
   }
 
   buildRsvp(input: {
     parentsLabel: string
     familyAnswers: AnswerMap
-    children: { name: string; answers: AnswerMap; isSibling?: boolean }[]
+    children: { name: string; answers: AnswerMap; isSibling?: boolean; isBirthday?: boolean }[]
     now?: string
   }): Rsvp {
     const parentsLabel = input.parentsLabel.trim()
@@ -265,7 +273,7 @@ export class Party {
     input: {
       parentsLabel: string
       familyAnswers: AnswerMap
-      children: { name: string; answers: AnswerMap; isSibling?: boolean }[]
+      children: { name: string; answers: AnswerMap; isSibling?: boolean; isBirthday?: boolean }[]
     },
     now?: string,
   ): Party {

@@ -28,6 +28,18 @@ describe('RsvpForm v1.2', () => {
     )
   })
 
+  it('hides the birthday checkbox by default', () => {
+    const onSubmit = vi.fn()
+    render(<RsvpForm snapshot={snap()} onSubmit={onSubmit} />)
+    expect(screen.queryByText(/Birthday kid/)).toBeNull()
+  })
+
+  it('shows the birthday checkbox when allowBirthday is set', () => {
+    const onSubmit = vi.fn()
+    render(<RsvpForm snapshot={snap()} onSubmit={onSubmit} allowBirthday />)
+    expect(screen.getByText(/Birthday kid/)).toBeTruthy()
+  })
+
   it('marks an added child as sibling by default', async () => {
     const onSubmit = vi.fn()
     render(<RsvpForm snapshot={snap()} onSubmit={onSubmit} />)

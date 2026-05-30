@@ -23,6 +23,7 @@ const ChildSchema = z.object({
   id: z.string(),
   name: z.string(),
   isSibling: z.boolean().default(false),
+  isBirthday: z.boolean().default(false),
   answers: AnswerMapSchema,
 })
 

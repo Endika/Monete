@@ -57,7 +57,8 @@
     "childWord": "haurra",
     "childrenWord": "haurrak",
     "adultWord": "heldua",
-    "adultsWord": "helduak"
+    "adultsWord": "helduak",
+    "birthdayKids": "Urtebetetzeak"
   },
   "guest": {
     "weAreParentsOf": "Honen familia gara…!",
@@ -77,7 +78,9 @@
     "thisIsUs": "Gu gara",
     "notUs": "Hau ez da gurea",
     "notListed": "Ez nago zerrendan — apuntatu",
-    "sibling": "Anai-arreba"
+    "sibling": "Anai-arreba",
+    "birthday": "Urtebetetzea 🎂",
+    "celebrating": "{{names}} urtebetetzea 🎂"
   },
   "venue": {
     "totals": "Haurrak ({{children}}) · Helduak ({{adults}})",

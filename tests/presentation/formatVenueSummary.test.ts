@@ -13,9 +13,24 @@ describe('formatVenueSummary', () => {
       totalSiblings: 1,
       totalAdults: 3,
       children: [
-        { name: 'Leo', parentsLabel: 'Fam A', snack: 'Pizza', allergies: 'Nuts', isSibling: false },
-        { name: 'Mia', parentsLabel: 'Fam B', snack: 'Hot dog', allergies: null, isSibling: true },
+        {
+          name: 'Leo',
+          parentsLabel: 'Fam A',
+          snack: 'Pizza',
+          allergies: 'Nuts',
+          isSibling: false,
+          isBirthday: true,
+        },
+        {
+          name: 'Mia',
+          parentsLabel: 'Fam B',
+          snack: 'Hot dog',
+          allergies: null,
+          isSibling: true,
+          isBirthday: false,
+        },
       ],
+      birthdayNames: ['Leo'],
       extraTotals: [],
     }
     const text = formatVenueSummary(

@@ -34,6 +34,35 @@ describe('parsePartySnapshot', () => {
     expect(parsed.editPin).toBeNull()
   })
 
+  it('defaults isBirthday to false when absent and preserves true', () => {
+    const parsed = parsePartySnapshot({
+      id: 'abc1234',
+      event: {
+        title: 'X',
+        address: '',
+        startsAt: '2026-06-20T17:00:00.000Z',
+        endsAt: null,
+        requirements: '',
+      },
+      rsvps: [
+        {
+          id: 'r',
+          parentsLabel: 'P',
+          familyAnswers: {},
+          children: [
+            { id: 'c1', name: 'Leo', answers: {} },
+            { id: 'c2', name: 'Mia', answers: {}, isBirthday: true },
+          ],
+          createdAt: 'x',
+        },
+      ],
+      createdAt: '2026-05-29T00:00:00.000Z',
+      updatedAt: '2026-05-29T00:00:00.000Z',
+    })
+    expect(parsed.rsvps[0]!.children[0]!.isBirthday).toBe(false)
+    expect(parsed.rsvps[0]!.children[1]!.isBirthday).toBe(true)
+  })
+
   it('throws on a missing mandatory field', () => {
     expect(() => parsePartySnapshot({ id: 'abc1234' })).toThrow(/validation failed/i)
   })

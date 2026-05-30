@@ -6,6 +6,7 @@ export interface ChildRow {
   snack: string | null
   allergies: string | null
   isSibling: boolean
+  isBirthday: boolean
 }
 
 export interface Headcount {
@@ -14,6 +15,7 @@ export interface Headcount {
   totalSiblings: number
   totalAdults: number
   children: ChildRow[]
+  birthdayNames: string[]
   extraTotals: { label: string; total: number }[]
 }
 
@@ -44,11 +46,13 @@ export function computeHeadcount(party: PartySnapshot): Headcount {
             : null
           : null,
         isSibling: c.isSibling ?? false,
+        isBirthday: c.isBirthday ?? false,
       })
     }
   }
   const totalInvited = children.filter((c) => !c.isSibling).length
   const totalSiblings = children.filter((c) => c.isSibling).length
+  const birthdayNames = [...new Set(children.filter((c) => c.isBirthday).map((c) => c.name))]
 
   const extraTotals = party.questions
     .filter((q) => q.scope === 'family' && q.type === 'number' && q.kind !== 'adultsCount')
@@ -66,6 +70,7 @@ export function computeHeadcount(party: PartySnapshot): Headcount {
     totalSiblings,
     totalAdults,
     children,
+    birthdayNames,
     extraTotals,
   }
 }
