@@ -76,6 +76,7 @@ function CreateForm({
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          placeholder={t('home.titlePlaceholder')}
           required
         />
         <AddressAutocomplete
@@ -97,6 +98,7 @@ function CreateForm({
             className="w-full rounded-2xl border-2 border-cocoa/15 bg-white px-4 py-2.5 text-sm text-cocoa placeholder:text-cocoa/40 transition-all duration-150 focus:border-raspberry focus:outline-none focus:ring-2 focus:ring-raspberry/25"
             value={requirements}
             onChange={(e) => setRequirements(e.target.value)}
+            placeholder={t('home.requirementsPlaceholder')}
             rows={3}
           />
         </label>

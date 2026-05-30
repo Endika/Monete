@@ -43,7 +43,7 @@ export function PinGate({ partyId, pinHash, children }: PinGateProps) {
         <h1 className="font-display text-2xl font-extrabold text-cocoa">
           {t('host.dashboardTitle')}
         </h1>
-        <p className="mt-1 text-sm text-cocoa/60 font-body">{t('host.pinLabel')}</p>
+        <p className="mt-2 text-sm text-cocoa/60 font-body">{t('host.pinGateHelp')}</p>
       </div>
 
       <form

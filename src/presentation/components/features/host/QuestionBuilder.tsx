@@ -177,6 +177,7 @@ export function QuestionBuilder({ questions, onUpsert, onRemove }: QuestionBuild
             label={t('host.questionLabel')}
             value={form.label}
             onChange={(e) => setForm((f) => ({ ...f, label: e.target.value }))}
+            placeholder={t('host.questionLabelPlaceholder')}
           />
 
           <label className="flex flex-col gap-1.5">
@@ -218,7 +219,7 @@ export function QuestionBuilder({ questions, onUpsert, onRemove }: QuestionBuild
               label={t('host.optionsLabel')}
               value={form.optionsText}
               onChange={(e) => setForm((f) => ({ ...f, optionsText: e.target.value }))}
-              placeholder="Option 1, Option 2"
+              placeholder={t('host.optionsPlaceholder')}
             />
           )}
 
