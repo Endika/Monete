@@ -145,6 +145,15 @@ export function HostDashboard({ partyId }: HostDashboardProps) {
     }
   }
 
+  const handleRemovePin = async () => {
+    try {
+      await container.resolve<SetEditPinHandler>('setEditPin').execute({ partyId, pin: null })
+      await refresh()
+    } catch (err) {
+      handleError(err)
+    }
+  }
+
   const handleAddRsvp = async (input: RsvpInput) => {
     try {
       await container.resolve<SubmitRsvpHandler>('submitRsvp').execute({ partyId, ...input })
@@ -213,6 +222,9 @@ export function HostDashboard({ partyId }: HostDashboardProps) {
         <SectionCard accent="sky">
           <h2 className="font-display text-lg font-bold text-cocoa mb-4">{t('host.setPin')}</h2>
           <div className="flex flex-col gap-3">
+            <p className="text-sm text-cocoa/50">
+              {snapshot.editPin ? t('host.pinSet') : t('host.noPin')}
+            </p>
             <Input
               label={t('host.setPin')}
               type="password"
@@ -223,9 +235,16 @@ export function HostDashboard({ partyId }: HostDashboardProps) {
                 setPinSaved(false)
               }}
             />
-            <Button type="button" onClick={handleSetPin}>
-              {t('host.setPin')}
-            </Button>
+            <div className="flex gap-2 flex-wrap">
+              <Button type="button" onClick={handleSetPin}>
+                {t('host.setPin')}
+              </Button>
+              {snapshot.editPin && (
+                <Button type="button" variant="ghost" onClick={handleRemovePin}>
+                  {t('host.removePin')}
+                </Button>
+              )}
+            </div>
             {pinSaved && (
               <span className="text-sm font-semibold text-mint">{t('common.pinSaved')}</span>
             )}
