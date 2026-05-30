@@ -1,12 +1,20 @@
-# Monete
+<p align="center">
+  <img src="./public/icon-512.png" width="128" alt="Monete app icon" />
+</p>
 
-> Account-free RSVP for kids' birthday parties — host creates a party with standard or custom questions; each family RSVPs once listing one or more children; the host gets a live headcount and a venue-ready summary.
+<h1 align="center">Monete</h1>
 
-[![Latest release](https://img.shields.io/github/v/release/Endika/Monete?style=flat-square&color=f59e0b&label=release)](https://github.com/Endika/Monete/releases/latest)
-[![CI](https://img.shields.io/github/actions/workflow/status/Endika/Monete/ci.yml?style=flat-square&label=ci&branch=main)](https://github.com/Endika/Monete/actions/workflows/ci.yml)
-[![Last commit](https://img.shields.io/github/last-commit/Endika/Monete?style=flat-square)](https://github.com/Endika/Monete/commits/main)
-[![Conventional Commits](https://img.shields.io/badge/conventional_commits-1.0.0-FE5196?style=flat-square)](https://www.conventionalcommits.org)
-[![License: MIT](https://img.shields.io/github/license/Endika/Monete?style=flat-square&color=10B981)](./LICENSE)
+<p align="center">
+  Account-free RSVP for kids' birthday parties — host creates a party with standard or custom questions; each family RSVPs once listing one or more children; the host gets a live headcount and a venue-ready summary.
+</p>
+
+<p align="center">
+  <a href="https://github.com/Endika/Monete/releases/latest"><img src="https://img.shields.io/github/v/release/Endika/Monete?style=flat-square&color=f59e0b&label=release" alt="Latest release" /></a>
+  <a href="https://github.com/Endika/Monete/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Endika/Monete/ci.yml?style=flat-square&label=ci&branch=main" alt="CI" /></a>
+  <a href="https://github.com/Endika/Monete/commits/main"><img src="https://img.shields.io/github/last-commit/Endika/Monete?style=flat-square" alt="Last commit" /></a>
+  <a href="https://www.conventionalcommits.org"><img src="https://img.shields.io/badge/conventional_commits-1.0.0-FE5196?style=flat-square" alt="Conventional Commits" /></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/github/license/Endika/Monete?style=flat-square&color=10B981" alt="License: MIT" /></a>
+</p>
 
 ## What you can do
 
@@ -57,13 +65,13 @@ Or paste `supabase/migrations/0001_parties.sql` directly into the Supabase SQL e
 
 ### Commands
 
-| Command | Description |
-|---|---|
-| `npm run dev` | Start the dev server |
-| `npm run build` | Production build (`tsc -b && vite build`) |
-| `npm run test:run` | Run tests once |
-| `npm run lint` | ESLint (zero warnings) |
-| `npm run type:check` | TypeScript type check |
+| Command              | Description                               |
+| -------------------- | ----------------------------------------- |
+| `npm run dev`        | Start the dev server                      |
+| `npm run build`      | Production build (`tsc -b && vite build`) |
+| `npm run test:run`   | Run tests once                            |
+| `npm run lint`       | ESLint (zero warnings)                    |
+| `npm run type:check` | TypeScript type check                     |
 
 CI runs lint, typecheck, tests, and the production build on every PR.
 
@@ -71,7 +79,7 @@ CI runs lint, typecheck, tests, and the production build on every PR.
 
 Copy `.env.example` to `.env.local` and fill in your Supabase project values:
 
-| Variable | Description |
-|---|---|
-| `VITE_SUPABASE_URL` | Your Supabase project URL |
+| Variable                 | Description                     |
+| ------------------------ | ------------------------------- |
+| `VITE_SUPABASE_URL`      | Your Supabase project URL       |
 | `VITE_SUPABASE_ANON_KEY` | Your Supabase anon (public) key |
