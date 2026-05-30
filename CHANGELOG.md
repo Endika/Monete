@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.0](https://github.com/Endika/Monete/compare/v1.9.0...v1.10.0) (2026-05-30)
+
+
+### Features
+
+* **event:** optional venue name with places autofill ([eb06d8d](https://github.com/Endika/Monete/commit/eb06d8d1543a92a08151114d5c7cbfa579ea9772))
+
 ## [1.9.0](https://github.com/Endika/Monete/compare/v1.8.0...v1.9.0) (2026-05-30)
 
 
