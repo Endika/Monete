@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.9.0](https://github.com/Endika/Monete/compare/v1.8.0...v1.9.0) (2026-05-30)
+
+
+### Features
+
+* **rsvp:** host can mark birthday children (1 or N) ([ceec1b1](https://github.com/Endika/Monete/commit/ceec1b1bdd94ea90b0fd6fba4c7169916528d934))
+
+
+### Bug Fixes
+
+* **host:** use child id as headcount row key ([6bdf8d4](https://github.com/Endika/Monete/commit/6bdf8d44695b6012b1496f466fe041839bc1c5f7))
+
+
+### Documentation
+
+* add app icon to README header ([a5a52f9](https://github.com/Endika/Monete/commit/a5a52f9ab71e5bed79f2c4613dbfbec490fda52c))
+
 ## [1.8.0](https://github.com/Endika/Monete/compare/v1.7.0...v1.8.0) (2026-05-30)
 
 
