@@ -25,6 +25,7 @@ export function VenueSummaryModal({ snapshot, onClose }: VenueSummaryModalProps)
     {
       title: snapshot.event.title,
       startsAt: formattedDate,
+      venueName: snapshot.event.venueName,
       address: snapshot.event.address,
       requirements: snapshot.event.requirements,
     },

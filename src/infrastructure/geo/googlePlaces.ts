@@ -35,22 +35,24 @@ export async function googleAutocomplete(query: string, key: string): Promise<Pl
 export async function googlePlaceDetails(
   placeId: string,
   key: string,
-): Promise<{ label: string; lat: number; lng: number } | null> {
+): Promise<{ label: string; name: string; lat: number; lng: number } | null> {
   try {
     const res = await fetch(`https://places.googleapis.com/v1/places/${placeId}`, {
       headers: {
         'X-Goog-Api-Key': key,
-        'X-Goog-FieldMask': 'location,formattedAddress',
+        'X-Goog-FieldMask': 'location,formattedAddress,displayName',
       },
     })
     if (!res.ok) return null
     const data = (await res.json()) as {
       location?: { latitude?: number; longitude?: number }
       formattedAddress?: string
+      displayName?: { text?: string }
     }
     if (!data.location?.latitude || !data.location?.longitude || !data.formattedAddress) return null
     return {
       label: data.formattedAddress,
+      name: data.displayName?.text ?? '',
       lat: data.location.latitude,
       lng: data.location.longitude,
     }

@@ -5,6 +5,8 @@
     "createCta": "Sortu zure festa!",
     "titleLabel": "Festaren izenburua",
     "titlePlaceholder": "Adib.: Leoren urtebetetzea",
+    "venueNameLabel": "Lekuaren izena (aukerakoa)",
+    "venueNamePlaceholder": "adib. Jungla jolas-parkea",
     "addressLabel": "Helbidea",
     "addressPlaceholder": "Bilatu helbidea…",
     "startsAtLabel": "Data eta ordua",

@@ -5,6 +5,8 @@
     "createCta": "Create a party",
     "titleLabel": "Party title",
     "titlePlaceholder": "e.g. Leo's birthday",
+    "venueNameLabel": "Venue name (optional)",
+    "venueNamePlaceholder": "e.g. Jungle Play Park",
     "addressLabel": "Address",
     "addressPlaceholder": "Search address…",
     "startsAtLabel": "Date & time",

@@ -16,6 +16,7 @@ describe('AddressAutocomplete (Google path)', () => {
     ])
     vi.spyOn(gp, 'googlePlaceDetails').mockResolvedValue({
       label: 'Plaza Mayor, Madrid',
+      name: 'Plaza Mayor',
       lat: 40.4,
       lng: -3.7,
     })
@@ -32,6 +33,7 @@ describe('AddressAutocomplete (Google path)', () => {
       address: 'Plaza Mayor, Madrid',
       lat: 40.4,
       lng: -3.7,
+      name: 'Plaza Mayor',
     })
   })
 })

@@ -37,6 +37,7 @@ const RsvpSchema = z.object({
 
 const EventDetailsSchema = z.object({
   title: z.string(),
+  venueName: z.string().default(''),
   address: z.string().default(''),
   startsAt: z.string(),
   endsAt: z.string().nullable().default(null),

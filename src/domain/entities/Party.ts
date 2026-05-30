@@ -47,6 +47,7 @@ export interface Rsvp {
 
 export interface EventDetails {
   title: string
+  venueName: string
   address: string
   startsAt: string // ISO-8601
   endsAt: string | null
@@ -68,6 +69,7 @@ export interface PartySnapshot {
 
 export interface CreatePartyInput {
   title: string
+  venueName?: string
   address: string
   startsAt: string
   endsAt: string | null
@@ -81,6 +83,7 @@ export interface CreatePartyInput {
 
 function normalizeDetails(input: {
   title: string
+  venueName?: string
   address: string
   startsAt: string
   endsAt: string | null
@@ -93,6 +96,7 @@ function normalizeDetails(input: {
   if (title.length < 1 || title.length > 100) throw new Error('Party: title must be 1..100 chars')
   return {
     title,
+    venueName: input.venueName?.trim() ?? '',
     address: input.address.trim(),
     startsAt: input.startsAt,
     endsAt: input.endsAt,
@@ -129,6 +133,7 @@ export class Party {
       ...s,
       event: {
         ...s.event,
+        venueName: s.event.venueName ?? '',
         allDay: s.event.allDay ?? false,
         lat: s.event.lat ?? null,
         lng: s.event.lng ?? null,
@@ -155,6 +160,7 @@ export class Party {
 
   editDetails(input: {
     title: string
+    venueName?: string
     address: string
     startsAt: string
     endsAt: string | null

@@ -37,11 +37,13 @@ describe('googlePlaces', () => {
         json: async () => ({
           location: { latitude: 40.4, longitude: -3.7 },
           formattedAddress: 'Plaza Mayor',
+          displayName: { text: 'Plaza Mayor de Madrid' },
         }),
       }),
     )
     expect(await googlePlaceDetails('p1', 'k')).toEqual({
       label: 'Plaza Mayor',
+      name: 'Plaza Mayor de Madrid',
       lat: 40.4,
       lng: -3.7,
     })

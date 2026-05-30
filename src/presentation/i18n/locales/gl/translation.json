@@ -5,6 +5,8 @@
     "createCta": "Crea a túa festa!",
     "titleLabel": "Título da festa",
     "titlePlaceholder": "Ex.: Aniversario de Leo",
+    "venueNameLabel": "Nome do lugar (opcional)",
+    "venueNamePlaceholder": "p. ex. Parque de bólas Xungla",
     "addressLabel": "Enderezo",
     "addressPlaceholder": "Busca o enderezo…",
     "startsAtLabel": "Data e hora",

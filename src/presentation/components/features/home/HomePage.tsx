@@ -32,6 +32,7 @@ function CreateForm({
   const { status, run } = useSubmitting()
 
   const [title, setTitle] = useState('')
+  const [venueName, setVenueName] = useState('')
   const [address, setAddress] = useState('')
   const [lat, setLat] = useState<number | null>(null)
   const [lng, setLng] = useState<number | null>(null)
@@ -52,6 +53,7 @@ function CreateForm({
         const { startsAt, endsAt, allDay } = composeEventTimes(fields)
         const result = await container.resolve<CreatePartyHandler>('createParty').execute({
           title,
+          venueName,
           address,
           startsAt,
           endsAt,
@@ -83,14 +85,22 @@ function CreateForm({
           placeholder={t('home.titlePlaceholder')}
           required
         />
+        <Input
+          label={t('home.venueNameLabel')}
+          type="text"
+          value={venueName}
+          onChange={(e) => setVenueName(e.target.value)}
+          placeholder={t('home.venueNamePlaceholder')}
+        />
         <AddressAutocomplete
           value={address}
           lat={lat}
           lng={lng}
-          onChange={({ address: a, lat: la, lng: ln }) => {
-            setAddress(a)
-            setLat(la)
-            setLng(ln)
+          onChange={(v) => {
+            setAddress(v.address)
+            setLat(v.lat)
+            setLng(v.lng)
+            if (v.name) setVenueName(v.name)
           }}
         />
         <DateTimeFields value={fields} onChange={setFields} />

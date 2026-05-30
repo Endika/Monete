@@ -8,6 +8,7 @@ export interface AddressAutocompleteValue {
   address: string
   lat: number | null
   lng: number | null
+  name?: string
 }
 
 interface Props {
@@ -91,7 +92,12 @@ export function AddressAutocomplete({ value, onChange }: Props) {
     if (s.placeId && key) {
       void googlePlaceDetails(s.placeId, key).then((details) => {
         if (details) {
-          onChange({ address: details.label, lat: details.lat, lng: details.lng })
+          onChange({
+            address: details.label,
+            lat: details.lat,
+            lng: details.lng,
+            name: details.name,
+          })
         } else {
           onChange({ address: s.label, lat: null, lng: null })
         }

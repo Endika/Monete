@@ -62,7 +62,7 @@ export function GuestPage({ partyId }: GuestPageProps) {
 
   const calendarEvent = {
     title: snapshot.event.title,
-    address: snapshot.event.address,
+    address: [snapshot.event.venueName, snapshot.event.address].filter(Boolean).join(', '),
     startsAt: snapshot.event.startsAt,
     endsAt: snapshot.event.endsAt,
     allDay: snapshot.event.allDay,
@@ -146,11 +146,21 @@ export function GuestPage({ partyId }: GuestPageProps) {
               </span>
               {formattedDate}
             </p>
-            {snapshot.event.address && (
-              <p className="text-sm text-cocoa/70 font-body flex items-center gap-1.5">
+            {snapshot.event.venueName && (
+              <p className="text-sm font-semibold text-cocoa font-body flex items-center gap-1.5">
                 <span aria-hidden className="text-sky">
                   &#128205;
                 </span>
+                {snapshot.event.venueName}
+              </p>
+            )}
+            {snapshot.event.address && (
+              <p className="text-sm text-cocoa/70 font-body flex items-center gap-1.5">
+                {!snapshot.event.venueName && (
+                  <span aria-hidden className="text-sky">
+                    &#128205;
+                  </span>
+                )}
                 <a
                   href={googleMapsUrl(snapshot.event.address, {
                     lat: snapshot.event.lat,

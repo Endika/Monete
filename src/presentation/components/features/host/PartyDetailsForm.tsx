@@ -11,6 +11,7 @@ import { useSubmitting } from '@/presentation/hooks/useSubmitting'
 interface PartyDetailsFormProps {
   initial: {
     title: string
+    venueName?: string
     address: string
     startsAt: string
     endsAt: string | null
@@ -21,6 +22,7 @@ interface PartyDetailsFormProps {
   }
   onSave: (details: {
     title: string
+    venueName: string
     address: string
     startsAt: string
     endsAt: string | null
@@ -35,6 +37,7 @@ export function PartyDetailsForm({ initial, onSave }: PartyDetailsFormProps) {
   const { t } = useTranslation()
   const { status, run } = useSubmitting()
   const [title, setTitle] = useState(initial.title)
+  const [venueName, setVenueName] = useState(initial.venueName ?? '')
   const [address, setAddress] = useState(initial.address)
   const [lat, setLat] = useState<number | null>(initial.lat ?? null)
   const [lng, setLng] = useState<number | null>(initial.lng ?? null)
@@ -50,7 +53,7 @@ export function PartyDetailsForm({ initial, onSave }: PartyDetailsFormProps) {
   const handleSave = () => {
     const { startsAt, endsAt, allDay } = composeEventTimes(fields)
     run(async () => {
-      await onSave({ title, address, startsAt, endsAt, requirements, allDay, lat, lng })
+      await onSave({ title, venueName, address, startsAt, endsAt, requirements, allDay, lat, lng })
     }).catch(() => {})
   }
 
@@ -64,14 +67,22 @@ export function PartyDetailsForm({ initial, onSave }: PartyDetailsFormProps) {
         placeholder={t('home.titlePlaceholder')}
         required
       />
+      <Input
+        label={t('home.venueNameLabel')}
+        type="text"
+        value={venueName}
+        onChange={(e) => setVenueName(e.target.value)}
+        placeholder={t('home.venueNamePlaceholder')}
+      />
       <AddressAutocomplete
         value={address}
         lat={lat}
         lng={lng}
-        onChange={({ address: a, lat: la, lng: ln }) => {
-          setAddress(a)
-          setLat(la)
-          setLng(ln)
+        onChange={(v) => {
+          setAddress(v.address)
+          setLat(v.lat)
+          setLng(v.lng)
+          if (v.name) setVenueName(v.name)
         }}
       />
       <DateTimeFields value={fields} onChange={setFields} />

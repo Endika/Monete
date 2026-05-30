@@ -5,6 +5,7 @@ type T = (key: string, vars?: Record<string, unknown>) => string
 export interface VenueSummaryDetails {
   title: string
   startsAt: string
+  venueName: string
   address: string
   requirements: string
 }
@@ -12,7 +13,8 @@ export interface VenueSummaryDetails {
 export function formatVenueSummary(details: VenueSummaryDetails, hc: Headcount, t: T): string {
   const lines: string[] = []
   lines.push(`🎂 ${details.title} — ${details.startsAt}`)
-  if (details.address) lines.push(`📍 ${details.address}`)
+  const loc = [details.venueName, details.address].filter(Boolean).join(' — ')
+  if (loc) lines.push(`📍 ${loc}`)
   if (details.requirements) lines.push(`⚠️ ${details.requirements}`)
   lines.push('')
   lines.push(

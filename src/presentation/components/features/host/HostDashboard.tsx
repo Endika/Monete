@@ -103,6 +103,7 @@ export function HostDashboard({ partyId }: HostDashboardProps) {
 
   const handleSaveDetails = async (details: {
     title: string
+    venueName: string
     address: string
     startsAt: string
     endsAt: string | null

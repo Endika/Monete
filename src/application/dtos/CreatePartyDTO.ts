@@ -2,6 +2,7 @@ import { z } from 'zod'
 
 export const CreatePartySchema = z.object({
   title: z.string().trim().min(1).max(100),
+  venueName: z.string().trim().max(120).default(''),
   address: z.string().trim().max(300).default(''),
   startsAt: z.string().datetime(),
   endsAt: z.string().datetime().nullable().default(null),

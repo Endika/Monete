@@ -14,6 +14,7 @@ export class EditPartyDetailsHandler {
       Party.restore(row.snapshot)
         .editDetails({
           title: p.title,
+          venueName: p.venueName,
           address: p.address,
           lat: p.lat,
           lng: p.lng,

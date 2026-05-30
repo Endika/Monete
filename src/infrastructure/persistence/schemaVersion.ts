@@ -4,4 +4,4 @@
  * server-side trigger rejects writes carrying a lower value, so a stale cached
  * client can no longer silently drop fields it does not know about.
  */
-export const SCHEMA_VERSION = 4
+export const SCHEMA_VERSION = 5

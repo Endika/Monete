@@ -52,6 +52,21 @@ describe('host config handlers', () => {
     expect(event.lng).toBe(-3.7038)
   })
 
+  it('forwards venueName when editing details', async () => {
+    const repo = new InMemoryPartyRepository()
+    const id = await freshParty(repo)
+    await new EditPartyDetailsHandler(repo).execute({
+      partyId: id,
+      title: 'Leo turns 5',
+      address: 'Fun Park',
+      startsAt: '2026-06-20T17:00:00.000Z',
+      endsAt: null,
+      requirements: '',
+      venueName: 'Jungle Park',
+    })
+    expect((await repo.findById(id))?.snapshot.event.venueName).toBe('Jungle Park')
+  })
+
   it('adds then removes a question', async () => {
     const repo = new InMemoryPartyRepository()
     const id = await freshParty(repo)

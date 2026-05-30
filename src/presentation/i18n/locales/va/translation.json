@@ -5,6 +5,8 @@
     "createCta": "Crea la teua festa!",
     "titleLabel": "Títol de la festa",
     "titlePlaceholder": "Ex.: Aniversari del Leo",
+    "venueNameLabel": "Nom del lloc (opcional)",
+    "venueNamePlaceholder": "p. ex. Parc de boles Jungla",
     "addressLabel": "Adreça",
     "addressPlaceholder": "Cerca l'adreça…",
     "startsAtLabel": "Data i hora",

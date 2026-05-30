@@ -63,6 +63,37 @@ describe('parsePartySnapshot', () => {
     expect(parsed.rsvps[0]!.children[1]!.isBirthday).toBe(true)
   })
 
+  it('defaults venueName to empty when absent and preserves a value', () => {
+    const absent = parsePartySnapshot({
+      id: 'abc1234',
+      event: {
+        title: 'X',
+        address: '',
+        startsAt: '2026-06-20T17:00:00.000Z',
+        endsAt: null,
+        requirements: '',
+      },
+      createdAt: '2026-05-29T00:00:00.000Z',
+      updatedAt: '2026-05-29T00:00:00.000Z',
+    })
+    expect(absent.event.venueName).toBe('')
+
+    const present = parsePartySnapshot({
+      id: 'abc1234',
+      event: {
+        title: 'X',
+        address: '',
+        startsAt: '2026-06-20T17:00:00.000Z',
+        endsAt: null,
+        requirements: '',
+        venueName: 'Jungle Park',
+      },
+      createdAt: '2026-05-29T00:00:00.000Z',
+      updatedAt: '2026-05-29T00:00:00.000Z',
+    })
+    expect(present.event.venueName).toBe('Jungle Park')
+  })
+
   it('throws on a missing mandatory field', () => {
     expect(() => parsePartySnapshot({ id: 'abc1234' })).toThrow(/validation failed/i)
   })
