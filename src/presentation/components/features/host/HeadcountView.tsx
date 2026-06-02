@@ -1,9 +1,19 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { PartySnapshot } from '@/domain/entities/Party'
+import type { PartySnapshot, AnswerValue, QuestionType } from '@/domain/entities/Party'
 import { computeHeadcount } from '@/presentation/utils/headcount'
 import { Button } from '@/presentation/components/common/Button'
 import { VenueSummaryModal } from '@/presentation/components/features/host/VenueSummaryModal'
+
+// Read-only formatting of a single answer for the host's quick-view accordion.
+function formatAnswer(value: AnswerValue, type: QuestionType, locale: string): string {
+  if (value === null || value === '') return '—'
+  if (type === 'date') {
+    const d = new Date(String(value))
+    return Number.isNaN(d.getTime()) ? String(value) : d.toLocaleDateString(locale)
+  }
+  return String(value)
+}
 
 interface HeadcountViewProps {
   snapshot: PartySnapshot
@@ -18,9 +28,23 @@ export function HeadcountView({
   onDeleteRsvp,
   onAddGuest,
 }: HeadcountViewProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const hc = computeHeadcount(snapshot)
   const [showSummary, setShowSummary] = useState(false)
+  const [expanded, setExpanded] = useState<Set<string>>(new Set())
+
+  const familyQuestions = snapshot.questions.filter((q) => q.scope === 'family')
+  const childQuestions = snapshot.questions.filter((q) => q.scope === 'child')
+  const hasQuestions = familyQuestions.length > 0 || childQuestions.length > 0
+
+  const toggleExpanded = (rsvpId: string) => {
+    setExpanded((prev) => {
+      const next = new Set(prev)
+      if (next.has(rsvpId)) next.delete(rsvpId)
+      else next.add(rsvpId)
+      return next
+    })
+  }
 
   const handleDelete = (rsvpId: string) => {
     if (window.confirm(t('common.confirmDelete'))) {
@@ -119,37 +143,97 @@ export function HeadcountView({
       {/* Per-family rows with optional actions */}
       {snapshot.rsvps.length > 0 && (onEditRsvp ?? onDeleteRsvp) && (
         <ul className="flex flex-col gap-2">
-          {snapshot.rsvps.map((rsvp) => (
-            <li
-              key={rsvp.id}
-              className="flex flex-wrap items-center gap-2 rounded-2xl bg-white border border-cocoa/10 px-4 py-3"
-            >
-              <span className="font-display font-bold text-cocoa text-sm flex-1">
-                {rsvp.parentsLabel}
-              </span>
-              <span className="text-xs text-cocoa/50 font-body">
-                {rsvp.children.map((c) => c.name).join(', ')}
-              </span>
-              {onEditRsvp && (
-                <button
-                  type="button"
-                  onClick={() => onEditRsvp(rsvp.id)}
-                  className="text-xs font-semibold text-sky hover:text-sky/80 transition-colors"
-                >
-                  {t('host.editResponse')}
-                </button>
-              )}
-              {onDeleteRsvp && (
-                <button
-                  type="button"
-                  onClick={() => handleDelete(rsvp.id)}
-                  className="text-xs font-semibold text-raspberry hover:text-raspberry/80 transition-colors"
-                >
-                  {t('host.deleteResponse')}
-                </button>
-              )}
-            </li>
-          ))}
+          {snapshot.rsvps.map((rsvp) => {
+            const isOpen = expanded.has(rsvp.id)
+            return (
+              <li
+                key={rsvp.id}
+                className="flex flex-col gap-2 rounded-2xl bg-white border border-cocoa/10 px-4 py-3"
+              >
+                <div className="flex flex-wrap items-center gap-2">
+                  {hasQuestions ? (
+                    <button
+                      type="button"
+                      onClick={() => toggleExpanded(rsvp.id)}
+                      aria-expanded={isOpen}
+                      className="flex flex-1 items-center gap-2 text-left text-cocoa hover:text-cocoa/70 transition-colors"
+                    >
+                      <span className="text-xs text-cocoa/40 w-3">{isOpen ? '▾' : '▸'}</span>
+                      <span className="font-display font-bold text-sm">{rsvp.parentsLabel}</span>
+                      <span className="text-xs text-cocoa/50 font-body">
+                        {rsvp.children.map((c) => c.name).join(', ')}
+                      </span>
+                    </button>
+                  ) : (
+                    <div className="flex flex-1 items-center gap-2">
+                      <span className="font-display font-bold text-cocoa text-sm">
+                        {rsvp.parentsLabel}
+                      </span>
+                      <span className="text-xs text-cocoa/50 font-body">
+                        {rsvp.children.map((c) => c.name).join(', ')}
+                      </span>
+                    </div>
+                  )}
+                  {onEditRsvp && (
+                    <button
+                      type="button"
+                      onClick={() => onEditRsvp(rsvp.id)}
+                      className="text-xs font-semibold text-sky hover:text-sky/80 transition-colors"
+                    >
+                      {t('host.editResponse')}
+                    </button>
+                  )}
+                  {onDeleteRsvp && (
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(rsvp.id)}
+                      className="text-xs font-semibold text-raspberry hover:text-raspberry/80 transition-colors"
+                    >
+                      {t('host.deleteResponse')}
+                    </button>
+                  )}
+                </div>
+                {isOpen && hasQuestions && (
+                  <div className="flex flex-col gap-3 border-t border-cocoa/10 pt-2 pl-5">
+                    {familyQuestions.length > 0 && (
+                      <dl className="flex flex-col gap-1">
+                        {familyQuestions.map((q) => (
+                          <div key={q.id} className="flex flex-wrap gap-x-2 text-sm">
+                            <dt className="text-cocoa/60 font-body">{q.label}:</dt>
+                            <dd className="text-cocoa font-semibold font-body">
+                              {formatAnswer(
+                                rsvp.familyAnswers[q.id] ?? null,
+                                q.type,
+                                i18n.language,
+                              )}
+                            </dd>
+                          </div>
+                        ))}
+                      </dl>
+                    )}
+                    {childQuestions.length > 0 &&
+                      rsvp.children.map((c) => (
+                        <div key={c.id} className="flex flex-col gap-1">
+                          <span className="font-display font-bold text-cocoa text-xs">
+                            {c.name}
+                          </span>
+                          <dl className="flex flex-col gap-1 pl-3">
+                            {childQuestions.map((q) => (
+                              <div key={q.id} className="flex flex-wrap gap-x-2 text-sm">
+                                <dt className="text-cocoa/60 font-body">{q.label}:</dt>
+                                <dd className="text-cocoa font-semibold font-body">
+                                  {formatAnswer(c.answers[q.id] ?? null, q.type, i18n.language)}
+                                </dd>
+                              </div>
+                            ))}
+                          </dl>
+                        </div>
+                      ))}
+                  </div>
+                )}
+              </li>
+            )
+          })}
         </ul>
       )}
 
