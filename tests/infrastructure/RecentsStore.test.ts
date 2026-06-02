@@ -35,4 +35,26 @@ describe('RecentsStore', () => {
     s.removeJoined('p1')
     expect(s.getJoined('p1')).toBeUndefined()
   })
+
+  it('updateHosted updates an existing entry in place without reordering', () => {
+    const s = new RecentsStore(memStorage())
+    s.addHosted({ id: 'a', title: 'Old A', startsAt: '2026-01-01T00:00:00.000Z' })
+    s.addHosted({ id: 'b', title: 'B', startsAt: '2026-02-01T00:00:00.000Z' })
+    // current order is most-recent-first: ['b', 'a']
+    s.updateHosted('a', { title: 'New A', startsAt: '2026-03-01T00:00:00.000Z' })
+    const list = s.listHosted()
+    expect(list.map((e) => e.id)).toEqual(['b', 'a'])
+    expect(list.find((e) => e.id === 'a')).toEqual({
+      id: 'a',
+      title: 'New A',
+      startsAt: '2026-03-01T00:00:00.000Z',
+    })
+  })
+
+  it('updateHosted is a no-op when the id is not present', () => {
+    const s = new RecentsStore(memStorage())
+    s.addHosted({ id: 'a', title: 'A', startsAt: '2026-01-01T00:00:00.000Z' })
+    s.updateHosted('missing', { title: 'X' })
+    expect(s.listHosted()).toEqual([{ id: 'a', title: 'A', startsAt: '2026-01-01T00:00:00.000Z' }])
+  })
 })
