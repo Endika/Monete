@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.0](https://github.com/Endika/Monete/compare/v1.10.0...v1.11.0) (2026-06-02)
+
+
+### Features
+
+* **host:** expand guest rows to view their answers inline ([4742e1f](https://github.com/Endika/Monete/commit/4742e1f38404dee071da1ddc3890532d63fc21e8))
+
 ## [1.10.0](https://github.com/Endika/Monete/compare/v1.9.0...v1.10.0) (2026-05-30)
 
 
