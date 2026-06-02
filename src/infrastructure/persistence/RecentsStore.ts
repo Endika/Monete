@@ -45,6 +45,17 @@ export class RecentsStore {
   addHosted(e: HostedEntry): void {
     this.write(HOSTED_KEY, e)
   }
+  updateHosted(id: string, patch: Partial<Omit<HostedEntry, 'id'>>): void {
+    const list = this.read<HostedEntry>(HOSTED_KEY)
+    const index = list.findIndex((e) => e.id === id)
+    if (index === -1) return
+    list[index] = { ...list[index]!, ...patch }
+    try {
+      this.storage.setItem(HOSTED_KEY, JSON.stringify(list))
+    } catch {
+      /* storage full / unavailable — non-fatal */
+    }
+  }
   addJoined(e: JoinedEntry): void {
     this.write(JOINED_KEY, e)
   }

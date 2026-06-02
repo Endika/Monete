@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParty } from '@/presentation/context/PartyContext'
 import { useContainer } from '@/presentation/context/ContainerProvider'
@@ -20,9 +20,11 @@ import { ErrorBanner } from '@/presentation/components/common/ErrorBanner'
 import { RsvpForm } from '@/presentation/components/features/guest/RsvpForm'
 import { whatsAppShareUrl } from '@/presentation/utils/shareWhatsApp'
 import { HeadcountView } from '@/presentation/components/features/host/HeadcountView'
+import { RecentsStore } from '@/infrastructure/persistence/RecentsStore'
 
 interface HostDashboardProps {
   partyId: string
+  recents?: RecentsStore
 }
 
 function SectionCard({
@@ -80,10 +82,12 @@ function rsvpToInitial(r: {
   }
 }
 
-export function HostDashboard({ partyId }: HostDashboardProps) {
+export function HostDashboard({ partyId, recents }: HostDashboardProps) {
   const { t } = useTranslation()
   const { snapshot, loading, refresh } = useParty()
   const container = useContainer()
+  const defaultRecents = useMemo(() => new RecentsStore(), [])
+  const recentsStore = recents ?? defaultRecents
   const [error, setError] = useState<string | null>(null)
   const [newPin, setNewPin] = useState('')
   const [pinSaved, setPinSaved] = useState(false)
@@ -117,6 +121,8 @@ export function HostDashboard({ partyId }: HostDashboardProps) {
         .resolve<EditPartyDetailsHandler>('editPartyDetails')
         .execute({ partyId, ...details, allDay: details.allDay ?? false })
       await refresh()
+      // keep the local "my events" list snapshot in sync with the edited details
+      recentsStore.updateHosted(partyId, { title: details.title, startsAt: details.startsAt })
     } catch (err) {
       handleError(err)
       throw err
