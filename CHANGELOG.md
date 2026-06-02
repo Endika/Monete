@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.1](https://github.com/Endika/Monete/compare/v1.11.0...v1.11.1) (2026-06-02)
+
+
+### Bug Fixes
+
+* sync my-events list title after editing event details ([70d88d6](https://github.com/Endika/Monete/commit/70d88d6d350c757ad618e14b267ff925ea2231e1))
+
 ## [1.11.0](https://github.com/Endika/Monete/compare/v1.10.0...v1.11.0) (2026-06-02)
 
 
