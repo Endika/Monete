@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.2](https://github.com/Endika/Monete/compare/v1.11.1...v1.11.2) (2026-06-06)
+
+
+### Chores
+
+* **deps:** bump the npm-minor-patch group with 12 updates ([b721b5d](https://github.com/Endika/Monete/commit/b721b5d6603e158bf66e8cea907caa33f36f4f3a))
+
 ## [1.11.1](https://github.com/Endika/Monete/compare/v1.11.0...v1.11.1) (2026-06-02)
 
 
