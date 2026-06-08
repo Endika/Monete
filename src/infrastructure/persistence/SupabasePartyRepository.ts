@@ -8,6 +8,7 @@ import {
   StaleClientError,
   WrongPinError,
   PayloadTooLargeError,
+  RateLimitedError,
 } from '@/domain/repositories/IPartyRepository'
 import { parsePartySnapshot } from '@/infrastructure/persistence/PartySnapshotSchema'
 import { SCHEMA_VERSION } from '@/infrastructure/persistence/schemaVersion'
@@ -20,6 +21,8 @@ function mapRpcError(error: { code?: string } | null): Error | null {
       return new WrongPinError()
     case 'PT413':
       return new PayloadTooLargeError()
+    case 'PT429':
+      return new RateLimitedError()
     case 'PT426':
       return new StaleClientError()
     default:
@@ -100,7 +103,8 @@ export class SupabasePartyRepository implements IPartyRepository {
 
   async verifyPin(id: string, pin: string): Promise<boolean> {
     const { data, error } = await this.client.rpc('verify_party_pin', { p_id: id, p_pin: pin })
-    if (error) throw error
+    const mapped = mapRpcError(error)
+    if (mapped) throw mapped
     return data === true
   }
 

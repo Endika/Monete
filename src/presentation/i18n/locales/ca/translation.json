@@ -53,6 +53,7 @@
     "pinGateHelp": "Àrea de l'organitzador — introdueix el PIN d'edició que vas posar en crear la festa.",
     "unlock": "Desbloquejar",
     "wrongPin": "PIN incorrecte",
+    "tooManyAttempts": "Massa intents. Espera uns minuts.",
     "editResponse": "Editar",
     "deleteResponse": "Eliminar",
     "addGuest": "Afegir convidat/da",

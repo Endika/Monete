@@ -44,6 +44,15 @@ export class PayloadTooLargeError extends Error {
   }
 }
 
+/** Server rejected a PIN attempt because too many failures happened in the window. */
+export class RateLimitedError extends Error {
+  readonly code = 'RATE_LIMITED'
+  constructor() {
+    super('Too many PIN attempts; try again later')
+    this.name = 'RateLimitedError'
+  }
+}
+
 export interface IPartyRepository {
   findById(id: string): Promise<ReadResult | null>
   getVersion(id: string): Promise<number | null>

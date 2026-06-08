@@ -6,12 +6,16 @@ import {
   VersionConflictError,
   WrongPinError,
   PayloadTooLargeError,
+  RateLimitedError,
 } from '@/domain/repositories/IPartyRepository'
 
 // Mirror of the SQL caps in 0004_harden_access.sql — keep in sync.
 const MAX_PARTY_BYTES = 262144
 const MAX_RSVP_BYTES = 8192
 const MAX_RSVPS = 300
+// Mirror of the PIN throttle in 0005_pin_rate_limit.sql (count-based; the SQL adds a
+// 15-minute sliding window the fake doesn't model — the observable contract is the cap).
+const PIN_ATTEMPT_LIMIT = 10
 
 interface Row {
   snapshot: PartySnapshot
@@ -29,7 +33,24 @@ function byteLen(value: unknown): number {
  */
 export class InMemoryPartyRepository implements IPartyRepository {
   private rows = new Map<string, Row>()
+  private pinFails = new Map<string, number>()
   findByIdCalls = 0
+
+  /** Throttle gate: raise once the failed-attempt cap is hit (mirrors monete_pin_guard). */
+  private pinGuard(id: string): void {
+    if ((this.pinFails.get(id) ?? 0) >= PIN_ATTEMPT_LIMIT) throw new RateLimitedError()
+  }
+
+  /** Verify the supplied pin against a PIN-protected row, recording the attempt. */
+  private checkPin(row: Row, id: string, pin: string | null): void {
+    if (row.pin === null) return
+    this.pinGuard(id)
+    if (pin !== row.pin) {
+      this.pinFails.set(id, (this.pinFails.get(id) ?? 0) + 1)
+      throw new WrongPinError()
+    }
+    this.pinFails.delete(id)
+  }
 
   async findById(id: string): Promise<ReadResult | null> {
     this.findByIdCalls++
@@ -59,7 +80,7 @@ export class InMemoryPartyRepository implements IPartyRepository {
   ): Promise<SaveResult> {
     const row = this.rows.get(id)
     if (!row) throw new Error('Party not found')
-    if (row.pin !== null && pin !== row.pin) throw new WrongPinError()
+    this.checkPin(row, id, pin)
     if (row.version !== expectedVersion) throw new VersionConflictError(row.version)
     if (byteLen(snapshot) > MAX_PARTY_BYTES) throw new PayloadTooLargeError()
     row.snapshot = structuredClone(snapshot)
@@ -70,7 +91,7 @@ export class InMemoryPartyRepository implements IPartyRepository {
   async setPin(id: string, newPin: string | null, currentPin: string | null): Promise<void> {
     const row = this.rows.get(id)
     if (!row) throw new Error('Party not found')
-    if (row.pin !== null && currentPin !== row.pin) throw new WrongPinError()
+    this.checkPin(row, id, currentPin)
     if (newPin !== null && !/^\d{4,6}$/.test(newPin)) throw new Error('Invalid PIN format')
     row.pin = newPin
     row.version += 1
@@ -79,7 +100,14 @@ export class InMemoryPartyRepository implements IPartyRepository {
   async verifyPin(id: string, pin: string): Promise<boolean> {
     const row = this.rows.get(id)
     if (!row) return false
-    return row.pin === null || row.pin === pin
+    if (row.pin === null) return true
+    this.pinGuard(id)
+    if (row.pin === pin) {
+      this.pinFails.delete(id)
+      return true
+    }
+    this.pinFails.set(id, (this.pinFails.get(id) ?? 0) + 1)
+    return false
   }
 
   async appendRsvp(id: string, rsvp: Rsvp): Promise<void> {

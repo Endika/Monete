@@ -53,6 +53,7 @@
     "pinGateHelp": "Área del organizador — introduce el PIN de edición que pusiste al crear la fiesta.",
     "unlock": "Desbloquear",
     "wrongPin": "PIN incorrecto",
+    "tooManyAttempts": "Demasiados intentos. Espera unos minutos.",
     "editResponse": "Editar",
     "deleteResponse": "Eliminar",
     "addGuest": "Añadir invitado/a",

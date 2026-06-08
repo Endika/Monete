@@ -26,13 +26,18 @@ export function PinGate({ partyId, hasPin, children }: PinGateProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const ok = await container.resolve<VerifyPinHandler>('verifyPin').execute(partyId, pin)
-    if (ok) {
-      // Keep the verified PIN for the session so privileged actions can pass it server-side.
-      setUnlockedPin(pin)
-      setUnlocked(true)
-    } else {
-      setError(t('host.wrongPin'))
+    try {
+      const ok = await container.resolve<VerifyPinHandler>('verifyPin').execute(partyId, pin)
+      if (ok) {
+        // Keep the verified PIN for the session so privileged actions can pass it server-side.
+        setUnlockedPin(pin)
+        setUnlocked(true)
+      } else {
+        setError(t('host.wrongPin'))
+      }
+    } catch (err) {
+      const code = err instanceof Error ? (err as Error & { code?: string }).code : undefined
+      setError(code === 'RATE_LIMITED' ? t('host.tooManyAttempts') : t('host.wrongPin'))
     }
   }
 
