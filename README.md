@@ -34,6 +34,13 @@
 - **Server-side edit PIN** — when a party has an edit PIN, config edits and PIN changes are verified **server-side** (the PIN hash is computed in Postgres and never shipped to clients). A party **without** a PIN stays editable by anyone holding its link — that is by design, to keep the no-signup flow; treat the host link as the capability and keep it private.
 - **Bounded writes** — RSVP submissions are capped (per-RSVP size, RSVP count, and total blob size) to prevent storage/egress abuse. RSVP appends are atomic, so concurrent families never clobber each other.
 
+### Privacy
+
+- **No cookies, no tracking, no ads** — so no consent banner. An in-app privacy notice (Footer → Privacy) states what's stored and links the erasure path.
+- **Erasure** — the host can hard-delete a party (and all family data) any time via "Delete party" (`delete_party` RPC, PIN-gated). This is the data-subject erasure mechanism.
+- **Retention** — a daily `pg_cron` job (`monete-retention`) deletes parties 90 days after the event date.
+- Personal data lives only in `parties.data` (child names, optional DOB + allergies, parent label); the table is `COMMENT`-tagged as holding special-category (health) data of minors.
+
 ### Accepted limitations (by the no-signup design)
 
 - **A PIN-less party is fully open to link-holders.** Anyone with the link can edit it, and can set the *first* PIN themselves — so the no-signup model can't stop a malicious link-holder from locking a host out of a party the host left PIN-less. Set a PIN if that matters.

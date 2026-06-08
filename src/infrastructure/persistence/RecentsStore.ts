@@ -70,4 +70,12 @@ export class RecentsStore {
       /* storage full / unavailable — non-fatal */
     }
   }
+  removeHosted(partyId: string): void {
+    const filtered = this.read<HostedEntry>(HOSTED_KEY).filter((e) => e.id !== partyId)
+    try {
+      this.storage.setItem(HOSTED_KEY, JSON.stringify(filtered))
+    } catch {
+      /* storage full / unavailable — non-fatal */
+    }
+  }
 }

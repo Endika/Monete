@@ -54,6 +54,9 @@
     "unlock": "Desbloquear",
     "wrongPin": "PIN incorrecto",
     "tooManyAttempts": "Demasiados intentos. Agarda uns minutos.",
+    "deleteParty": "Eliminar festa",
+    "deletePartyHelp": "Borra a festa e todos os datos das familias de forma permanente.",
+    "deletePartyConfirm": "Seguro? Isto elimina a festa e todas as respostas para sempre. Non se pode desfacer.",
     "editResponse": "Editar",
     "deleteResponse": "Eliminar",
     "addGuest": "Engadir convidado/a",
@@ -90,6 +93,11 @@
     "breakdown": "Nenos/as: {{children}} ({{invited}} convidados/as · {{siblings}} irmáns/ás) · Adultos/as: {{adults}}",
     "snack": "merenda: {{snack}}",
     "allergies": "alergias: {{allergies}}"
+  },
+  "privacy": {
+    "link": "Privacidade",
+    "title": "Privacidade",
+    "body": "Monete non usa cookies, non rastrexa e non mostra publicidade.\n\nQue gardamos: só o que o organizador pide na festa (nomes dos cativos, e se se activan, data de nacemento e alerxias, ademais do número de adultos). Non pedimos contas, nin email, nin pagos.\n\nOnde: os datos gárdanse cifrados en servidores de Supabase en Europa.\n\nCanto tempo: cada festa bórrase automaticamente 90 días despois da súa data.\n\nBorrado: o organizador pode eliminar a festa e todos os seus datos en calquera momento con «Eliminar festa». Tamén podes escribir a endika2@gmail.com.\n\nContacto: endika2@gmail.com."
   },
   "common": {
     "tooLarge": "A festa está chea ou a resposta é grande de máis.",

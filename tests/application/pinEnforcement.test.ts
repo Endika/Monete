@@ -4,6 +4,7 @@ import { WrongPinError, RateLimitedError } from '@/domain/repositories/IPartyRep
 import { CreatePartyHandler } from '@/application/handlers/CreatePartyHandler'
 import { EditPartyDetailsHandler } from '@/application/handlers/EditPartyDetailsHandler'
 import { SetEditPinHandler } from '@/application/handlers/SetEditPinHandler'
+import { DeletePartyHandler } from '@/application/handlers/DeletePartyHandler'
 
 async function freshParty(repo: InMemoryPartyRepository): Promise<string> {
   const r = await new CreatePartyHandler(repo).execute({
@@ -80,5 +81,23 @@ describe('server-side PIN enforcement (threaded through the handlers)', () => {
     expect(await repo.verifyPin(id, '1234')).toBe(true) // resets the counter
     for (let i = 0; i < 9; i++) await repo.verifyPin(id, '0000')
     expect(await repo.verifyPin(id, '1234')).toBe(true) // still not throttled
+  })
+
+  it('deletes a party with the correct PIN and rejects a wrong one (erasure path)', async () => {
+    const repo = new InMemoryPartyRepository()
+    const id = await freshParty(repo)
+    await new SetEditPinHandler(repo).execute({ partyId: id, pin: '1234' })
+    await expect(new DeletePartyHandler(repo).execute(id, '0000')).rejects.toBeInstanceOf(
+      WrongPinError,
+    )
+    await new DeletePartyHandler(repo).execute(id, '1234')
+    expect(await repo.findById(id)).toBeNull()
+  })
+
+  it('deletes a PIN-less party without a PIN', async () => {
+    const repo = new InMemoryPartyRepository()
+    const id = await freshParty(repo)
+    await new DeletePartyHandler(repo).execute(id, null)
+    expect(await repo.findById(id)).toBeNull()
   })
 })

@@ -108,6 +108,12 @@ export class SupabasePartyRepository implements IPartyRepository {
     return data === true
   }
 
+  async deleteParty(id: string, pin: string | null): Promise<void> {
+    const { error } = await this.client.rpc('delete_party', { p_id: id, p_pin: pin })
+    const mapped = mapRpcError(error)
+    if (mapped) throw mapped
+  }
+
   async appendRsvp(id: string, rsvp: Rsvp): Promise<void> {
     const { error } = await this.client.rpc('append_rsvp', { p_id: id, p_rsvp: rsvp })
     const mapped = mapRpcError(error)

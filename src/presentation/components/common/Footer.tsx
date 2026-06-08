@@ -1,12 +1,14 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { LanguageSwitcher } from '@/presentation/components/common/LanguageSwitcher'
+import { Modal } from '@/presentation/components/common/Modal'
 import { useInstallPrompt } from '@/presentation/hooks/useInstallPrompt'
 
 export function Footer() {
   const { t } = useTranslation()
   const { canInstall, isIos, isStandalone, promptInstall } = useInstallPrompt()
   const [showIosHint, setShowIosHint] = useState(false)
+  const [showPrivacy, setShowPrivacy] = useState(false)
 
   const showInstall = !isStandalone && (canInstall || isIos)
 
@@ -27,9 +29,27 @@ export function Footer() {
           )}
         </div>
       )}
+      <button
+        type="button"
+        onClick={() => setShowPrivacy(true)}
+        className="text-cocoa/40 underline-offset-2 hover:text-cocoa/60 hover:underline"
+      >
+        {t('privacy.link')}
+      </button>
       <div className="font-display font-bold tracking-wide text-cocoa/30">
         Monete <span className="font-body font-normal text-cocoa/20">v{__APP_VERSION__}</span>
       </div>
+
+      {showPrivacy && (
+        <Modal open onClose={() => setShowPrivacy(false)}>
+          <div className="flex flex-col gap-3">
+            <h2 className="font-display text-lg font-bold text-cocoa">{t('privacy.title')}</h2>
+            <p className="whitespace-pre-line text-sm leading-relaxed text-cocoa/70">
+              {t('privacy.body')}
+            </p>
+          </div>
+        </Modal>
+      )}
     </footer>
   )
 }

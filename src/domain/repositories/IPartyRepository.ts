@@ -72,6 +72,8 @@ export interface IPartyRepository {
   setPin(id: string, newPin: string | null, currentPin: string | null): Promise<void>
   /** UX unlock check: true when there is no PIN or `pin` matches. */
   verifyPin(id: string, pin: string): Promise<boolean>
+  /** Erasure: hard-delete the party (PIN-gated server-side when a PIN is set). */
+  deleteParty(id: string, pin: string | null): Promise<void>
   /** Guest RSVP submit — atomic append, never clobbers config or other rsvps. Bounded. */
   appendRsvp(id: string, rsvp: Rsvp): Promise<void>
   /** Atomic replace of one rsvp by id (guest/host edit). Bounded. */
