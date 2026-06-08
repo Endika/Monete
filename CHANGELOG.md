@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/Endika/Monete/compare/v2.0.1...v2.1.0) (2026-06-08)
+
+
+### Features
+
+* **gdpr:** add party erasure, retention and privacy notice ([72366f5](https://github.com/Endika/Monete/commit/72366f57735b0b1b93f7233fdb2576282cc067ed))
+
 ## [2.0.1](https://github.com/Endika/Monete/compare/v2.0.0...v2.0.1) (2026-06-08)
 
 
