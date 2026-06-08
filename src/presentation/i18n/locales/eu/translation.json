@@ -53,6 +53,7 @@
     "pinGateHelp": "Antolatzailearen eremua — sartu festa sortzean ezarri zenuen edizio-PINa.",
     "unlock": "Desblokeatu",
     "wrongPin": "PIN okerra",
+    "tooManyAttempts": "Saiakera gehiegi. Itxaron minutu batzuk.",
     "editResponse": "Editatu",
     "deleteResponse": "Ezabatu",
     "addGuest": "Gonbidatua gehitu",

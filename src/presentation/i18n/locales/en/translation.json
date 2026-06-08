@@ -53,6 +53,7 @@
     "pinGateHelp": "Organizer area — enter the edit PIN you set when you created the party.",
     "unlock": "Unlock",
     "wrongPin": "Wrong PIN",
+    "tooManyAttempts": "Too many attempts. Try again in a few minutes.",
     "editResponse": "Edit",
     "deleteResponse": "Delete",
     "addGuest": "Add guest",

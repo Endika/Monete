@@ -120,6 +120,8 @@ function HostDashboardInner({ partyId, recents }: HostDashboardProps) {
       setError(t('common.updateRequired'))
     } else if (code === 'WRONG_PIN') {
       setError(t('host.wrongPin'))
+    } else if (code === 'RATE_LIMITED') {
+      setError(t('host.tooManyAttempts'))
     } else if (code === 'PAYLOAD_TOO_LARGE') {
       setError(t('common.tooLarge'))
     } else {
