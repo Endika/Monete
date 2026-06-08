@@ -8,6 +8,7 @@ import { EditPartyDetailsHandler } from '@/application/handlers/EditPartyDetails
 import { UpsertQuestionHandler } from '@/application/handlers/UpsertQuestionHandler'
 import { RemoveQuestionHandler } from '@/application/handlers/RemoveQuestionHandler'
 import { SetEditPinHandler } from '@/application/handlers/SetEditPinHandler'
+import { VerifyPinHandler } from '@/application/handlers/VerifyPinHandler'
 import { SubmitRsvpHandler } from '@/application/handlers/SubmitRsvpHandler'
 import { UpdateRsvpHandler } from '@/application/handlers/UpdateRsvpHandler'
 import { RemoveRsvpHandler } from '@/application/handlers/RemoveRsvpHandler'
@@ -23,6 +24,7 @@ export function buildContainer(opts: { inMemory?: boolean } = {}): Container {
   c.register('upsertQuestion', () => new UpsertQuestionHandler(c.resolve('partyRepo')))
   c.register('removeQuestion', () => new RemoveQuestionHandler(c.resolve('partyRepo')))
   c.register('setEditPin', () => new SetEditPinHandler(c.resolve('partyRepo')))
+  c.register('verifyPin', () => new VerifyPinHandler(c.resolve('partyRepo')))
   c.register('submitRsvp', () => new SubmitRsvpHandler(c.resolve('partyRepo')))
   c.register('updateRsvp', () => new UpdateRsvpHandler(c.resolve('partyRepo')))
   c.register('removeRsvp', () => new RemoveRsvpHandler(c.resolve('partyRepo')))

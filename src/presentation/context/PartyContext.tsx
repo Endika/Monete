@@ -14,6 +14,7 @@ import { RefreshPartyHandler } from '@/application/handlers/RefreshPartyHandler'
 interface PartyState {
   snapshot: PartySnapshot | null
   version: number
+  hasPin: boolean
   loading: boolean
   error: string | null
   refresh: () => Promise<void>
@@ -25,6 +26,7 @@ export function PartyProvider({ partyId, children }: { partyId: string; children
   const container = useContainer()
   const [snapshot, setSnapshot] = useState<PartySnapshot | null>(null)
   const [version, setVersion] = useState(0)
+  const [hasPin, setHasPin] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const refreshRef = useRef<(() => Promise<void>) | undefined>(undefined)
@@ -39,6 +41,7 @@ export function PartyProvider({ partyId, children }: { partyId: string; children
         if (cancelled) return
         setSnapshot(row?.snapshot ?? null)
         setVersion(row?.version ?? 0)
+        setHasPin(row?.hasPin ?? false)
         setError(null)
       } catch (e) {
         if (cancelled) return
@@ -61,7 +64,9 @@ export function PartyProvider({ partyId, children }: { partyId: string; children
   }, [])
 
   return (
-    <Ctx.Provider value={{ snapshot, version, loading, error, refresh }}>{children}</Ctx.Provider>
+    <Ctx.Provider value={{ snapshot, version, hasPin, loading, error, refresh }}>
+      {children}
+    </Ctx.Provider>
   )
 }
 

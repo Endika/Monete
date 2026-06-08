@@ -15,6 +15,14 @@ import { MapEmbed } from '@/presentation/components/features/event/MapEmbed'
 import { RecentsStore } from '@/infrastructure/persistence/RecentsStore'
 import type { AnswerMap } from '@/domain/entities/Party'
 
+/** Map a repository error to a user-facing message, honouring the server caps/guards. */
+function messageForError(t: (key: string) => string, e: unknown): string {
+  const code = e instanceof Error ? (e as Error & { code?: string }).code : undefined
+  if (code === 'PAYLOAD_TOO_LARGE') return t('common.tooLarge')
+  if (code === 'STALE_CLIENT') return t('common.updateRequired')
+  return e instanceof Error ? e.message : String(e)
+}
+
 interface GuestPageProps {
   partyId: string
 }
@@ -89,7 +97,7 @@ export function GuestPage({ partyId }: GuestPageProps) {
       setSubmitted(true)
       setSubmitError(null)
     } catch (e) {
-      setSubmitError(e instanceof Error ? e.message : String(e))
+      setSubmitError(messageForError(t, e))
       throw e
     }
   }
@@ -110,7 +118,7 @@ export function GuestPage({ partyId }: GuestPageProps) {
       setMode('view')
       setSubmitError(null)
     } catch (e) {
-      setSubmitError(e instanceof Error ? e.message : String(e))
+      setSubmitError(messageForError(t, e))
       throw e
     }
   }

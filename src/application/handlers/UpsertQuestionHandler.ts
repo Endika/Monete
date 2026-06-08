@@ -18,11 +18,16 @@ export class UpsertQuestionHandler {
       options: p.options,
       required: p.required,
     }
-    await withOptimisticRetry(this.repo, p.partyId, (row) => {
-      const party = Party.restore(row.snapshot)
-      return (
-        p.questionId ? party.updateQuestion(p.questionId, fields) : party.addQuestion(fields)
-      ).toSnapshot()
-    })
+    await withOptimisticRetry(
+      this.repo,
+      p.partyId,
+      (row) => {
+        const party = Party.restore(row.snapshot)
+        return (
+          p.questionId ? party.updateQuestion(p.questionId, fields) : party.addQuestion(fields)
+        ).toSnapshot()
+      },
+      p.pin ?? null,
+    )
   }
 }

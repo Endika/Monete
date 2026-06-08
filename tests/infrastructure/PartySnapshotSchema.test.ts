@@ -31,7 +31,6 @@ describe('parsePartySnapshot', () => {
     })
     expect(parsed.questions).toEqual([])
     expect(parsed.rsvps).toEqual([])
-    expect(parsed.editPin).toBeNull()
   })
 
   it('defaults isBirthday to false when absent and preserves true', () => {

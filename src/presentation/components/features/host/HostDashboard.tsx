@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParty } from '@/presentation/context/PartyContext'
 import { useContainer } from '@/presentation/context/ContainerProvider'
+import { EditPinProvider, useEditPin } from '@/presentation/context/EditPinContext'
 import type { EditPartyDetailsHandler } from '@/application/handlers/EditPartyDetailsHandler'
 import type { UpsertQuestionHandler } from '@/application/handlers/UpsertQuestionHandler'
 import type { RemoveQuestionHandler } from '@/application/handlers/RemoveQuestionHandler'
@@ -84,7 +85,25 @@ function rsvpToInitial(r: {
 
 export function HostDashboard({ partyId, recents }: HostDashboardProps) {
   const { t } = useTranslation()
-  const { snapshot, loading, refresh } = useParty()
+  const { hasPin, loading, snapshot } = useParty()
+
+  if (loading)
+    return <div className="p-8 text-center text-cocoa/60 font-body">{t('common.loading')}</div>
+  if (!snapshot) return <div className="p-8 text-center text-cocoa/60 font-body">Not found</div>
+
+  return (
+    <EditPinProvider>
+      <PinGate partyId={partyId} hasPin={hasPin}>
+        <HostDashboardInner partyId={partyId} recents={recents} />
+      </PinGate>
+    </EditPinProvider>
+  )
+}
+
+function HostDashboardInner({ partyId, recents }: HostDashboardProps) {
+  const { t } = useTranslation()
+  const { snapshot, hasPin, refresh } = useParty()
+  const { pin: editPin, setPin: setEditPin } = useEditPin()
   const container = useContainer()
   const defaultRecents = useMemo(() => new RecentsStore(), [])
   const recentsStore = recents ?? defaultRecents
@@ -93,13 +112,16 @@ export function HostDashboard({ partyId, recents }: HostDashboardProps) {
   const [pinSaved, setPinSaved] = useState(false)
   const [formState, setFormState] = useState<FormState>(null)
 
-  if (loading)
-    return <div className="p-8 text-center text-cocoa/60 font-body">{t('common.loading')}</div>
   if (!snapshot) return <div className="p-8 text-center text-cocoa/60 font-body">Not found</div>
 
   const handleError = (err: unknown) => {
-    if (err instanceof Error && (err as Error & { code?: string }).code === 'STALE_CLIENT') {
+    const code = err instanceof Error ? (err as Error & { code?: string }).code : undefined
+    if (code === 'STALE_CLIENT') {
       setError(t('common.updateRequired'))
+    } else if (code === 'WRONG_PIN') {
+      setError(t('host.wrongPin'))
+    } else if (code === 'PAYLOAD_TOO_LARGE') {
+      setError(t('common.tooLarge'))
     } else {
       setError(err instanceof Error ? err.message : String(err))
     }
@@ -119,7 +141,7 @@ export function HostDashboard({ partyId, recents }: HostDashboardProps) {
     try {
       await container
         .resolve<EditPartyDetailsHandler>('editPartyDetails')
-        .execute({ partyId, ...details, allDay: details.allDay ?? false })
+        .execute({ partyId, ...details, allDay: details.allDay ?? false, pin: editPin })
       await refresh()
       // keep the local "my events" list snapshot in sync with the edited details
       recentsStore.updateHosted(partyId, { title: details.title, startsAt: details.startsAt })
@@ -131,7 +153,9 @@ export function HostDashboard({ partyId, recents }: HostDashboardProps) {
 
   const handleUpsertQuestion = async (q: Omit<Question, 'id'> & { questionId?: string }) => {
     try {
-      await container.resolve<UpsertQuestionHandler>('upsertQuestion').execute({ partyId, ...q })
+      await container
+        .resolve<UpsertQuestionHandler>('upsertQuestion')
+        .execute({ partyId, ...q, pin: editPin })
       await refresh()
     } catch (err) {
       handleError(err)
@@ -143,7 +167,7 @@ export function HostDashboard({ partyId, recents }: HostDashboardProps) {
     try {
       await container
         .resolve<RemoveQuestionHandler>('removeQuestion')
-        .execute({ partyId, questionId })
+        .execute({ partyId, questionId, pin: editPin })
       await refresh()
     } catch (err) {
       handleError(err)
@@ -152,9 +176,12 @@ export function HostDashboard({ partyId, recents }: HostDashboardProps) {
 
   const handleSetPin = async () => {
     try {
+      const next = newPin || null
       await container
         .resolve<SetEditPinHandler>('setEditPin')
-        .execute({ partyId, pin: newPin || null })
+        .execute({ partyId, pin: next, currentPin: editPin })
+      // Adopt the new PIN for the session so subsequent edits keep working.
+      setEditPin(next)
       setNewPin('')
       await refresh()
       setPinSaved(true)
@@ -165,7 +192,10 @@ export function HostDashboard({ partyId, recents }: HostDashboardProps) {
 
   const handleRemovePin = async () => {
     try {
-      await container.resolve<SetEditPinHandler>('setEditPin').execute({ partyId, pin: null })
+      await container
+        .resolve<SetEditPinHandler>('setEditPin')
+        .execute({ partyId, pin: null, currentPin: editPin })
+      setEditPin(null)
       await refresh()
     } catch (err) {
       handleError(err)
@@ -211,103 +241,99 @@ export function HostDashboard({ partyId, recents }: HostDashboardProps) {
   }
 
   return (
-    <PinGate partyId={partyId} pinHash={snapshot.editPin}>
-      <div className="mx-auto max-w-lg px-4 py-10 flex flex-col gap-6">
-        <h1 className="font-display text-3xl font-extrabold text-cocoa">
-          {t('host.dashboardTitle')}
-        </h1>
+    <div className="mx-auto max-w-lg px-4 py-10 flex flex-col gap-6">
+      <h1 className="font-display text-3xl font-extrabold text-cocoa">
+        {t('host.dashboardTitle')}
+      </h1>
 
-        <ErrorBanner message={error} />
+      <ErrorBanner message={error} />
 
-        {/* Party details */}
-        <SectionCard accent="banana">
-          <PartyDetailsForm
-            key={snapshot.updatedAt}
-            initial={snapshot.event}
-            onSave={handleSaveDetails}
+      {/* Party details */}
+      <SectionCard accent="banana">
+        <PartyDetailsForm
+          key={snapshot.updatedAt}
+          initial={snapshot.event}
+          onSave={handleSaveDetails}
+        />
+      </SectionCard>
+
+      {/* Questions */}
+      <SectionCard accent="grape">
+        <h2 className="font-display text-lg font-bold text-cocoa mb-4">{t('host.questions')}</h2>
+        <QuestionBuilder
+          questions={snapshot.questions}
+          onUpsert={handleUpsertQuestion}
+          onRemove={handleRemoveQuestion}
+        />
+      </SectionCard>
+
+      {/* PIN */}
+      <SectionCard accent="sky">
+        <h2 className="font-display text-lg font-bold text-cocoa mb-4">{t('host.setPin')}</h2>
+        <div className="flex flex-col gap-3">
+          <p className="text-sm text-cocoa/50">{hasPin ? t('host.pinSet') : t('host.noPin')}</p>
+          <Input
+            label={t('host.setPin')}
+            type="password"
+            inputMode="numeric"
+            value={newPin}
+            onChange={(e) => {
+              setNewPin(e.target.value)
+              setPinSaved(false)
+            }}
           />
-        </SectionCard>
-
-        {/* Questions */}
-        <SectionCard accent="grape">
-          <h2 className="font-display text-lg font-bold text-cocoa mb-4">{t('host.questions')}</h2>
-          <QuestionBuilder
-            questions={snapshot.questions}
-            onUpsert={handleUpsertQuestion}
-            onRemove={handleRemoveQuestion}
-          />
-        </SectionCard>
-
-        {/* PIN */}
-        <SectionCard accent="sky">
-          <h2 className="font-display text-lg font-bold text-cocoa mb-4">{t('host.setPin')}</h2>
-          <div className="flex flex-col gap-3">
-            <p className="text-sm text-cocoa/50">
-              {snapshot.editPin ? t('host.pinSet') : t('host.noPin')}
-            </p>
-            <Input
-              label={t('host.setPin')}
-              type="password"
-              inputMode="numeric"
-              value={newPin}
-              onChange={(e) => {
-                setNewPin(e.target.value)
-                setPinSaved(false)
-              }}
-            />
-            <div className="flex gap-2 flex-wrap">
-              <Button type="button" onClick={handleSetPin}>
-                {t('host.setPin')}
+          <div className="flex gap-2 flex-wrap">
+            <Button type="button" onClick={handleSetPin}>
+              {t('host.setPin')}
+            </Button>
+            {hasPin && (
+              <Button type="button" variant="ghost" onClick={handleRemovePin}>
+                {t('host.removePin')}
               </Button>
-              {snapshot.editPin && (
-                <Button type="button" variant="ghost" onClick={handleRemovePin}>
-                  {t('host.removePin')}
-                </Button>
-              )}
-            </div>
-            {pinSaved && (
-              <span className="text-sm font-semibold text-mint">{t('common.pinSaved')}</span>
             )}
           </div>
-        </SectionCard>
+          {pinSaved && (
+            <span className="text-sm font-semibold text-mint">{t('common.pinSaved')}</span>
+          )}
+        </div>
+      </SectionCard>
 
-        {/* Headcount */}
-        <SectionCard accent="mint">
-          <HeadcountView
+      {/* Headcount */}
+      <SectionCard accent="mint">
+        <HeadcountView
+          snapshot={snapshot}
+          onAddGuest={() => setFormState({ mode: 'add' })}
+          onEditRsvp={(id) => setFormState({ mode: 'edit', rsvpId: id })}
+          onDeleteRsvp={handleDeleteRsvp}
+        />
+      </SectionCard>
+
+      {/* Add / edit RSVP modal */}
+      {formState && (
+        <Modal open onClose={() => setFormState(null)}>
+          <RsvpForm
+            key={formState.mode === 'edit' ? formState.rsvpId : 'add'}
             snapshot={snapshot}
-            onAddGuest={() => setFormState({ mode: 'add' })}
-            onEditRsvp={(id) => setFormState({ mode: 'edit', rsvpId: id })}
-            onDeleteRsvp={handleDeleteRsvp}
+            allowBirthday
+            initial={
+              formState.mode === 'edit'
+                ? rsvpToInitial(snapshot.rsvps.find((r) => r.id === formState.rsvpId)!)
+                : undefined
+            }
+            submitLabel={formState.mode === 'edit' ? t('host.editResponse') : t('host.addGuest')}
+            onSubmit={
+              formState.mode === 'edit'
+                ? (input) => handleUpdateRsvp(formState.rsvpId, input)
+                : handleAddRsvp
+            }
           />
-        </SectionCard>
+        </Modal>
+      )}
 
-        {/* Add / edit RSVP modal */}
-        {formState && (
-          <Modal open onClose={() => setFormState(null)}>
-            <RsvpForm
-              key={formState.mode === 'edit' ? formState.rsvpId : 'add'}
-              snapshot={snapshot}
-              allowBirthday
-              initial={
-                formState.mode === 'edit'
-                  ? rsvpToInitial(snapshot.rsvps.find((r) => r.id === formState.rsvpId)!)
-                  : undefined
-              }
-              submitLabel={formState.mode === 'edit' ? t('host.editResponse') : t('host.addGuest')}
-              onSubmit={
-                formState.mode === 'edit'
-                  ? (input) => handleUpdateRsvp(formState.rsvpId, input)
-                  : handleAddRsvp
-              }
-            />
-          </Modal>
-        )}
-
-        {/* Share */}
-        <Button type="button" onClick={handleShareGuestLink} className="w-full">
-          {t('host.shareGuestLink')}
-        </Button>
-      </div>
-    </PinGate>
+      {/* Share */}
+      <Button type="button" onClick={handleShareGuestLink} className="w-full">
+        {t('host.shareGuestLink')}
+      </Button>
+    </div>
   )
 }

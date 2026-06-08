@@ -91,6 +91,7 @@
     "allergies": "alergiak: {{allergies}}"
   },
   "common": {
+    "tooLarge": "Festa beteta dago edo erantzuna handiegia da.",
     "copy": "Kopiatu",
     "copied": "Kopiatuta",
     "shareWhatsApp": "WhatsApp-en partekatu",

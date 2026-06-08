@@ -10,8 +10,11 @@ export class RemoveQuestionHandler {
   constructor(private readonly repo: IPartyRepository) {}
   async execute(input: RemoveQuestionInput): Promise<void> {
     const p = RemoveQuestionSchema.parse(input)
-    await withOptimisticRetry(this.repo, p.partyId, (row) =>
-      Party.restore(row.snapshot).removeQuestion(p.questionId).toSnapshot(),
+    await withOptimisticRetry(
+      this.repo,
+      p.partyId,
+      (row) => Party.restore(row.snapshot).removeQuestion(p.questionId).toSnapshot(),
+      p.pin ?? null,
     )
   }
 }

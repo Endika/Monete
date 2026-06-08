@@ -62,7 +62,6 @@ export interface PartySnapshot {
   event: EventDetails
   questions: Question[]
   rsvps: Rsvp[]
-  editPin: string | null
   createdAt: string
   updatedAt: string
 }
@@ -121,7 +120,6 @@ export class Party {
       event: normalizeDetails(input),
       questions: [],
       rsvps: [],
-      editPin: null,
       createdAt: now,
       updatedAt: now,
     }
@@ -153,7 +151,6 @@ export class Party {
           isBirthday: c.isBirthday ?? false,
         })),
       })),
-      editPin: s.editPin ?? null,
     }
     return new Party(PartyId.of(s.id), backfilled)
   }
@@ -173,14 +170,6 @@ export class Party {
     const event = normalizeDetails(input)
     const now = input.now ?? new Date().toISOString()
     return new Party(this.id, { ...this.s, event, updatedAt: now })
-  }
-
-  setEditPin(hash: string | null, now?: string): Party {
-    return new Party(this.id, {
-      ...this.s,
-      editPin: hash,
-      updatedAt: now ?? new Date().toISOString(),
-    })
   }
 
   private static normalizeQuestionFields(input: Omit<Question, 'id'>): Omit<Question, 'id'> {
