@@ -54,6 +54,9 @@
     "unlock": "Desbloquejar",
     "wrongPin": "PIN incorrecte",
     "tooManyAttempts": "Massa intents. Espera uns minuts.",
+    "deleteParty": "Elimina la festa",
+    "deletePartyHelp": "Esborra la festa i totes les dades de les famílies de manera permanent.",
+    "deletePartyConfirm": "Segur? Això elimina la festa i totes les respostes per sempre. No es pot desfer.",
     "editResponse": "Editar",
     "deleteResponse": "Eliminar",
     "addGuest": "Afegir convidat/da",
@@ -90,6 +93,11 @@
     "breakdown": "Nens/es: {{children}} ({{invited}} convidats/des · {{siblings}} germans/anes) · Adults/es: {{adults}}",
     "snack": "berenar: {{snack}}",
     "allergies": "al·lèrgies: {{allergies}}"
+  },
+  "privacy": {
+    "link": "Privacitat",
+    "title": "Privacitat",
+    "body": "Monete no fa servir galetes, no fa seguiment i no mostra publicitat.\n\nQuè desem: només el que l'organitzador demana a la festa (noms dels infants, i si s'activen, data de naixement i al·lèrgies, a més del nombre d'adults). No demanem comptes, ni correu, ni pagaments.\n\nOn: les dades es desen xifrades en servidors de Supabase a Europa.\n\nQuant de temps: cada festa s'esborra automàticament 90 dies després de la seva data.\n\nEsborrat: l'organitzador pot eliminar la festa i totes les seves dades en qualsevol moment amb «Elimina la festa». També pots escriure a endika2@gmail.com.\n\nContacte: endika2@gmail.com."
   },
   "common": {
     "tooLarge": "La festa està plena o la resposta és massa gran.",

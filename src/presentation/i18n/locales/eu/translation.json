@@ -54,6 +54,9 @@
     "unlock": "Desblokeatu",
     "wrongPin": "PIN okerra",
     "tooManyAttempts": "Saiakera gehiegi. Itxaron minutu batzuk.",
+    "deleteParty": "Festa ezabatu",
+    "deletePartyHelp": "Festa eta familien datu guztiak betiko ezabatzen ditu.",
+    "deletePartyConfirm": "Ziur? Honek festa eta erantzun guztiak betiko ezabatzen ditu. Ezin da desegin.",
     "editResponse": "Editatu",
     "deleteResponse": "Ezabatu",
     "addGuest": "Gonbidatua gehitu",
@@ -90,6 +93,11 @@
     "breakdown": "Haurrak: {{children}} ({{invited}} gonbidatuta · {{siblings}} anai-arreba) · Helduak: {{adults}}",
     "snack": "askaria: {{snack}}",
     "allergies": "alergiak: {{allergies}}"
+  },
+  "privacy": {
+    "link": "Pribatutasuna",
+    "title": "Pribatutasuna",
+    "body": "Monetek ez du cookierik erabiltzen, ez du jarraipenik egiten eta ez du publizitaterik erakusten.\n\nZer gordetzen dugun: antolatzaileak festan eskatzen duena baino ez (haurren izenak, eta gaituz gero, jaiotza-data eta alergiak, baita helduen kopurua ere). Ez dugu konturik, emailik, ez ordainketarik eskatzen.\n\nNon: datuak zifratuta gordetzen dira Supabaseren Europako zerbitzarietan.\n\nZenbat denbora: festa bakoitza bere dataren 90 egunera ezabatzen da automatikoki.\n\nEzabatzea: antolatzaileak festa eta bere datu guztiak edonoiz ezaba ditzake «Festa ezabatu» erabiliz. endika2@gmail.com helbidera ere idatz dezakezu.\n\nKontaktua: endika2@gmail.com."
   },
   "common": {
     "tooLarge": "Festa beteta dago edo erantzuna handiegia da.",

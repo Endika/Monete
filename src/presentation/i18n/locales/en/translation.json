@@ -54,6 +54,9 @@
     "unlock": "Unlock",
     "wrongPin": "Wrong PIN",
     "tooManyAttempts": "Too many attempts. Try again in a few minutes.",
+    "deleteParty": "Delete party",
+    "deletePartyHelp": "Permanently delete the party and all family data.",
+    "deletePartyConfirm": "Are you sure? This permanently deletes the party and every response. It can't be undone.",
     "editResponse": "Edit",
     "deleteResponse": "Delete",
     "addGuest": "Add guest",
@@ -90,6 +93,11 @@
     "breakdown": "Children: {{children}} ({{invited}} invited · {{siblings}} siblings) · Adults: {{adults}}",
     "snack": "snack: {{snack}}",
     "allergies": "allergies: {{allergies}}"
+  },
+  "privacy": {
+    "link": "Privacy",
+    "title": "Privacy",
+    "body": "Monete uses no cookies, no tracking and no ads.\n\nWhat we store: only what the host asks for in the party (children's names, and if enabled, date of birth and allergies, plus the number of adults). No accounts, no email, no payments.\n\nWhere: data is stored encrypted on Supabase servers in Europe.\n\nHow long: each party is automatically deleted 90 days after its date.\n\nDeletion: the host can delete the party and all its data at any time with “Delete party”. You can also write to endika2@gmail.com.\n\nContact: endika2@gmail.com."
   },
   "common": {
     "tooLarge": "This party is full or the response is too large.",

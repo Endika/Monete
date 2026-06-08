@@ -7,6 +7,7 @@ import type { EditPartyDetailsHandler } from '@/application/handlers/EditPartyDe
 import type { UpsertQuestionHandler } from '@/application/handlers/UpsertQuestionHandler'
 import type { RemoveQuestionHandler } from '@/application/handlers/RemoveQuestionHandler'
 import type { SetEditPinHandler } from '@/application/handlers/SetEditPinHandler'
+import type { DeletePartyHandler } from '@/application/handlers/DeletePartyHandler'
 import type { SubmitRsvpHandler } from '@/application/handlers/SubmitRsvpHandler'
 import type { UpdateRsvpHandler } from '@/application/handlers/UpdateRsvpHandler'
 import type { RemoveRsvpHandler } from '@/application/handlers/RemoveRsvpHandler'
@@ -111,6 +112,7 @@ function HostDashboardInner({ partyId, recents }: HostDashboardProps) {
   const [newPin, setNewPin] = useState('')
   const [pinSaved, setPinSaved] = useState(false)
   const [formState, setFormState] = useState<FormState>(null)
+  const [confirmDelete, setConfirmDelete] = useState(false)
 
   if (!snapshot) return <div className="p-8 text-center text-cocoa/60 font-body">Not found</div>
 
@@ -237,6 +239,17 @@ function HostDashboardInner({ partyId, recents }: HostDashboardProps) {
     }
   }
 
+  const handleDeleteParty = async () => {
+    try {
+      await container.resolve<DeletePartyHandler>('deleteParty').execute(partyId, editPin)
+      recentsStore.removeHosted(partyId)
+      window.location.href = import.meta.env.BASE_URL
+    } catch (err) {
+      setConfirmDelete(false)
+      handleError(err)
+    }
+  }
+
   const handleShareGuestLink = () => {
     const url = `${window.location.origin}${import.meta.env.BASE_URL}?party=${partyId}`
     window.open(whatsAppShareUrl(url), '_blank')
@@ -336,6 +349,32 @@ function HostDashboardInner({ partyId, recents }: HostDashboardProps) {
       <Button type="button" onClick={handleShareGuestLink} className="w-full">
         {t('host.shareGuestLink')}
       </Button>
+
+      {/* Danger zone: erasure (GDPR) */}
+      <SectionCard accent="raspberry">
+        <h2 className="font-display text-lg font-bold text-cocoa mb-2">{t('host.deleteParty')}</h2>
+        <p className="mb-4 text-sm text-cocoa/50">{t('host.deletePartyHelp')}</p>
+        <Button type="button" variant="ghost" onClick={() => setConfirmDelete(true)}>
+          {t('host.deleteParty')}
+        </Button>
+      </SectionCard>
+
+      {confirmDelete && (
+        <Modal open onClose={() => setConfirmDelete(false)}>
+          <div className="flex flex-col gap-4">
+            <h2 className="font-display text-lg font-bold text-cocoa">{t('host.deleteParty')}</h2>
+            <p className="text-sm text-cocoa/70">{t('host.deletePartyConfirm')}</p>
+            <div className="flex gap-2 flex-wrap">
+              <Button type="button" onClick={handleDeleteParty}>
+                {t('common.delete')}
+              </Button>
+              <Button type="button" variant="ghost" onClick={() => setConfirmDelete(false)}>
+                {t('common.cancel')}
+              </Button>
+            </div>
+          </div>
+        </Modal>
+      )}
     </div>
   )
 }

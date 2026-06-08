@@ -110,6 +110,14 @@ export class InMemoryPartyRepository implements IPartyRepository {
     return false
   }
 
+  async deleteParty(id: string, pin: string | null): Promise<void> {
+    const row = this.rows.get(id)
+    if (!row) throw new Error('Party not found')
+    this.checkPin(row, id, pin)
+    this.rows.delete(id)
+    this.pinFails.delete(id)
+  }
+
   async appendRsvp(id: string, rsvp: Rsvp): Promise<void> {
     const row = this.rows.get(id)
     if (!row) throw new Error('Party not found')
