@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/Endika/Monete/compare/v1.11.2...v2.0.0) (2026-06-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* **security:** route all DB access through SECURITY DEFINER RPCs
+
+### Features
+
+* **security:** route all DB access through SECURITY DEFINER RPCs ([ac79d9a](https://github.com/Endika/Monete/commit/ac79d9ad3136153b2da84aa63e8a28910c06014d))
+
 ## [1.11.2](https://github.com/Endika/Monete/compare/v1.11.1...v1.11.2) (2026-06-06)
 
 
