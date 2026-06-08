@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/Endika/Monete/compare/v2.0.0...v2.0.1) (2026-06-08)
+
+
+### Bug Fixes
+
+* **security:** throttle server-side PIN guessing ([5021695](https://github.com/Endika/Monete/commit/5021695a0e829b7f86677f1302b0e12d583c34f0))
+
 ## [2.0.0](https://github.com/Endika/Monete/compare/v1.11.2...v2.0.0) (2026-06-08)
 
 
