@@ -110,10 +110,11 @@ describe('host config handlers', () => {
     expect((await repo.findById(id))!.snapshot.questions[0]!.options).toEqual(['Pizza', 'Sushi'])
   })
 
-  it('sets a pin hash', async () => {
+  it('sets a pin, then reads it back as hasPin', async () => {
     const repo = new InMemoryPartyRepository()
     const id = await freshParty(repo)
+    expect((await repo.findById(id))?.hasPin).toBe(false)
     await new SetEditPinHandler(repo).execute({ partyId: id, pin: '1234' })
-    expect((await repo.findById(id))?.snapshot.editPin).toMatch(/^[0-9a-f]{64}$/)
+    expect((await repo.findById(id))?.hasPin).toBe(true)
   })
 })

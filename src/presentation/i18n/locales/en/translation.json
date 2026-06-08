@@ -91,6 +91,7 @@
     "allergies": "allergies: {{allergies}}"
   },
   "common": {
+    "tooLarge": "This party is full or the response is too large.",
     "copy": "Copy",
     "copied": "Copied",
     "shareWhatsApp": "Share on WhatsApp",

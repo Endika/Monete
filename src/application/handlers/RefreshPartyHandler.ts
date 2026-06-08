@@ -1,9 +1,8 @@
-import type { PartySnapshot } from '@/domain/entities/Party'
-import type { IPartyRepository } from '@/domain/repositories/IPartyRepository'
+import type { IPartyRepository, ReadResult } from '@/domain/repositories/IPartyRepository'
 
 export class RefreshPartyHandler {
   constructor(private readonly repo: IPartyRepository) {}
-  async execute(partyId: string): Promise<{ snapshot: PartySnapshot; version: number } | null> {
+  async execute(partyId: string): Promise<ReadResult | null> {
     return this.repo.findById(partyId)
   }
 }

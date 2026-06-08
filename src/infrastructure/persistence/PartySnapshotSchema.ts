@@ -56,7 +56,6 @@ export const PartySnapshotSchema = z.object({
   event: EventDetailsSchema,
   questions: z.array(QuestionSchema).default([]),
   rsvps: z.array(RsvpSchema).default([]),
-  editPin: z.string().nullable().default(null),
   createdAt: z.string(),
   updatedAt: z.string(),
 })

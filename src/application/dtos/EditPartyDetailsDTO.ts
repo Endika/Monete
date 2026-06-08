@@ -10,5 +10,7 @@ export const EditPartyDetailsSchema = z.object({
   allDay: z.boolean().default(false),
   lat: z.number().nullable().optional().default(null),
   lng: z.number().nullable().optional().default(null),
+  /** Unlocked edit PIN (null for a PIN-less party). Enforced server-side. */
+  pin: z.string().nullable().optional(),
 })
 export type EditPartyDetailsInput = z.input<typeof EditPartyDetailsSchema>

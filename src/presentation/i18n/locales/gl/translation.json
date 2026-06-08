@@ -91,6 +91,7 @@
     "allergies": "alergias: {{allergies}}"
   },
   "common": {
+    "tooLarge": "A festa está chea ou a resposta é grande de máis.",
     "copy": "Copiar",
     "copied": "Copiado",
     "shareWhatsApp": "Compartir por WhatsApp",

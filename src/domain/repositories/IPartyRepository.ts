@@ -5,6 +5,13 @@ export interface SaveResult {
   version: number
 }
 
+/** Read result. `hasPin` replaces the old shipped PIN hash — the hash never leaves the server. */
+export interface ReadResult {
+  snapshot: PartySnapshot
+  version: number
+  hasPin: boolean
+}
+
 export class VersionConflictError extends Error {
   constructor(readonly currentVersion: number) {
     super(`Version conflict: server is at ${currentVersion}`)
@@ -19,15 +26,46 @@ export class StaleClientError extends Error {
   }
 }
 
+/** Server rejected a privileged write because the supplied edit PIN was wrong or missing. */
+export class WrongPinError extends Error {
+  readonly code = 'WRONG_PIN'
+  constructor() {
+    super('Wrong or missing edit PIN')
+    this.name = 'WrongPinError'
+  }
+}
+
+/** Server rejected a write because it would exceed the RSVP / blob size caps. */
+export class PayloadTooLargeError extends Error {
+  readonly code = 'PAYLOAD_TOO_LARGE'
+  constructor() {
+    super('Payload exceeds the allowed size or count limit')
+    this.name = 'PayloadTooLargeError'
+  }
+}
+
 export interface IPartyRepository {
-  findById(id: string): Promise<{ snapshot: PartySnapshot; version: number } | null>
+  findById(id: string): Promise<ReadResult | null>
   getVersion(id: string): Promise<number | null>
   create(snapshot: PartySnapshot): Promise<SaveResult>
-  /** Host config edits — optimistic concurrency. Throws VersionConflictError / StaleClientError. */
-  update(id: string, snapshot: PartySnapshot, expectedVersion: number): Promise<SaveResult>
-  /** Guest RSVP submit — atomic append, never clobbers config or other rsvps. */
+  /**
+   * Host config edits — optimistic concurrency, PIN-gated server-side.
+   * `pin` is the unlocked edit PIN (null for a PIN-less party).
+   * Throws VersionConflictError / StaleClientError / WrongPinError / PayloadTooLargeError.
+   */
+  update(
+    id: string,
+    snapshot: PartySnapshot,
+    expectedVersion: number,
+    pin: string | null,
+  ): Promise<SaveResult>
+  /** Set / change / remove the edit PIN. Changing or removing requires `currentPin`. */
+  setPin(id: string, newPin: string | null, currentPin: string | null): Promise<void>
+  /** UX unlock check: true when there is no PIN or `pin` matches. */
+  verifyPin(id: string, pin: string): Promise<boolean>
+  /** Guest RSVP submit — atomic append, never clobbers config or other rsvps. Bounded. */
   appendRsvp(id: string, rsvp: Rsvp): Promise<void>
-  /** Atomic replace of one rsvp by id (guest/host edit). */
+  /** Atomic replace of one rsvp by id (guest/host edit). Bounded. */
   updateRsvp(id: string, rsvpId: string, rsvp: Rsvp): Promise<void>
   /** Atomic remove of one rsvp by id. */
   removeRsvp(id: string, rsvpId: string): Promise<void>

@@ -1,29 +1,35 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { EditPin } from '@/domain/value-objects/EditPin'
+import { useContainer } from '@/presentation/context/ContainerProvider'
+import { useEditPin } from '@/presentation/context/EditPinContext'
+import type { VerifyPinHandler } from '@/application/handlers/VerifyPinHandler'
 import { Input } from '@/presentation/components/common/Input'
 import { Button } from '@/presentation/components/common/Button'
 import { ErrorBanner } from '@/presentation/components/common/ErrorBanner'
 
 interface PinGateProps {
   partyId: string
-  pinHash: string | null
+  hasPin: boolean
   children: React.ReactNode
 }
 
-export function PinGate({ partyId, pinHash, children }: PinGateProps) {
+export function PinGate({ partyId, hasPin, children }: PinGateProps) {
   const { t } = useTranslation()
+  const container = useContainer()
+  const { setPin: setUnlockedPin } = useEditPin()
   const [pin, setPin] = useState('')
   const [unlocked, setUnlocked] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  if (pinHash === null) return <>{children}</>
+  if (!hasPin) return <>{children}</>
   if (unlocked) return <>{children}</>
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const ok = await EditPin.verify(pin, pinHash, partyId)
+    const ok = await container.resolve<VerifyPinHandler>('verifyPin').execute(partyId, pin)
     if (ok) {
+      // Keep the verified PIN for the session so privileged actions can pass it server-side.
+      setUnlockedPin(pin)
       setUnlocked(true)
     } else {
       setError(t('host.wrongPin'))

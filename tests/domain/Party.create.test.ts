@@ -15,7 +15,6 @@ describe('Party.create', () => {
     expect(s.event.requirements).toBe('Non-slip socks required')
     expect(s.questions).toEqual([])
     expect(s.rsvps).toEqual([])
-    expect(s.editPin).toBeNull()
     expect(s.id).toMatch(/^[a-z0-9]{7}$/)
   })
 

@@ -66,16 +66,9 @@ describe('Party details + pin', () => {
       } as never,
       questions: [],
       rsvps: [],
-      editPin: null,
       createdAt: '2026-05-29T00:00:00.000Z',
       updatedAt: '2026-05-29T00:00:00.000Z',
     })
     expect(restored.toSnapshot().event.venueName).toBe('')
-  })
-
-  it('sets and clears the edit pin hash', () => {
-    const withPin = base().setEditPin('hash-abc', '2026-05-30T00:00:00.000Z')
-    expect(withPin.toSnapshot().editPin).toBe('hash-abc')
-    expect(withPin.setEditPin(null, '2026-05-31T00:00:00.000Z').toSnapshot().editPin).toBeNull()
   })
 })
