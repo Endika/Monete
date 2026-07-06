@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.1.2](https://github.com/Endika/Monete/compare/v2.1.1...v2.1.2) (2026-07-06)
+
+
+### Bug Fixes
+
+* **ci:** stop release-please auto-merge loop ([7ca19e0](https://github.com/Endika/Monete/commit/7ca19e08348e4733798f21ffac047c7f7c9de650))
+
+
+### Chores
+
+* **deps:** bump the npm-minor-patch group with 12 updates ([dff0a6d](https://github.com/Endika/Monete/commit/dff0a6dabe6e91f9add900bfb9962a9adddcdf0e))
+
 ## [2.1.1](https://github.com/Endika/Monete/compare/v2.1.0...v2.1.1) (2026-06-21)
 
 
