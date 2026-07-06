@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.1.3](https://github.com/Endika/Monete/compare/v2.1.2...v2.1.3) (2026-07-06)
+
+
+### Chores
+
+* **ci:** drop redundant deploy dispatch from release flow ([64493da](https://github.com/Endika/Monete/commit/64493dad70940f206d5dd65ad150229c4250e902))
+* **deps:** bump the npm-minor-patch group across 1 directory with 17 updates ([82deffa](https://github.com/Endika/Monete/commit/82deffa608a7229522e6d19c698a5d4cd55bd514))
+* **deps:** sync package-lock.json with bumped dependencies ([237a29d](https://github.com/Endika/Monete/commit/237a29d7d9a2f43d9f4027ef7903a4ac44551f56))
+
 ## [2.1.2](https://github.com/Endika/Monete/compare/v2.1.1...v2.1.2) (2026-07-06)
 
 
