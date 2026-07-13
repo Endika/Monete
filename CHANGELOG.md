@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.1.4](https://github.com/Endika/Monete/compare/v2.1.3...v2.1.4) (2026-07-13)
+
+
+### Bug Fixes
+
+* prevent accidental pinch and double-tap zoom on mobile ([49376ef](https://github.com/Endika/Monete/commit/49376ef0a337a7ea8717503ecf9e9e5f8a4d9e94))
+
+
+### Chores
+
+* **deps:** bump the npm-minor-patch group with 10 updates ([4e13a93](https://github.com/Endika/Monete/commit/4e13a93ce47e900db9860f9151d3d74b72d03f5a))
+
 ## [2.1.3](https://github.com/Endika/Monete/compare/v2.1.2...v2.1.3) (2026-07-06)
 
 
