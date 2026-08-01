@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.1.6](https://github.com/Endika/Monete/compare/v2.1.5...v2.1.6) (2026-08-01)
+
+
+### Chores
+
+* **deps-dev:** bump @testing-library/jest-dom from 6.9.1 to 7.0.0 ([f1de202](https://github.com/Endika/Monete/commit/f1de202183c9fc58a95f2a20c50f2c5b247ffd0a))
+* **deps-dev:** bump jsdom from 29.1.1 to 30.0.0 ([e2a4af2](https://github.com/Endika/Monete/commit/e2a4af2a294a8d4a8579cb3787f4d1a431f6a0f6))
+* **deps:** bump the npm-minor-patch group with 10 updates ([3c9c9f6](https://github.com/Endika/Monete/commit/3c9c9f6584ebedfad423e2d45a627650fa15046e))
+* **deps:** bump the npm-minor-patch group with 5 updates ([28cc066](https://github.com/Endika/Monete/commit/28cc066409ea2668638a296e2e6a8bf7d62a577e))
+
 ## [2.1.5](https://github.com/Endika/Monete/compare/v2.1.4...v2.1.5) (2026-07-20)
 
 
