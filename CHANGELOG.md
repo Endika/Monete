@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.1.7](https://github.com/Endika/Monete/compare/v2.1.6...v2.1.7) (2026-08-04)
+
+
+### Chores
+
+* **deps:** bump brace-expansion ([6402eb6](https://github.com/Endika/Monete/commit/6402eb605d635af5738b47afe026e8adcdbfc266))
+* **deps:** bump fast-uri from 3.1.2 to 3.1.5 ([6c4f6ea](https://github.com/Endika/Monete/commit/6c4f6ea35b1edd54dfc70a6ce7940c3cfeda9b9f))
+
 ## [2.1.6](https://github.com/Endika/Monete/compare/v2.1.5...v2.1.6) (2026-08-01)
 
 
