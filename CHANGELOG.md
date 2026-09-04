@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.1.8](https://github.com/Endika/Monete/compare/v2.1.7...v2.1.8) (2026-09-04)
+
+
+### Bug Fixes
+
+* override browserslist to 4.28.7 to clear the transitive advisory ([13614fa](https://github.com/Endika/Monete/commit/13614fa182d12b34b019ccc1caae4dee34e617f1))
+
+
+### Chores
+
+* **deps-dev:** bump the npm-minor-patch group with 6 updates ([6e3cb1d](https://github.com/Endika/Monete/commit/6e3cb1d12099d89861de01510aae6c373f01f09f))
+* **deps:** bump fast-uri in the security-npm group across 1 directory ([34e5151](https://github.com/Endika/Monete/commit/34e515123c8958dc60f31907ef8d58c18aa70fb8))
+* **deps:** bump the npm-minor-patch group with 10 updates ([526a707](https://github.com/Endika/Monete/commit/526a7070ac0a28027ca63b557f7f969867220bf2))
+* **deps:** bump the npm-minor-patch group with 12 updates ([bfe6628](https://github.com/Endika/Monete/commit/bfe6628bf085ea3df814eac0e39b3f2f0a2a0857))
+* **deps:** bump the npm-minor-patch group with 6 updates ([de1d171](https://github.com/Endika/Monete/commit/de1d171e8b9523bf74c6b6cfe0bde79b289487ff))
+* **deps:** bump the npm-minor-patch group with 7 updates ([39fa0cd](https://github.com/Endika/Monete/commit/39fa0cde7769605bbd26e9f73f188bd55c231a10))
+
 ## [2.1.7](https://github.com/Endika/Monete/compare/v2.1.6...v2.1.7) (2026-08-04)
 
 
