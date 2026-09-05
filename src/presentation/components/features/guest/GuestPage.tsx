@@ -48,7 +48,7 @@ function rsvpToInitial(rsvp: {
 
 export function GuestPage({ partyId }: GuestPageProps) {
   const { t, i18n } = useTranslation()
-  const { snapshot, loading, refresh } = useParty()
+  const { snapshot, refresh } = useParty()
   const container = useContainer()
   const recents = useMemo(() => new RecentsStore(), [])
 
@@ -59,9 +59,8 @@ export function GuestPage({ partyId }: GuestPageProps) {
     () => recents.getJoined(partyId)?.rsvpId ?? null,
   )
 
-  if (loading)
-    return <div className="p-8 text-center text-cocoa/60 font-body">{t('common.loading')}</div>
-  if (!snapshot) return <div className="p-8 text-center text-cocoa/60 font-body">Not found</div>
+  // PartyGate renders loading / gone / unavailable above us; this only narrows the type.
+  if (!snapshot) return null
 
   const formattedDate = new Intl.DateTimeFormat(i18n.language, {
     dateStyle: 'full',

@@ -4,6 +4,7 @@ import { PartyProvider } from '@/presentation/context/PartyContext'
 import { HomePage } from '@/presentation/components/features/home/HomePage'
 import { HostDashboard } from '@/presentation/components/features/host/HostDashboard'
 import { GuestPage } from '@/presentation/components/features/guest/GuestPage'
+import { PartyGate } from '@/presentation/components/common/PartyGate'
 import { Footer } from '@/presentation/components/common/Footer'
 import { AppHeader } from '@/presentation/components/common/AppHeader'
 import { OfflineBanner } from '@/presentation/components/features/pwa/OfflineBanner'
@@ -57,11 +58,13 @@ export default function App() {
       {route.partyId ? (
         // NOTE: client-side schema version-gate deferred; server write-guard + PWA autoUpdate cover stale clients.
         <PartyProvider partyId={route.partyId}>
-          {route.host ? (
-            <HostDashboard partyId={route.partyId} />
-          ) : (
-            <GuestPage partyId={route.partyId} />
-          )}
+          <PartyGate onHome={goHome}>
+            {route.host ? (
+              <HostDashboard partyId={route.partyId} />
+            ) : (
+              <GuestPage partyId={route.partyId} />
+            )}
+          </PartyGate>
         </PartyProvider>
       ) : (
         <HomePage onCreated={goToParty} onOpenParty={openParty} />

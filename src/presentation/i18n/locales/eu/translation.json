@@ -138,5 +138,18 @@
     "addTo": "Egutegira gehitu",
     "google": "Google Calendar",
     "appleOutlook": "Apple / Outlook (.ics)"
+  },
+  "gone": {
+    "title": "Festa hau jada ez dago",
+    "body": "Antolatzaileak ezabatu du, bere datu guztiekin batera. Zure zerrendatik kendu dezakezu, edo bertan utzi akatsen bat izan bada.",
+    "forget": "Kendu nire zerrendatik",
+    "keep": "Utzi oraingoz",
+    "confirmTitle": "Gailu honetatik kendu?",
+    "confirmBody": "Gailu honetako zure zerrendatik bakarrik desagertuko da. Berriro eskuragarri badago, bere estekarekin ireki ahal izango duzu."
+  },
+  "unavailable": {
+    "title": "Ezin izan dugu festa kargatu",
+    "body": "Konexio arazoa dirudi, ez festa ezabatu izana. Ez dugu zure zerrendako ezer ukitu.",
+    "retry": "Saiatu berriro"
   }
 }

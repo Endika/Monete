@@ -85,12 +85,10 @@ function rsvpToInitial(r: {
 }
 
 export function HostDashboard({ partyId, recents }: HostDashboardProps) {
-  const { t } = useTranslation()
-  const { hasPin, loading, snapshot } = useParty()
+  const { hasPin, status } = useParty()
 
-  if (loading)
-    return <div className="p-8 text-center text-cocoa/60 font-body">{t('common.loading')}</div>
-  if (!snapshot) return <div className="p-8 text-center text-cocoa/60 font-body">Not found</div>
+  // Never mount PinGate before hasPin is known — it would flash the dashboard unlocked.
+  if (status !== 'ready') return null
 
   return (
     <EditPinProvider>
@@ -114,7 +112,7 @@ function HostDashboardInner({ partyId, recents }: HostDashboardProps) {
   const [formState, setFormState] = useState<FormState>(null)
   const [confirmDelete, setConfirmDelete] = useState(false)
 
-  if (!snapshot) return <div className="p-8 text-center text-cocoa/60 font-body">Not found</div>
+  if (!snapshot) return null
 
   const handleError = (err: unknown) => {
     const code = err instanceof Error ? (err as Error & { code?: string }).code : undefined
