@@ -138,5 +138,18 @@
     "addTo": "Add to calendar",
     "google": "Google Calendar",
     "appleOutlook": "Apple / Outlook (.ics)"
+  },
+  "gone": {
+    "title": "This party no longer exists",
+    "body": "Its host deleted it, along with all its data. You can remove it from your list, or leave it in case this is a mistake.",
+    "forget": "Remove from my list",
+    "keep": "Leave it for now",
+    "confirmTitle": "Remove it from this device?",
+    "confirmBody": "It only disappears from your list on this device. If it comes back, you can open it again with its link."
+  },
+  "unavailable": {
+    "title": "We couldn't load the party",
+    "body": "This looks like a connection problem, not a deleted party. Nothing in your list has been touched.",
+    "retry": "Try again"
   }
 }

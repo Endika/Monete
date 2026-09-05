@@ -138,5 +138,18 @@
     "addTo": "Añadir al calendario",
     "google": "Google Calendar",
     "appleOutlook": "Apple / Outlook (.ics)"
+  },
+  "gone": {
+    "title": "Esta fiesta ya no existe",
+    "body": "Quien la organizaba la ha eliminado, con todos sus datos. Puedes quitarla de tu lista o dejarla por si fuese un error.",
+    "forget": "Quitar de mi lista",
+    "keep": "Dejarla de momento",
+    "confirmTitle": "¿Quitarla de este dispositivo?",
+    "confirmBody": "Solo desaparece de tu lista en este dispositivo. Si vuelve a estar disponible, podrás abrirla otra vez con su enlace."
+  },
+  "unavailable": {
+    "title": "No hemos podido cargar la fiesta",
+    "body": "Parece un problema de conexión, no que la fiesta se haya eliminado. No hemos tocado nada de tu lista.",
+    "retry": "Reintentar"
   }
 }
