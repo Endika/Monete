@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.1](https://github.com/Endika/Monete/compare/v2.2.0...v2.2.1) (2026-09-05)
+
+
+### Chores
+
+* run lint, prettier and typecheck over tests too ([f7e903b](https://github.com/Endika/Monete/commit/f7e903b9c2cba77d45ce55d403f90472e77f503f))
+
 ## [2.2.0](https://github.com/Endika/Monete/compare/v2.1.8...v2.2.0) (2026-09-05)
 
 
