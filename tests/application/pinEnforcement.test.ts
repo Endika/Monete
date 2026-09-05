@@ -39,9 +39,9 @@ describe('server-side PIN enforcement (threaded through the handlers)', () => {
     const repo = new InMemoryPartyRepository()
     const id = await freshParty(repo)
     await new SetEditPinHandler(repo).execute({ partyId: id, pin: '1234' })
-    await expect(new EditPartyDetailsHandler(repo).execute(details(id, '0000'))).rejects.toBeInstanceOf(
-      WrongPinError,
-    )
+    await expect(
+      new EditPartyDetailsHandler(repo).execute(details(id, '0000')),
+    ).rejects.toBeInstanceOf(WrongPinError)
   })
 
   it('accepts an edit with the correct PIN', async () => {

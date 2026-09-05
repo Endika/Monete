@@ -12,24 +12,20 @@ describe('GuestPage', () => {
   beforeEach(() => window.localStorage.clear())
   it('shows the participant list when RSVPs exist', async () => {
     const c = buildContainer({ inMemory: true })
-    const { party } = await c
-      .resolve<CreatePartyHandler>('createParty')
-      .execute({
-        title: 'P',
-        address: 'A',
-        startsAt: '2026-06-20T17:00:00.000Z',
-        endsAt: null,
-        requirements: '',
-        allDay: false,
-      })
-    await c
-      .resolve<SubmitRsvpHandler>('submitRsvp')
-      .execute({
-        partyId: party.id,
-        parentsLabel: 'Familia López',
-        familyAnswers: {},
-        children: [{ name: 'Leo', answers: {} }],
-      })
+    const { party } = await c.resolve<CreatePartyHandler>('createParty').execute({
+      title: 'P',
+      address: 'A',
+      startsAt: '2026-06-20T17:00:00.000Z',
+      endsAt: null,
+      requirements: '',
+      allDay: false,
+    })
+    await c.resolve<SubmitRsvpHandler>('submitRsvp').execute({
+      partyId: party.id,
+      parentsLabel: 'Familia López',
+      familyAnswers: {},
+      children: [{ name: 'Leo', answers: {} }],
+    })
     render(
       <ContainerProvider container={c}>
         <PartyProvider partyId={party.id}>

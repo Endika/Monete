@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render } from '@testing-library/react'
 import { MapEmbed } from '@/presentation/components/features/event/MapEmbed'
 import '@/presentation/i18n/config'
 

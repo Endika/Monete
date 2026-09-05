@@ -50,10 +50,7 @@ describe('RSVP caps (anti-ballooning / egress abuse)', () => {
     const repo = new InMemoryPartyRepository()
     const s = snap()
     // Seed near the total cap, plus a small target rsvp to edit.
-    s.rsvps = [
-      rsvp({ id: 'filler', parentsLabel: 'x'.repeat(256000) }),
-      rsvp({ id: 'target' }),
-    ]
+    s.rsvps = [rsvp({ id: 'filler', parentsLabel: 'x'.repeat(256000) }), rsvp({ id: 'target' })]
     await repo.create(s)
     // The replacement is under the per-rsvp cap but tips the total blob over MAX_PARTY_BYTES.
     await expect(

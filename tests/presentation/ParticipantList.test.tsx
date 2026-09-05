@@ -12,8 +12,16 @@ function snapTwo() {
     endsAt: null,
     requirements: '',
   })
-  const r1 = p.buildRsvp({ parentsLabel: 'Fam A', familyAnswers: {}, children: [{ name: 'Leo', answers: {} }] })
-  const r2 = p.buildRsvp({ parentsLabel: 'Fam B', familyAnswers: {}, children: [{ name: 'Mia', answers: {} }] })
+  const r1 = p.buildRsvp({
+    parentsLabel: 'Fam A',
+    familyAnswers: {},
+    children: [{ name: 'Leo', answers: {} }],
+  })
+  const r2 = p.buildRsvp({
+    parentsLabel: 'Fam B',
+    familyAnswers: {},
+    children: [{ name: 'Mia', answers: {} }],
+  })
   return { snapshot: { ...p.toSnapshot(), rsvps: [r1, r2] }, r1, r2 }
 }
 
@@ -21,7 +29,12 @@ describe('ParticipantList claim-button visibility', () => {
   it('shows "this is us" on every family when none is claimed', () => {
     const { snapshot } = snapTwo()
     render(
-      <ParticipantList snapshot={snapshot} onClaim={vi.fn()} onEdit={vi.fn()} onUnclaim={vi.fn()} />,
+      <ParticipantList
+        snapshot={snapshot}
+        onClaim={vi.fn()}
+        onEdit={vi.fn()}
+        onUnclaim={vi.fn()}
+      />,
     )
     expect(screen.getAllByRole('button', { name: 'This is us' })).toHaveLength(2)
   })
