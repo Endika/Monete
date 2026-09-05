@@ -53,6 +53,17 @@ export function PartyProvider({
   const [status, setStatus] = useState<PartyStatus>('loading')
   const [error, setError] = useState<string | null>(null)
   const refreshRef = useRef<(() => Promise<void>) | undefined>(undefined)
+  const [loadedId, setLoadedId] = useState(partyId)
+
+  // A new id starts from scratch, before anything renders: carrying the previous party's
+  // status and hasPin over would mount the host dashboard unlocked around stale data
+  // until the fetch lands.
+  if (loadedId !== partyId) {
+    setLoadedId(partyId)
+    setStatus('loading')
+    setSnapshot(null)
+    setHasPin(false)
+  }
 
   useEffect(() => {
     let cancelled = false

@@ -141,7 +141,7 @@
   },
   "gone": {
     "title": "Esta festa ja no existix",
-    "body": "Qui l'organitzava l'ha eliminada, amb totes les seues dades. Pots llevar-la de la teua llista o deixar-la per si fora un error.",
+    "body": "La festa s'ha eliminat, amb totes les seues dades. Pots llevar-la de la teua llista o deixar-la per si fora un error.",
     "forget": "Llevar de la meua llista",
     "keep": "Deixar-la de moment",
     "confirmTitle": "Llevar-la d'este dispositiu?",

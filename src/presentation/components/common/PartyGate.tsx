@@ -9,11 +9,13 @@ function Notice({
   emoji,
   title,
   body,
+  detail,
   children,
 }: {
   emoji: string
   title: string
   body: string
+  detail?: string | null
   children: ReactNode
 }) {
   return (
@@ -27,6 +29,7 @@ function Notice({
       <div>
         <h1 className="font-display text-2xl font-extrabold text-cocoa">{title}</h1>
         <p className="mt-2 font-body text-sm text-cocoa/70 leading-relaxed">{body}</p>
+        {detail && <p className="mt-2 font-body text-xs text-cocoa/40 break-words">{detail}</p>}
       </div>
       <div className="flex flex-wrap justify-center gap-2">{children}</div>
     </div>
@@ -77,21 +80,36 @@ function GoneNotice({ onHome }: { onHome: () => void }) {
  */
 export function PartyGate({ onHome, children }: { onHome: () => void; children: ReactNode }) {
   const { t } = useTranslation()
-  const { status, refresh } = useParty()
+  const { status, error, refresh } = useParty()
+  const [retrying, setRetrying] = useState(false)
 
   if (status === 'loading')
     return <div className="p-8 text-center text-cocoa/60 font-body">{t('common.loading')}</div>
 
   if (status === 'deleted') return <GoneNotice onHome={onHome} />
 
-  if (status === 'unavailable')
+  if (status === 'unavailable') {
+    const retry = async () => {
+      setRetrying(true)
+      try {
+        await refresh()
+      } finally {
+        setRetrying(false)
+      }
+    }
     return (
-      <Notice emoji="&#128246;" title={t('unavailable.title')} body={t('unavailable.body')}>
-        <Button type="button" onClick={() => void refresh()}>
-          {t('unavailable.retry')}
+      <Notice
+        emoji="&#128246;"
+        title={t('unavailable.title')}
+        body={t('unavailable.body')}
+        detail={error}
+      >
+        <Button type="button" disabled={retrying} onClick={() => void retry()}>
+          {retrying ? t('common.loading') : t('unavailable.retry')}
         </Button>
       </Notice>
     )
+  }
 
   return <>{children}</>
 }
