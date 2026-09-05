@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { ContainerProvider } from '@/presentation/context/ContainerProvider'
-import { PartyProvider } from '@/presentation/context/PartyContext'
+import { PartyProvider, useParty } from '@/presentation/context/PartyContext'
 import { PartyGate } from '@/presentation/components/common/PartyGate'
 import { RecentsStore } from '@/infrastructure/persistence/RecentsStore'
 import { buildContainer } from '@/shared/di/wiring'
@@ -30,9 +30,9 @@ function seedRecents(store: RecentsStore, ...ids: string[]) {
     store.addJoined({ id, title: id, startsAt: '2026-06-20T17:00:00.000Z', rsvpId: `r-${id}` })
 }
 
-async function createParty(c: Container) {
+async function createParty(c: Container, title = 'Leo cumple 5') {
   const { party } = await c.resolve<CreatePartyHandler>('createParty').execute({
-    title: 'Leo cumple 5',
+    title,
     address: 'A',
     startsAt: '2026-06-20T17:00:00.000Z',
     endsAt: null,
@@ -53,6 +53,18 @@ function renderGate(c: Container, partyId: string, store: RecentsStore, onHome =
     </ContainerProvider>,
   )
   return onHome
+}
+
+function StatusProbe() {
+  const { status, snapshot, refresh } = useParty()
+  return (
+    <>
+      <div>{`${status}:${snapshot?.event.title ?? '-'}`}</div>
+      <button type="button" onClick={() => void refresh()}>
+        refresh
+      </button>
+    </>
+  )
 }
 
 describe('PartyGate', () => {
@@ -141,5 +153,65 @@ describe('PartyGate', () => {
     failing = false
     await userEvent.click(screen.getByRole('button', { name: 'Try again' }))
     await waitFor(() => expect(screen.getByText('party contents')).toBeInTheDocument())
+  })
+
+  it('keeps a loaded party on screen when a later refresh fails', async () => {
+    const c = buildContainer({ inMemory: true })
+    const party = await createParty(c)
+    const repo = c.resolve<IPartyRepository>('partyRepo')
+    let failing = false
+    let calls = 0
+    const flaky = {
+      findById: async (id: string) => {
+        calls++
+        if (failing) throw new TypeError('Failed to fetch')
+        return repo.findById(id)
+      },
+    } as IPartyRepository
+    const container = new Container()
+    container.register('refreshParty', () => new RefreshPartyHandler(flaky))
+
+    render(
+      <ContainerProvider container={container}>
+        <PartyProvider partyId={party.id} recents={new RecentsStore(memStorage())}>
+          <PartyGate onHome={vi.fn()}>
+            <StatusProbe />
+          </PartyGate>
+        </PartyProvider>
+      </ContainerProvider>,
+    )
+    await screen.findByText(`ready:${party.event.title}`)
+
+    failing = true
+    await userEvent.click(screen.getByRole('button', { name: 'refresh' }))
+    await waitFor(() => expect(calls).toBe(2))
+
+    // A dead network says nothing about the party: the one on screen stays on screen.
+    expect(screen.getByText(`ready:${party.event.title}`)).toBeInTheDocument()
+    expect(screen.queryByText("We couldn't load the party")).not.toBeInTheDocument()
+  })
+
+  it('drops the previous party the moment the id changes', async () => {
+    const c = buildContainer({ inMemory: true })
+    const first = await createParty(c, 'Leo cumple 5')
+    const second = await createParty(c, 'Ane cumple 7')
+    const store = new RecentsStore(memStorage())
+
+    const tree = (partyId: string) => (
+      <ContainerProvider container={c}>
+        <PartyProvider partyId={partyId} recents={store}>
+          <PartyGate onHome={vi.fn()}>
+            <StatusProbe />
+          </PartyGate>
+        </PartyProvider>
+      </ContainerProvider>
+    )
+    const { rerender } = render(tree(first.id))
+    await screen.findByText('ready:Leo cumple 5')
+
+    rerender(tree(second.id))
+    // Carrying `ready` over would mount the host dashboard around the old party's data.
+    expect(screen.queryByText('ready:Leo cumple 5')).not.toBeInTheDocument()
+    await screen.findByText('ready:Ane cumple 7')
   })
 })

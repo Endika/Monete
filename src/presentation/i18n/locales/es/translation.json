@@ -141,7 +141,7 @@
   },
   "gone": {
     "title": "Esta fiesta ya no existe",
-    "body": "Quien la organizaba la ha eliminado, con todos sus datos. Puedes quitarla de tu lista o dejarla por si fuese un error.",
+    "body": "La fiesta se ha eliminado, con todos sus datos. Puedes quitarla de tu lista o dejarla por si fuese un error.",
     "forget": "Quitar de mi lista",
     "keep": "Dejarla de momento",
     "confirmTitle": "¿Quitarla de este dispositivo?",

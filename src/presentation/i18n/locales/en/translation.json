@@ -141,7 +141,7 @@
   },
   "gone": {
     "title": "This party no longer exists",
-    "body": "Its host deleted it, along with all its data. You can remove it from your list, or leave it in case this is a mistake.",
+    "body": "The party was deleted, along with all its data. You can remove it from your list, or leave it in case this is a mistake.",
     "forget": "Remove from my list",
     "keep": "Leave it for now",
     "confirmTitle": "Remove it from this device?",
