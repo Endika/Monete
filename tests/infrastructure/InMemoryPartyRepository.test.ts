@@ -26,7 +26,7 @@ describe('InMemoryPartyRepository', () => {
     const repo = new InMemoryPartyRepository()
     const s = snap()
     await repo.create(s)
-    await expect(repo.update(s.id, s, 99)).rejects.toBeInstanceOf(VersionConflictError)
+    await expect(repo.update(s.id, s, 99, null)).rejects.toBeInstanceOf(VersionConflictError)
   })
 
   it('append never loses concurrent rsvps', async () => {

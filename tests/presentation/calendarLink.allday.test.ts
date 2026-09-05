@@ -1,7 +1,13 @@
 import { describe, it, expect } from 'vitest'
 import { buildIcs, buildGoogleCalendarUrl } from '@/presentation/utils/calendarLink'
 
-const allDay = { title: 'Party', address: 'Home', startsAt: '2026-06-20T10:00:00.000Z', endsAt: null, allDay: true }
+const allDay = {
+  title: 'Party',
+  address: 'Home',
+  startsAt: '2026-06-20T10:00:00.000Z',
+  endsAt: null,
+  allDay: true,
+}
 
 describe('all-day calendar', () => {
   it('ics uses VALUE=DATE for all-day', () => {
