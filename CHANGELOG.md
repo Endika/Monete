@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.2.0](https://github.com/Endika/Monete/compare/v2.1.8...v2.2.0) (2026-09-05)
+
+
+### Features
+
+* distinguish a deleted party from an unreachable backend ([d6493b1](https://github.com/Endika/Monete/commit/d6493b10be1f93d48e433ea41971464cbe73d38b))
+
+
+### Bug Fixes
+
+* reset party state on id change and surface the load failure ([4bc86d7](https://github.com/Endika/Monete/commit/4bc86d73a0c8a668abd74078295e7581bcdd8923))
+
+
+### Chores
+
+* **deps:** bump the npm-minor-patch group with 12 updates ([de44a0e](https://github.com/Endika/Monete/commit/de44a0e532fe935712061e2bfca70eff538b3362))
+
 ## [2.1.8](https://github.com/Endika/Monete/compare/v2.1.7...v2.1.8) (2026-09-04)
 
 
