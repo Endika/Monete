@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.3](https://github.com/Endika/Monete/compare/v2.2.2...v2.2.3) (2026-09-07)
+
+
+### Bug Fixes
+
+* repoint the GDPR retention cron at the monete schema ([679fd0d](https://github.com/Endika/Monete/commit/679fd0d02b67859c1b8537c68595fcbe144d49b4))
+
 ## [2.2.2](https://github.com/Endika/Monete/compare/v2.2.1...v2.2.2) (2026-09-07)
 
 
