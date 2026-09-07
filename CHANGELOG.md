@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.2](https://github.com/Endika/Monete/compare/v2.2.1...v2.2.2) (2026-09-07)
+
+
+### Refactor
+
+* move Monete to its own monete schema ([8860245](https://github.com/Endika/Monete/commit/8860245d81392afb396baf9ab3771fcf115652c8))
+
 ## [2.2.1](https://github.com/Endika/Monete/compare/v2.2.0...v2.2.1) (2026-09-05)
 
 
