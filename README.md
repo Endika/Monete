@@ -76,6 +76,8 @@ supabase db push
 
 Or paste the files in `supabase/migrations/` (in order) directly into the Supabase SQL editor. `0004_harden_access.sql` closes direct table access and routes everything through RPCs — apply it on top of the earlier migrations.
 
+`0007_monete_schema.sql` moves everything into a `monete` schema; add `monete` to the project's exposed schemas (Settings → API) or every RPC returns 404.
+
 ### Commands
 
 | Command              | Description                               |

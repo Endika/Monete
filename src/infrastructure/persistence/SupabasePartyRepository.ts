@@ -1,4 +1,4 @@
-import type { SupabaseClient } from '@supabase/supabase-js'
+import type { MoneteClient } from '@/infrastructure/sync/SupabaseClient'
 import type { PartySnapshot, Rsvp } from '@/domain/entities/Party'
 import {
   type IPartyRepository,
@@ -37,7 +37,7 @@ interface GetPartyPayload {
 }
 
 export class SupabasePartyRepository implements IPartyRepository {
-  constructor(private readonly client: SupabaseClient) {}
+  constructor(private readonly client: MoneteClient) {}
 
   async findById(id: string): Promise<ReadResult | null> {
     const { data, error } = await this.client.rpc('get_party', { p_id: id })
