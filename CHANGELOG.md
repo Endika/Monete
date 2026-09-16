@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.0](https://github.com/Endika/Monete/compare/v2.2.3...v2.3.0) (2026-09-16)
+
+
+### Features
+
+* **ci:** block PRs that introduce high-severity dependency advisories ([81d3634](https://github.com/Endika/Monete/commit/81d363488e5e613df168ef7b013f1fdc92fff9e9))
+
 ## [2.2.3](https://github.com/Endika/Monete/compare/v2.2.2...v2.2.3) (2026-09-07)
 
 
