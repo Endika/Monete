@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.0](https://github.com/Endika/Monete/compare/v2.3.0...v2.4.0) (2026-09-16)
+
+
+### Features
+
+* **ci:** add CodeQL static analysis ([769327c](https://github.com/Endika/Monete/commit/769327ca7e00c777ddb11b977df43291a660c30c))
+
 ## [2.3.0](https://github.com/Endika/Monete/compare/v2.2.3...v2.3.0) (2026-09-16)
 
 
