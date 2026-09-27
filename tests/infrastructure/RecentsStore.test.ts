@@ -70,7 +70,7 @@ describe('RecentsStore', () => {
     })
   })
 
-  it('blankLocked clears title/startsAt but keeps the entry, its id and rsvpId', () => {
+  it('blankLocked clears title/startsAt, sets locked:true, keeps the entry, its id and rsvpId', () => {
     const s = new RecentsStore(memStorage())
     s.addHosted({ id: 'h1', title: 'Hosted party', startsAt: '2026-01-01T00:00:00.000Z' })
     s.addJoined({
@@ -83,8 +83,14 @@ describe('RecentsStore', () => {
     s.blankLocked('h1')
     s.blankLocked('j1')
 
-    expect(s.listHosted()).toEqual([{ id: 'h1', title: '', startsAt: '' }])
-    expect(s.getJoined('j1')).toEqual({ id: 'j1', title: '', startsAt: '', rsvpId: 'r1' })
+    expect(s.listHosted()).toEqual([{ id: 'h1', title: '', startsAt: '', locked: true }])
+    expect(s.getJoined('j1')).toEqual({
+      id: 'j1',
+      title: '',
+      startsAt: '',
+      rsvpId: 'r1',
+      locked: true,
+    })
   })
 
   it('blankLocked on an unknown id touches neither list', () => {
@@ -94,5 +100,27 @@ describe('RecentsStore', () => {
     expect(s.listHosted()).toEqual([
       { id: 'h1', title: 'Hosted party', startsAt: '2026-01-01T00:00:00.000Z' },
     ])
+  })
+
+  it('refreshEntry repopulates title/startsAt and clears locked, keeping rsvpId', () => {
+    const s = new RecentsStore(memStorage())
+    s.addJoined({
+      id: 'j1',
+      title: 'Joined party',
+      startsAt: '2026-02-01T00:00:00.000Z',
+      rsvpId: 'r1',
+    })
+    s.blankLocked('j1')
+    expect(s.getJoined('j1')!.locked).toBe(true)
+
+    s.refreshEntry('j1', { title: 'Joined party', startsAt: '2026-02-01T00:00:00.000Z' })
+
+    expect(s.getJoined('j1')).toEqual({
+      id: 'j1',
+      title: 'Joined party',
+      startsAt: '2026-02-01T00:00:00.000Z',
+      rsvpId: 'r1',
+      locked: false,
+    })
   })
 })
