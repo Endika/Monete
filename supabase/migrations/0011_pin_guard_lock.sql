@@ -26,3 +26,28 @@ begin
 end;
 $$;
 -- Stays revoked from anon (see 0005) — only the SECURITY DEFINER PIN RPCs call it.
+
+-- The guard's placeholder row (fails=0, inserted the first time anyone is ever checked for
+-- this party) must not anchor the window: a `fails = 0` row has to count exactly like no row
+-- at all — fails=1, window_start=now() — otherwise the first real failure could inherit a
+-- window_start from an arbitrarily earlier, uneventful guard call and shrink its own 15
+-- minutes.
+create or replace function monete.monete_pin_fail(p_id text)
+returns void language plpgsql security definer set search_path to '' as $$
+begin
+  insert into monete.pin_attempts (party_id, fails, window_start)
+  values (p_id, 1, now())
+  on conflict (party_id) do update
+    set fails = case
+                  when pin_attempts.fails = 0 then 1
+                  when now() - pin_attempts.window_start > interval '15 minutes' then 1
+                  else pin_attempts.fails + 1
+                end,
+        window_start = case
+                  when pin_attempts.fails = 0 then now()
+                  when now() - pin_attempts.window_start > interval '15 minutes' then now()
+                  else pin_attempts.window_start
+                end;
+end;
+$$;
+-- Stays revoked from anon (see 0005).
