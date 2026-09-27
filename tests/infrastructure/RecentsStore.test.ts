@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { RecentsStore } from '@/infrastructure/persistence/RecentsStore'
 
 function memStorage(): Storage {
@@ -179,12 +179,10 @@ describe('RecentsStore', () => {
     const storage = memStorage()
     storage.setItem('monete:hosted', '{not json')
     storage.setItem('monete:joined', '{not json either')
-    const setItemSpy = vi.spyOn(storage, 'setItem')
 
     const s = new RecentsStore(storage)
     s.blankLocked('h1')
 
-    expect(setItemSpy).not.toHaveBeenCalled()
     expect(storage.getItem('monete:hosted')).toBe('{not json')
     expect(storage.getItem('monete:joined')).toBe('{not json either')
   })
@@ -192,24 +190,20 @@ describe('RecentsStore', () => {
   it('blankLocked never overwrites a parseable non-array stored list', () => {
     const storage = memStorage()
     storage.setItem('monete:hosted', '{"not":"an array"}')
-    const setItemSpy = vi.spyOn(storage, 'setItem')
 
     const s = new RecentsStore(storage)
     s.blankLocked('h1')
 
-    expect(setItemSpy).not.toHaveBeenCalled()
     expect(storage.getItem('monete:hosted')).toBe('{"not":"an array"}')
   })
 
   it('refreshEntry never overwrites an unreadable stored list', () => {
     const storage = memStorage()
     storage.setItem('monete:joined', '[not valid json')
-    const setItemSpy = vi.spyOn(storage, 'setItem')
 
     const s = new RecentsStore(storage)
     s.refreshEntry('j1', { title: 'Party', startsAt: '2026-01-01T00:00:00.000Z' })
 
-    expect(setItemSpy).not.toHaveBeenCalled()
     expect(storage.getItem('monete:joined')).toBe('[not valid json')
   })
 

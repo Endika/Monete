@@ -90,7 +90,10 @@ export function AddressAutocomplete({ value, onChange }: Props) {
             // Google found nothing — try Photon before treating it as a genuine empty result.
             return tryPhoton(query, lang)
           })
-          .catch(() => tryPhoton(query, lang))
+          .catch(() => {
+            if (!mountedRef.current || query !== latestQueryRef.current) return undefined
+            return tryPhoton(query, lang)
+          })
       } else {
         void tryPhoton(query, lang)
       }
