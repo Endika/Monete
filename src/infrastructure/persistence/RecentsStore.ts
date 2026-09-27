@@ -59,8 +59,29 @@ export class RecentsStore {
   addJoined(e: JoinedEntry): void {
     this.write(JOINED_KEY, e)
   }
+  updateJoined(id: string, patch: Partial<Omit<JoinedEntry, 'id'>>): void {
+    const list = this.read<JoinedEntry>(JOINED_KEY)
+    const index = list.findIndex((e) => e.id === id)
+    if (index === -1) return
+    list[index] = { ...list[index]!, ...patch }
+    try {
+      this.storage.setItem(JOINED_KEY, JSON.stringify(list))
+    } catch {
+      /* storage full / unavailable — non-fatal */
+    }
+  }
   getJoined(partyId: string): JoinedEntry | undefined {
     return this.listJoined().find((e) => e.id === partyId)
+  }
+  /**
+   * A locked read must not go on showing a cached party's real title/date — blank both
+   * fields (in whichever list has the entry) but keep the entry, its link and rsvpId, so
+   * the family can still reopen it and enter the PIN. A successful unlock's normal save/
+   * claim flow repopulates them.
+   */
+  blankLocked(id: string): void {
+    this.updateHosted(id, { title: '', startsAt: '' })
+    this.updateJoined(id, { title: '', startsAt: '' })
   }
   removeJoined(partyId: string): void {
     const filtered = this.read<JoinedEntry>(JOINED_KEY).filter((e) => e.id !== partyId)

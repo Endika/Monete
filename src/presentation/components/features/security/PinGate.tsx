@@ -10,18 +10,23 @@ import { ErrorBanner } from '@/presentation/components/common/ErrorBanner'
 interface PinGateProps {
   partyId: string
   hasPin: boolean
+  /** A passive read (not a submit here) already hit the PIN throttle — show that up front. */
+  rateLimited?: boolean
   /** Called right after a correct PIN is verified, once it has been stored. */
   onUnlocked?: () => void
   children: React.ReactNode
 }
 
-export function PinGate({ partyId, hasPin, onUnlocked, children }: PinGateProps) {
+export function PinGate({ partyId, hasPin, rateLimited, onUnlocked, children }: PinGateProps) {
   const { t } = useTranslation()
   const container = useContainer()
   const { setPin: setUnlockedPin } = useEditPin()
   const [pin, setPin] = useState('')
   const [unlocked, setUnlocked] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  // A passive read (PartyContext's own fetch) can already be throttled before the visitor
+  // ever submits here; fall back to that message rather than syncing it into state.
+  const displayedError = error ?? (rateLimited ? t('host.tooManyAttempts') : null)
 
   if (!hasPin) return <>{children}</>
   if (unlocked) return <>{children}</>
@@ -64,7 +69,7 @@ export function PinGate({ partyId, hasPin, onUnlocked, children }: PinGateProps)
         onSubmit={handleSubmit}
         className="w-full bg-white rounded-3xl shadow-[0_8px_32px_-8px_rgba(59,42,34,0.12)] p-6 flex flex-col gap-4"
       >
-        <ErrorBanner message={error} />
+        <ErrorBanner message={displayedError} />
         <Input
           label={t('host.pinLabel')}
           type="password"
