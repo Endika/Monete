@@ -150,7 +150,77 @@ describe('PartyContext', () => {
       title: '',
       startsAt: '',
       rsvpId: 'r1',
+      locked: true,
     })
+  })
+
+  it('restores the recents entry once unlocked, no longer flagged as locked', async () => {
+    const container = buildContainer({ inMemory: true })
+    const { party } = await container.resolve<CreatePartyHandler>('createParty').execute({
+      title: 'Leo 5',
+      address: 'A',
+      startsAt: '2026-06-20T17:00:00.000Z',
+      endsAt: null,
+      requirements: '',
+    })
+    await container
+      .resolve<SetEditPinHandler>('setEditPin')
+      .execute({ partyId: party.id, pin: '1234' })
+
+    const recents = new RecentsStore()
+    recents.addJoined({
+      id: party.id,
+      title: 'Leo 5',
+      startsAt: '2026-06-20T17:00:00.000Z',
+      rsvpId: 'r1',
+    })
+
+    render(
+      <ContainerProvider container={container}>
+        <PartyProvider partyId={party.id} recents={recents}>
+          <Probe />
+        </PartyProvider>
+      </ContainerProvider>,
+    )
+    await waitFor(() => expect(screen.getByText('locked:true')).toBeInTheDocument())
+    expect(recents.getJoined(party.id)!.locked).toBe(true)
+
+    // Unlock (e.g. via the PinGate storing the correct PIN) and refresh.
+    window.localStorage.setItem(`monete:pin:${party.id}`, '1234')
+    await userEvent.click(screen.getByRole('button', { name: 'refresh' }))
+    await waitFor(() => expect(screen.getByText('Leo 5')).toBeInTheDocument())
+
+    expect(recents.getJoined(party.id)).toEqual({
+      id: party.id,
+      title: 'Leo 5',
+      startsAt: '2026-06-20T17:00:00.000Z',
+      rsvpId: 'r1',
+      locked: false,
+    })
+  })
+
+  it('clears any stored PIN once a read comes back with hasPin:false', async () => {
+    const container = buildContainer({ inMemory: true })
+    const { party } = await container.resolve<CreatePartyHandler>('createParty').execute({
+      title: 'Leo 5',
+      address: 'A',
+      startsAt: '2026-06-20T17:00:00.000Z',
+      endsAt: null,
+      requirements: '',
+    })
+    // A leftover stored PIN even though the party currently has none (e.g. the host
+    // removed it after this device had remembered it).
+    window.localStorage.setItem(`monete:pin:${party.id}`, '1234')
+
+    render(
+      <ContainerProvider container={container}>
+        <PartyProvider partyId={party.id}>
+          <Probe />
+        </PartyProvider>
+      </ContainerProvider>,
+    )
+    await waitFor(() => expect(screen.getByText('Leo 5')).toBeInTheDocument())
+    expect(window.localStorage.getItem(`monete:pin:${party.id}`)).toBeNull()
   })
 
   it('shows the gate (status ready, not unavailable) and keeps the stored PIN on a PT429', async () => {

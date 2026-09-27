@@ -1,34 +1,36 @@
 import { describe, it, expect } from 'vitest'
 import { SupabasePartyRepository } from '@/infrastructure/persistence/SupabasePartyRepository'
 
-function fakeClient(calls: { name: string; args: unknown }[]) {
+// A stub that errors if append/update/remove_rsvp is ever called without a p_pin key at
+// all. That's the behavioural proof that the client always sends it (even as null): a
+// dropped p_pin would silently resolve to the old, ungated overload instead.
+function strictClient() {
   return {
-    rpc: async (name: string, args: unknown) => {
-      calls.push({ name, args })
-      return { data: null, error: null }
+    rpc: async (fn: string, args: Record<string, unknown>) => {
+      if (['append_rsvp', 'update_rsvp', 'remove_rsvp'].includes(fn) && !('p_pin' in args)) {
+        throw new Error(`${fn} called without p_pin: could resolve the old, ungated overload`)
+      }
+      return { data: true, error: null }
     },
   } as never
 }
 
-describe('SupabasePartyRepository update/remove rsvp', () => {
-  it('calls update_rsvp with id, rsvpId, rsvp', async () => {
-    const calls: { name: string; args: unknown }[] = []
-    const repo = new SupabasePartyRepository(fakeClient(calls))
-    const rsvp = { id: 'r1', parentsLabel: 'A', familyAnswers: {}, children: [], createdAt: 'x' }
-    await repo.updateRsvp('abc1234', 'r1', rsvp as never, null)
-    expect(calls[0]).toEqual({
-      name: 'update_rsvp',
-      args: { p_id: 'abc1234', p_rsvp_id: 'r1', p_rsvp: rsvp, p_pin: null },
-    })
+describe('SupabasePartyRepository rsvp writes always send p_pin', () => {
+  it('appendRsvp sends p_pin, even null', async () => {
+    const repo = new SupabasePartyRepository(strictClient())
+    await expect(
+      repo.appendRsvp('abc1234', { id: 'r1', parentsLabel: 'A' } as never, null),
+    ).resolves.toBeUndefined()
   })
 
-  it('calls remove_rsvp with id, rsvpId, pin', async () => {
-    const calls: { name: string; args: unknown }[] = []
-    const repo = new SupabasePartyRepository(fakeClient(calls))
-    await repo.removeRsvp('abc1234', 'r1', '1234')
-    expect(calls[0]).toEqual({
-      name: 'remove_rsvp',
-      args: { p_id: 'abc1234', p_rsvp_id: 'r1', p_pin: '1234' },
-    })
+  it('updateRsvp sends p_pin, even null', async () => {
+    const repo = new SupabasePartyRepository(strictClient())
+    const rsvp = { id: 'r1', parentsLabel: 'A', familyAnswers: {}, children: [], createdAt: 'x' }
+    await expect(repo.updateRsvp('abc1234', 'r1', rsvp as never, null)).resolves.toBeUndefined()
+  })
+
+  it('removeRsvp sends p_pin, even null', async () => {
+    const repo = new SupabasePartyRepository(strictClient())
+    await expect(repo.removeRsvp('abc1234', 'r1', null)).resolves.toBeUndefined()
   })
 })

@@ -127,6 +127,29 @@ describe('GuestPage behind a party PIN', () => {
     expect(row.snapshot.rsvps.some((r) => r.parentsLabel === 'Familia García')).toBe(true)
   })
 
+  it('refreshes back to the gate and forgets the stale PIN when a write finds it stale', async () => {
+    const repo = new InMemoryPartyRepository()
+    const partyId = await partyWithPinAndRsvp(repo)
+    renderGuest(containerFor(repo), partyId)
+
+    await userEvent.type(await screen.findByLabelText(/pin/i), '1234')
+    await userEvent.click(screen.getByRole('button', { name: /unlock|ok|enter/i }))
+    await waitFor(() => expect(screen.getByText(/Familia López/)).toBeInTheDocument())
+
+    // The host rotates the PIN elsewhere, without this device knowing yet.
+    await new SetEditPinHandler(repo).execute({ partyId, pin: '5678', currentPin: '1234' })
+
+    await userEvent.click(screen.getByRole('button', { name: /not on the list/i }))
+    await userEvent.type(screen.getByLabelText(/family of/i), 'Familia Nueva')
+    await userEvent.click(screen.getByRole('button', { name: /send rsvp/i }))
+
+    // The stale-PIN write triggers a refresh; its locked read clears the stored PIN and
+    // swaps back to the gate (the render in between, with the wrong-pin message, is too
+    // transient in this in-memory setup to assert on reliably).
+    await waitFor(() => expect(screen.getByLabelText(/pin/i)).toBeInTheDocument())
+    expect(window.localStorage.getItem(`monete:pin:${partyId}`)).toBeNull()
+  })
+
   it('remembers the PIN for this party across a new container (a reload)', async () => {
     const repo = new InMemoryPartyRepository()
     const partyId = await partyWithPinAndRsvp(repo)
@@ -142,6 +165,37 @@ describe('GuestPage behind a party PIN', () => {
     renderGuest(containerFor(repo), partyId)
     await waitFor(() => expect(screen.getByText(/Familia López/)).toBeInTheDocument())
     expect(screen.queryByLabelText(/pin/i)).not.toBeInTheDocument()
+  })
+
+  it('unlocks even when localStorage throws on every call, via the in-memory fallback', async () => {
+    const repo = new InMemoryPartyRepository()
+    const partyId = await partyWithPinAndRsvp(repo)
+
+    const original = window.localStorage
+    const throwing: Storage = {
+      getItem: () => {
+        throw new Error('blocked')
+      },
+      setItem: () => {
+        throw new Error('blocked')
+      },
+      removeItem: () => {
+        throw new Error('blocked')
+      },
+      clear: () => {},
+      key: () => null,
+      length: 0,
+    }
+    Object.defineProperty(window, 'localStorage', { value: throwing, configurable: true })
+
+    try {
+      renderGuest(containerFor(repo), partyId)
+      await userEvent.type(await screen.findByLabelText(/pin/i), '1234')
+      await userEvent.click(screen.getByRole('button', { name: /unlock|ok|enter/i }))
+      await waitFor(() => expect(screen.getByText(/Familia López/)).toBeInTheDocument())
+    } finally {
+      Object.defineProperty(window, 'localStorage', { value: original, configurable: true })
+    }
   })
 
   it('leaves a PIN-less party unaffected — no gate at all', async () => {

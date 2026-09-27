@@ -23,6 +23,8 @@ describe('HomePage dashboard', () => {
 
   it('shows the organizing section when there are hosted recents', () => {
     const store = new RecentsStore(memStorage())
+    // No `locked` field at all — an entry written before this flag existed — must still
+    // render normally, not as locked.
     store.addHosted({ id: 'abc1234', title: 'Leo turns 5', startsAt: '2026-06-20T17:00:00.000Z' })
     render(
       <ContainerProvider container={buildContainer({ inMemory: true })}>
@@ -30,6 +32,7 @@ describe('HomePage dashboard', () => {
       </ContainerProvider>,
     )
     expect(screen.getByText('Leo turns 5')).toBeInTheDocument()
+    expect(screen.queryByText('This party is locked')).not.toBeInTheDocument()
   })
 
   it('renders a locked (blanked) recents entry sensibly instead of crashing on an empty date', () => {
