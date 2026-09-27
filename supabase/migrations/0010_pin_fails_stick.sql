@@ -13,6 +13,7 @@
 -- Not a lockdown: every signature the live client calls stays. Prod has zero parties with a
 -- PIN, so redefining in place (including changing two return types) is safe.
 
+-- Must stay VOLATILE (the default, not stable/immutable): a wrong PIN writes the fail.
 create or replace function monete.get_party(p_id text, p_pin text)
 returns jsonb language plpgsql security definer set search_path to '' as $$
 declare v_row monete.parties%rowtype;
