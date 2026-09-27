@@ -5,6 +5,7 @@ import {
   StaleClientError,
   WrongPinError,
   PayloadTooLargeError,
+  RateLimitedError,
 } from '@/domain/repositories/IPartyRepository'
 import { Party } from '@/domain/entities/Party'
 import { unlocked } from '../helpers/partyRead'
@@ -54,6 +55,32 @@ describe('SupabasePartyRepository', () => {
     await expect(repo.update(snap().id, snap(), 1, '0000')).rejects.toBeInstanceOf(WrongPinError)
   })
 
+  it('maps a wrong-pin sentinel (0) from update_party to WrongPinError without raising', async () => {
+    const repo = new SupabasePartyRepository(fakeClient({ update_party: { data: 0, error: null } }))
+    await expect(repo.update(snap().id, snap(), 1, '0000')).rejects.toBeInstanceOf(WrongPinError)
+  })
+
+  it('maps a wrong-pin sentinel (false) from set_party_pin/delete_party/rsvp writes to WrongPinError', async () => {
+    const repo = new SupabasePartyRepository(
+      fakeClient({
+        set_party_pin: { data: false, error: null },
+        delete_party: { data: false, error: null },
+        append_rsvp: { data: false, error: null },
+        update_rsvp: { data: false, error: null },
+        remove_rsvp: { data: false, error: null },
+      }),
+    )
+    await expect(repo.setPin('abc1234', '1234', '0000')).rejects.toBeInstanceOf(WrongPinError)
+    await expect(repo.deleteParty('abc1234', '0000')).rejects.toBeInstanceOf(WrongPinError)
+    await expect(repo.appendRsvp('abc1234', { id: 'r' } as never, '0000')).rejects.toBeInstanceOf(
+      WrongPinError,
+    )
+    await expect(
+      repo.updateRsvp('abc1234', 'r', { id: 'r' } as never, '0000'),
+    ).rejects.toBeInstanceOf(WrongPinError)
+    await expect(repo.removeRsvp('abc1234', 'r', '0000')).rejects.toBeInstanceOf(WrongPinError)
+  })
+
   it('maps PT413 to PayloadTooLargeError on append', async () => {
     const repo = new SupabasePartyRepository(
       fakeClient({ append_rsvp: { data: null, error: { code: 'PT413' } } }),
@@ -100,5 +127,23 @@ describe('SupabasePartyRepository', () => {
     } as never)
     await repo.findById('abc1234')
     expect(calls[0]).toEqual({ p_id: 'abc1234', p_pin: null })
+  })
+
+  it('always sends p_pin (also when null), and maps a locked payload and a PT429 error', async () => {
+    // A stub that errors if get_party is ever called without a p_pin key at all — the
+    // behavioural proof that findById includes it (even as null) is that this never fires.
+    const strictClient = {
+      rpc: async (fn: string, args: Record<string, unknown>) => {
+        if (fn === 'get_party' && !('p_pin' in args)) {
+          throw new Error('get_party called without p_pin: PostgREST could pick either overload')
+        }
+        if (args.p_pin === 'throttled') return { data: null, error: { code: 'PT429' } }
+        return { data: { locked: true, hasPin: true }, error: null }
+      },
+    } as never
+    const repo = new SupabasePartyRepository(strictClient)
+
+    expect(await repo.findById('abc1234')).toEqual({ locked: true, hasPin: true })
+    await expect(repo.findById('abc1234', 'throttled')).rejects.toBeInstanceOf(RateLimitedError)
   })
 })

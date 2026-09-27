@@ -168,3 +168,57 @@ describe('server-side PIN enforcement on RSVP writes', () => {
     expect(unlocked(await repo.findById(id, '1234')).snapshot.rsvps).toHaveLength(1)
   })
 })
+
+// Ruling V6 (fails must stick on writes) + Ruling V7 (only verify_party_pin resets the count).
+describe('the PIN throttle is shared across reads/writes and only verifyPin resets it', () => {
+  it('wrong pin attempts on reads and RSVP writes share the same throttle, and 429s at 10', async () => {
+    const repo = new InMemoryPartyRepository()
+    const id = await freshParty(repo)
+    await new SetEditPinHandler(repo).execute({ partyId: id, pin: '1234' })
+
+    for (let i = 0; i < 5; i++) {
+      expect(await repo.findById(id, '0000')).toEqual({ locked: true, hasPin: true })
+    }
+    for (let i = 0; i < 5; i++) {
+      await expect(
+        repo.appendRsvp(id, { id: 'r1', parentsLabel: 'A' } as never, '0000'),
+      ).rejects.toBeInstanceOf(WrongPinError)
+    }
+    // 10 recorded fails (5 reads + 5 rsvp writes) hit the cap.
+    await expect(repo.findById(id, '0000')).rejects.toBeInstanceOf(RateLimitedError)
+  })
+
+  it('only a successful verifyPin resets the throttle; a correct read or write does not', async () => {
+    const repo = new InMemoryPartyRepository()
+    const id = await freshParty(repo)
+    await new SetEditPinHandler(repo).execute({ partyId: id, pin: '1234' })
+
+    for (let i = 0; i < 9; i++) await repo.findById(id, '0000')
+    expect(await repo.verifyPin(id, '1234')).toBe(true) // resets: only verifyPin does this
+
+    for (let i = 0; i < 9; i++) await repo.findById(id, '0000')
+    // A correct read does not reset the counter, so only one more wrong attempt is left.
+    const snap = unlocked(await repo.findById(id, '1234')).snapshot
+    await expect(repo.update(id, snap, 1, '0000')).rejects.toBeInstanceOf(WrongPinError)
+    await expect(repo.findById(id, '0000')).rejects.toBeInstanceOf(RateLimitedError)
+  })
+
+  // The SQL guard takes a row lock so a burst of concurrent guesses can't all pass the
+  // check before any of their fails commit. The fake has no such race (no `await` between
+  // reading and writing the fail count), so this only pins down the observable contract.
+  it('a burst of concurrent wrong guesses still stops exactly at the throttle cap', async () => {
+    const repo = new InMemoryPartyRepository()
+    const id = await freshParty(repo)
+    await new SetEditPinHandler(repo).execute({ partyId: id, pin: '1234' })
+
+    const attempts = Array.from({ length: 15 }, () => repo.findById(id, '0000'))
+    const results = await Promise.allSettled(attempts)
+
+    const locked = results.filter((r) => r.status === 'fulfilled')
+    const limited = results.filter(
+      (r) => r.status === 'rejected' && r.reason instanceof RateLimitedError,
+    )
+    expect(locked).toHaveLength(10)
+    expect(limited).toHaveLength(5)
+  })
+})

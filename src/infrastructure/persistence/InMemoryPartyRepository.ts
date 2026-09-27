@@ -36,12 +36,21 @@ export class InMemoryPartyRepository implements IPartyRepository {
   private pinFails = new Map<string, number>()
   findByIdCalls = 0
 
-  /** Throttle gate: raise once the failed-attempt cap is hit (mirrors monete_pin_guard). */
+  /**
+   * Throttle gate: raise once the failed-attempt cap is hit (mirrors monete_pin_guard).
+   * The SQL guard takes a row lock to serialize concurrent guesses against the same party;
+   * the fake doesn't need one — there's no `await` between reading and writing `pinFails`,
+   * so no two calls can interleave inside the check-then-increment.
+   */
   private pinGuard(id: string): void {
     if ((this.pinFails.get(id) ?? 0) >= PIN_ATTEMPT_LIMIT) throw new RateLimitedError()
   }
 
-  /** Verify the supplied pin against a PIN-protected row, recording the attempt. */
+  /**
+   * Verify the supplied pin against a PIN-protected row, recording a wrong attempt.
+   * A correct pin here never resets the counter — only a deliberate verifyPin() unlock
+   * does (mirrors monete_pin_ok, which the SQL now calls only from verify_party_pin).
+   */
   private checkPin(row: Row, id: string, pin: string | null): void {
     if (row.pin === null) return
     this.pinGuard(id)
@@ -49,7 +58,6 @@ export class InMemoryPartyRepository implements IPartyRepository {
       this.pinFails.set(id, (this.pinFails.get(id) ?? 0) + 1)
       throw new WrongPinError()
     }
-    this.pinFails.delete(id)
   }
 
   async findById(id: string, pin: string | null = null): Promise<ReadResult | null> {
@@ -70,7 +78,7 @@ export class InMemoryPartyRepository implements IPartyRepository {
       this.pinFails.set(id, (this.pinFails.get(id) ?? 0) + 1)
       return { locked: true, hasPin: true }
     }
-    this.pinFails.delete(id)
+    // A correct pin here never resets the counter either — only verifyPin() does.
     return {
       locked: false,
       snapshot: structuredClone(row.snapshot),
