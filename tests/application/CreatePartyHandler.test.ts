@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { CreatePartyHandler } from '@/application/handlers/CreatePartyHandler'
 import { InMemoryPartyRepository } from '@/infrastructure/persistence/InMemoryPartyRepository'
+import { unlocked } from '../helpers/partyRead'
 
 describe('CreatePartyHandler', () => {
   it('creates a party and returns its id', async () => {
@@ -13,7 +14,7 @@ describe('CreatePartyHandler', () => {
       requirements: 'Non-slip socks',
     })
     expect(result.party.id).toMatch(/^[a-z0-9]{7}$/)
-    expect((await repo.findById(result.party.id))?.snapshot.event.title).toBe('Leo turns 5')
+    expect(unlocked(await repo.findById(result.party.id)).snapshot.event.title).toBe('Leo turns 5')
   })
 
   it('rejects an invalid payload', async () => {

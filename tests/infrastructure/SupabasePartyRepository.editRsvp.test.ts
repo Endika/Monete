@@ -15,17 +15,20 @@ describe('SupabasePartyRepository update/remove rsvp', () => {
     const calls: { name: string; args: unknown }[] = []
     const repo = new SupabasePartyRepository(fakeClient(calls))
     const rsvp = { id: 'r1', parentsLabel: 'A', familyAnswers: {}, children: [], createdAt: 'x' }
-    await repo.updateRsvp('abc1234', 'r1', rsvp as never)
+    await repo.updateRsvp('abc1234', 'r1', rsvp as never, null)
     expect(calls[0]).toEqual({
       name: 'update_rsvp',
-      args: { p_id: 'abc1234', p_rsvp_id: 'r1', p_rsvp: rsvp },
+      args: { p_id: 'abc1234', p_rsvp_id: 'r1', p_rsvp: rsvp, p_pin: null },
     })
   })
 
-  it('calls remove_rsvp with id, rsvpId', async () => {
+  it('calls remove_rsvp with id, rsvpId, pin', async () => {
     const calls: { name: string; args: unknown }[] = []
     const repo = new SupabasePartyRepository(fakeClient(calls))
-    await repo.removeRsvp('abc1234', 'r1')
-    expect(calls[0]).toEqual({ name: 'remove_rsvp', args: { p_id: 'abc1234', p_rsvp_id: 'r1' } })
+    await repo.removeRsvp('abc1234', 'r1', '1234')
+    expect(calls[0]).toEqual({
+      name: 'remove_rsvp',
+      args: { p_id: 'abc1234', p_rsvp_id: 'r1', p_pin: '1234' },
+    })
   })
 })

@@ -7,6 +7,7 @@ import {
   PayloadTooLargeError,
 } from '@/domain/repositories/IPartyRepository'
 import { Party } from '@/domain/entities/Party'
+import { unlocked } from '../helpers/partyRead'
 
 type RpcResult = { data: unknown; error: unknown }
 
@@ -58,7 +59,7 @@ describe('SupabasePartyRepository', () => {
       fakeClient({ append_rsvp: { data: null, error: { code: 'PT413' } } }),
     )
     await expect(
-      repo.appendRsvp('abc1234', { id: 'r', parentsLabel: 'P' } as never),
+      repo.appendRsvp('abc1234', { id: 'r', parentsLabel: 'P' } as never, null),
     ).rejects.toBeInstanceOf(PayloadTooLargeError)
   })
 
@@ -74,9 +75,30 @@ describe('SupabasePartyRepository', () => {
         get_party: { data: { data: s, version: 3, hasPin: true }, error: null },
       }),
     )
-    const row = await repo.findById(s.id)
-    expect(row?.version).toBe(3)
-    expect(row?.hasPin).toBe(true)
-    expect(row?.snapshot.id).toBe(s.id)
+    const row = unlocked(await repo.findById(s.id))
+    expect(row.version).toBe(3)
+    expect(row.hasPin).toBe(true)
+    expect(row.snapshot.id).toBe(s.id)
+  })
+
+  it('get_party returns a locked marker with no data when the party is PIN-locked', async () => {
+    const repo = new SupabasePartyRepository(
+      fakeClient({
+        get_party: { data: { locked: true, hasPin: true }, error: null },
+      }),
+    )
+    expect(await repo.findById('abc1234', 'wrong')).toEqual({ locked: true, hasPin: true })
+  })
+
+  it('always sends p_pin, even when no pin is supplied, so PostgREST resolves the gated overload', async () => {
+    const calls: unknown[] = []
+    const repo = new SupabasePartyRepository({
+      rpc: async (_fn: string, args: unknown) => {
+        calls.push(args)
+        return { data: null, error: null }
+      },
+    } as never)
+    await repo.findById('abc1234')
+    expect(calls[0]).toEqual({ p_id: 'abc1234', p_pin: null })
   })
 })

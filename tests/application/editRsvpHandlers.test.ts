@@ -5,6 +5,7 @@ import { UpsertQuestionHandler } from '@/application/handlers/UpsertQuestionHand
 import { SubmitRsvpHandler } from '@/application/handlers/SubmitRsvpHandler'
 import { UpdateRsvpHandler } from '@/application/handlers/UpdateRsvpHandler'
 import { RemoveRsvpHandler } from '@/application/handlers/RemoveRsvpHandler'
+import { unlocked } from '../helpers/partyRead'
 
 async function setup() {
   const repo = new InMemoryPartyRepository()
@@ -24,7 +25,7 @@ async function setup() {
     options: ['Pizza', 'Hot dog'],
     required: true,
   })
-  const qid = (await repo.findById(party.id))!.snapshot.questions[0]!.id
+  const qid = unlocked(await repo.findById(party.id)).snapshot.questions[0]!.id
   return { repo, partyId: party.id, qid }
 }
 
@@ -55,7 +56,7 @@ describe('rsvp edit/remove handlers', () => {
       familyAnswers: {},
       children: [{ name: 'Leo', answers: { [qid]: 'Hot dog' } }],
     })
-    const r = (await repo.findById(partyId))!.snapshot.rsvps[0]!
+    const r = unlocked(await repo.findById(partyId)).snapshot.rsvps[0]!
     expect(r.parentsLabel).toBe('A2')
     expect(r.children[0]!.answers[qid]).toBe('Hot dog')
   })
@@ -69,6 +70,6 @@ describe('rsvp edit/remove handlers', () => {
       children: [{ name: 'Leo', answers: { [qid]: 'Pizza' } }],
     })
     await new RemoveRsvpHandler(repo).execute({ partyId, rsvpId })
-    expect((await repo.findById(partyId))!.snapshot.rsvps).toHaveLength(0)
+    expect(unlocked(await repo.findById(partyId)).snapshot.rsvps).toHaveLength(0)
   })
 })

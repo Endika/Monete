@@ -10,10 +10,12 @@ import { ErrorBanner } from '@/presentation/components/common/ErrorBanner'
 interface PinGateProps {
   partyId: string
   hasPin: boolean
+  /** Called right after a correct PIN is verified, once it has been stored. */
+  onUnlocked?: () => void
   children: React.ReactNode
 }
 
-export function PinGate({ partyId, hasPin, children }: PinGateProps) {
+export function PinGate({ partyId, hasPin, onUnlocked, children }: PinGateProps) {
   const { t } = useTranslation()
   const container = useContainer()
   const { setPin: setUnlockedPin } = useEditPin()
@@ -32,6 +34,7 @@ export function PinGate({ partyId, hasPin, children }: PinGateProps) {
         // Keep the verified PIN for the session so privileged actions can pass it server-side.
         setUnlockedPin(pin)
         setUnlocked(true)
+        onUnlocked?.()
       } else {
         setError(t('host.wrongPin'))
       }
@@ -52,7 +55,7 @@ export function PinGate({ partyId, hasPin, children }: PinGateProps) {
 
       <div className="text-center">
         <h1 className="font-display text-2xl font-extrabold text-cocoa">
-          {t('host.dashboardTitle')}
+          {t('host.pinGateTitle')}
         </h1>
         <p className="mt-2 text-sm text-cocoa/60 font-body">{t('host.pinGateHelp')}</p>
       </div>

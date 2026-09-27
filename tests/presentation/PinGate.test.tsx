@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { PinGate } from '@/presentation/components/features/security/PinGate'
@@ -27,11 +27,11 @@ async function setup(withPin: boolean): Promise<{ container: Container; id: stri
   return { container, id: created.party.id }
 }
 
-function renderGate(container: Container, id: string, hasPin: boolean) {
+function renderGate(container: Container, id: string, hasPin: boolean, onUnlocked?: () => void) {
   return render(
     <ContainerProvider container={container}>
-      <EditPinProvider>
-        <PinGate partyId={id} hasPin={hasPin}>
+      <EditPinProvider partyId={id}>
+        <PinGate partyId={id} hasPin={hasPin} onUnlocked={onUnlocked}>
           <div>secret</div>
         </PinGate>
       </EditPinProvider>
@@ -61,5 +61,19 @@ describe('PinGate', () => {
     const { container, id } = await setup(false)
     renderGate(container, id, false)
     expect(screen.getByText('secret')).toBeInTheDocument()
+  })
+
+  it('calls onUnlocked once the pin is verified, so the caller can refresh', async () => {
+    const { container, id } = await setup(true)
+    const onUnlocked = vi.fn()
+    renderGate(container, id, true, onUnlocked)
+    await userEvent.type(screen.getByLabelText(/pin/i), '9999')
+    await userEvent.click(screen.getByRole('button', { name: /unlock|ok|enter/i }))
+    expect(onUnlocked).not.toHaveBeenCalled()
+    await userEvent.clear(screen.getByLabelText(/pin/i))
+    await userEvent.type(screen.getByLabelText(/pin/i), '1234')
+    await userEvent.click(screen.getByRole('button', { name: /unlock|ok|enter/i }))
+    await screen.findByText('secret')
+    expect(onUnlocked).toHaveBeenCalledTimes(1)
   })
 })
