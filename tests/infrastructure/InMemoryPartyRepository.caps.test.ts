@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { InMemoryPartyRepository } from '@/infrastructure/persistence/InMemoryPartyRepository'
 import { PayloadTooLargeError } from '@/domain/repositories/IPartyRepository'
 import { Party, type Rsvp } from '@/domain/entities/Party'
+import { unlocked } from '../helpers/partyRead'
 
 function snap() {
   return Party.create({
@@ -32,7 +33,7 @@ describe('RSVP caps (anti-ballooning / egress abuse)', () => {
     const s = snap()
     await repo.create(s)
     const huge = rsvp({ parentsLabel: 'x'.repeat(9000) })
-    await expect(repo.appendRsvp(s.id, huge)).rejects.toBeInstanceOf(PayloadTooLargeError)
+    await expect(repo.appendRsvp(s.id, huge, null)).rejects.toBeInstanceOf(PayloadTooLargeError)
   })
 
   it('rejects appending past the RSVP count cap', async () => {
@@ -41,7 +42,7 @@ describe('RSVP caps (anti-ballooning / egress abuse)', () => {
     // Seed the blob with 300 rsvps directly, then attempt to append the 301st.
     s.rsvps = Array.from({ length: 300 }, (_, i) => rsvp({ id: `seed-${i}` }))
     await repo.create(s)
-    await expect(repo.appendRsvp(s.id, rsvp({ id: 'overflow' }))).rejects.toBeInstanceOf(
+    await expect(repo.appendRsvp(s.id, rsvp({ id: 'overflow' }), null)).rejects.toBeInstanceOf(
       PayloadTooLargeError,
     )
   })
@@ -54,7 +55,7 @@ describe('RSVP caps (anti-ballooning / egress abuse)', () => {
     await repo.create(s)
     // The replacement is under the per-rsvp cap but tips the total blob over MAX_PARTY_BYTES.
     await expect(
-      repo.updateRsvp(s.id, 'target', rsvp({ id: 'target', parentsLabel: 'y'.repeat(8000) })),
+      repo.updateRsvp(s.id, 'target', rsvp({ id: 'target', parentsLabel: 'y'.repeat(8000) }), null),
     ).rejects.toBeInstanceOf(PayloadTooLargeError)
   })
 
@@ -62,7 +63,7 @@ describe('RSVP caps (anti-ballooning / egress abuse)', () => {
     const repo = new InMemoryPartyRepository()
     const s = snap()
     await repo.create(s)
-    await repo.appendRsvp(s.id, rsvp())
-    expect((await repo.findById(s.id))?.snapshot.rsvps).toHaveLength(1)
+    await repo.appendRsvp(s.id, rsvp(), null)
+    expect(unlocked(await repo.findById(s.id)).snapshot.rsvps).toHaveLength(1)
   })
 })

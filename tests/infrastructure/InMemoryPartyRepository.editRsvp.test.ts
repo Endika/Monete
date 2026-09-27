@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { InMemoryPartyRepository } from '@/infrastructure/persistence/InMemoryPartyRepository'
 import { Party } from '@/domain/entities/Party'
+import { unlocked } from '../helpers/partyRead'
 
 function snapWithTwoRsvps() {
   const p = Party.create({
@@ -30,19 +31,19 @@ describe('InMemoryPartyRepository update/remove rsvp', () => {
     const repo = new InMemoryPartyRepository()
     const { snapshot, r1 } = snapWithTwoRsvps()
     await repo.create(snapshot)
-    await repo.updateRsvp(snapshot.id, r1.id, { ...r1, parentsLabel: 'A2' })
-    const row = await repo.findById(snapshot.id)
-    expect(row!.snapshot.rsvps.find((r) => r.id === r1.id)!.parentsLabel).toBe('A2')
-    expect(row!.snapshot.rsvps).toHaveLength(2)
+    await repo.updateRsvp(snapshot.id, r1.id, { ...r1, parentsLabel: 'A2' }, null)
+    const row = unlocked(await repo.findById(snapshot.id))
+    expect(row.snapshot.rsvps.find((r) => r.id === r1.id)!.parentsLabel).toBe('A2')
+    expect(row.snapshot.rsvps).toHaveLength(2)
   })
 
   it('removes one rsvp by id', async () => {
     const repo = new InMemoryPartyRepository()
     const { snapshot, r2 } = snapWithTwoRsvps()
     await repo.create(snapshot)
-    await repo.removeRsvp(snapshot.id, r2.id)
-    const row = await repo.findById(snapshot.id)
-    expect(row!.snapshot.rsvps.map((r) => r.id)).not.toContain(r2.id)
-    expect(row!.snapshot.rsvps).toHaveLength(1)
+    await repo.removeRsvp(snapshot.id, r2.id, null)
+    const row = unlocked(await repo.findById(snapshot.id))
+    expect(row.snapshot.rsvps.map((r) => r.id)).not.toContain(r2.id)
+    expect(row.snapshot.rsvps).toHaveLength(1)
   })
 })

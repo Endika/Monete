@@ -15,5 +15,7 @@ export const UpdateRsvpSchema = z.object({
       }),
     )
     .min(1),
+  /** Unlocked edit PIN (null for a PIN-less party). Enforced server-side. */
+  pin: z.string().nullable().optional(),
 })
 export type UpdateRsvpInput = z.input<typeof UpdateRsvpSchema>

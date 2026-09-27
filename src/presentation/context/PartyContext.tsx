@@ -12,6 +12,7 @@ import type { PartySnapshot } from '@/domain/entities/Party'
 import { useContainer } from '@/presentation/context/ContainerProvider'
 import { RefreshPartyHandler } from '@/application/handlers/RefreshPartyHandler'
 import { RecentsStore } from '@/infrastructure/persistence/RecentsStore'
+import { readStoredPin, clearStoredPin } from '@/presentation/context/EditPinContext'
 
 /**
  * `deleted` and `unavailable` must never be confused: only a successful round trip can
@@ -71,10 +72,10 @@ export function PartyProvider({
 
     const doRefresh = async () => {
       try {
-        const row = await handler.execute(partyId)
+        const row = await handler.execute(partyId, readStoredPin(partyId))
         if (cancelled) return
-        setSnapshot(row?.snapshot ?? null)
-        setVersion(row?.version ?? 0)
+        setSnapshot(row && !row.locked ? row.snapshot : null)
+        setVersion(row && !row.locked ? row.version : 0)
         setHasPin(row?.hasPin ?? false)
         setError(null)
         setStatus(row ? 'ready' : 'deleted')
@@ -103,6 +104,7 @@ export function PartyProvider({
   const forget = useCallback(() => {
     recentsStore.removeJoined(partyId)
     recentsStore.removeHosted(partyId)
+    clearStoredPin(partyId)
   }, [recentsStore, partyId])
 
   return (

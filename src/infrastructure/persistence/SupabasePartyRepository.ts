@@ -31,22 +31,25 @@ function mapRpcError(error: { code?: string } | null): Error | null {
 }
 
 interface GetPartyPayload {
-  data: unknown
-  version: number
+  locked?: boolean
+  data?: unknown
+  version?: number
   hasPin: boolean
 }
 
 export class SupabasePartyRepository implements IPartyRepository {
   constructor(private readonly client: MoneteClient) {}
 
-  async findById(id: string): Promise<ReadResult | null> {
-    const { data, error } = await this.client.rpc('get_party', { p_id: id })
+  async findById(id: string, pin: string | null = null): Promise<ReadResult | null> {
+    const { data, error } = await this.client.rpc('get_party', { p_id: id, p_pin: pin })
     if (error) throw error
     if (!data) return null
     const payload = data as GetPartyPayload
+    if (payload.locked) return { locked: true, hasPin: true }
     return {
+      locked: false,
       snapshot: parsePartySnapshot(payload.data),
-      version: payload.version,
+      version: payload.version as number,
       hasPin: payload.hasPin,
     }
   }
@@ -114,24 +117,30 @@ export class SupabasePartyRepository implements IPartyRepository {
     if (mapped) throw mapped
   }
 
-  async appendRsvp(id: string, rsvp: Rsvp): Promise<void> {
-    const { error } = await this.client.rpc('append_rsvp', { p_id: id, p_rsvp: rsvp })
+  async appendRsvp(id: string, rsvp: Rsvp, pin: string | null): Promise<void> {
+    const { error } = await this.client.rpc('append_rsvp', { p_id: id, p_rsvp: rsvp, p_pin: pin })
     const mapped = mapRpcError(error)
     if (mapped) throw mapped
   }
 
-  async updateRsvp(id: string, rsvpId: string, rsvp: Rsvp): Promise<void> {
+  async updateRsvp(id: string, rsvpId: string, rsvp: Rsvp, pin: string | null): Promise<void> {
     const { error } = await this.client.rpc('update_rsvp', {
       p_id: id,
       p_rsvp_id: rsvpId,
       p_rsvp: rsvp,
+      p_pin: pin,
     })
     const mapped = mapRpcError(error)
     if (mapped) throw mapped
   }
 
-  async removeRsvp(id: string, rsvpId: string): Promise<void> {
-    const { error } = await this.client.rpc('remove_rsvp', { p_id: id, p_rsvp_id: rsvpId })
-    if (error) throw error
+  async removeRsvp(id: string, rsvpId: string, pin: string | null): Promise<void> {
+    const { error } = await this.client.rpc('remove_rsvp', {
+      p_id: id,
+      p_rsvp_id: rsvpId,
+      p_pin: pin,
+    })
+    const mapped = mapRpcError(error)
+    if (mapped) throw mapped
   }
 }

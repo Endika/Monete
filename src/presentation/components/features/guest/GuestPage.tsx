@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParty } from '@/presentation/context/PartyContext'
 import { useContainer } from '@/presentation/context/ContainerProvider'
+import { EditPinProvider, useEditPin } from '@/presentation/context/EditPinContext'
 import type { SubmitRsvpHandler } from '@/application/handlers/SubmitRsvpHandler'
 import type { UpdateRsvpHandler } from '@/application/handlers/UpdateRsvpHandler'
 import { ErrorBanner } from '@/presentation/components/common/ErrorBanner'
@@ -13,6 +14,7 @@ import { Button } from '@/presentation/components/common/Button'
 import { googleMapsUrl } from '@/shared/utils/googleMapsUrl'
 import { MapEmbed } from '@/presentation/components/features/event/MapEmbed'
 import { RecentsStore } from '@/infrastructure/persistence/RecentsStore'
+import { PinGate } from '@/presentation/components/features/security/PinGate'
 import type { AnswerMap } from '@/domain/entities/Party'
 
 /** Map a repository error to a user-facing message, honouring the server caps/guards. */
@@ -47,8 +49,28 @@ function rsvpToInitial(rsvp: {
 }
 
 export function GuestPage({ partyId }: GuestPageProps) {
+  const { hasPin, status, snapshot, refresh } = useParty()
+
+  // Never mount before hasPin/snapshot are known — it would flash the party unlocked.
+  if (status !== 'ready') return null
+
+  return (
+    <EditPinProvider partyId={partyId}>
+      {snapshot ? (
+        <GuestPageInner partyId={partyId} />
+      ) : (
+        <PinGate partyId={partyId} hasPin={hasPin} onUnlocked={refresh}>
+          {null}
+        </PinGate>
+      )}
+    </EditPinProvider>
+  )
+}
+
+function GuestPageInner({ partyId }: GuestPageProps) {
   const { t, i18n } = useTranslation()
   const { snapshot, refresh } = useParty()
+  const { pin: editPin } = useEditPin()
   const container = useContainer()
   const recents = useMemo(() => new RecentsStore(), [])
 
@@ -83,7 +105,7 @@ export function GuestPage({ partyId }: GuestPageProps) {
     try {
       const { rsvpId } = await container
         .resolve<SubmitRsvpHandler>('submitRsvp')
-        .execute({ partyId, ...input })
+        .execute({ partyId, ...input, pin: editPin })
       recents.addJoined({
         id: partyId,
         title: snapshot!.event.title,
@@ -112,7 +134,7 @@ export function GuestPage({ partyId }: GuestPageProps) {
     try {
       await container
         .resolve<UpdateRsvpHandler>('updateRsvp')
-        .execute({ partyId, rsvpId, ...input })
+        .execute({ partyId, rsvpId, ...input, pin: editPin })
       await refresh()
       setMode('view')
       setSubmitError(null)

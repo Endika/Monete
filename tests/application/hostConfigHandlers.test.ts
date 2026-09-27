@@ -5,6 +5,7 @@ import { EditPartyDetailsHandler } from '@/application/handlers/EditPartyDetails
 import { UpsertQuestionHandler } from '@/application/handlers/UpsertQuestionHandler'
 import { RemoveQuestionHandler } from '@/application/handlers/RemoveQuestionHandler'
 import { SetEditPinHandler } from '@/application/handlers/SetEditPinHandler'
+import { unlocked } from '../helpers/partyRead'
 
 async function freshParty(repo: InMemoryPartyRepository) {
   const r = await new CreatePartyHandler(repo).execute({
@@ -29,7 +30,7 @@ describe('host config handlers', () => {
       endsAt: null,
       requirements: 'Socks',
     })
-    expect((await repo.findById(id))?.snapshot.event.address).toBe('Fun Park')
+    expect(unlocked(await repo.findById(id)).snapshot.event.address).toBe('Fun Park')
   })
 
   it('forwards coordinates and allDay when editing details', async () => {
@@ -46,7 +47,7 @@ describe('host config handlers', () => {
       lat: 40.4168,
       lng: -3.7038,
     })
-    const event = (await repo.findById(id))!.snapshot.event
+    const event = unlocked(await repo.findById(id)).snapshot.event
     expect(event.allDay).toBe(true)
     expect(event.lat).toBe(40.4168)
     expect(event.lng).toBe(-3.7038)
@@ -64,7 +65,7 @@ describe('host config handlers', () => {
       requirements: '',
       venueName: 'Jungle Park',
     })
-    expect((await repo.findById(id))?.snapshot.event.venueName).toBe('Jungle Park')
+    expect(unlocked(await repo.findById(id)).snapshot.event.venueName).toBe('Jungle Park')
   })
 
   it('adds then removes a question', async () => {
@@ -79,9 +80,9 @@ describe('host config handlers', () => {
       options: ['Pizza'],
       required: true,
     })
-    const qid = (await repo.findById(id))!.snapshot.questions[0]!.id
+    const qid = unlocked(await repo.findById(id)).snapshot.questions[0]!.id
     await new RemoveQuestionHandler(repo).execute({ partyId: id, questionId: qid })
-    expect((await repo.findById(id))?.snapshot.questions).toEqual([])
+    expect(unlocked(await repo.findById(id)).snapshot.questions).toEqual([])
   })
 
   it('updates an existing question when questionId is supplied', async () => {
@@ -96,7 +97,7 @@ describe('host config handlers', () => {
       options: ['Pizza'],
       required: false,
     })
-    const qid = (await repo.findById(id))!.snapshot.questions[0]!.id
+    const qid = unlocked(await repo.findById(id)).snapshot.questions[0]!.id
     await new UpsertQuestionHandler(repo).execute({
       partyId: id,
       questionId: qid,
@@ -107,7 +108,10 @@ describe('host config handlers', () => {
       options: ['Pizza', 'Sushi'],
       required: true,
     })
-    expect((await repo.findById(id))!.snapshot.questions[0]!.options).toEqual(['Pizza', 'Sushi'])
+    expect(unlocked(await repo.findById(id)).snapshot.questions[0]!.options).toEqual([
+      'Pizza',
+      'Sushi',
+    ])
   })
 
   it('sets a pin, then reads it back as hasPin', async () => {

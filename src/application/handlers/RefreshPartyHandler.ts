@@ -2,7 +2,7 @@ import type { IPartyRepository, ReadResult } from '@/domain/repositories/IPartyR
 
 export class RefreshPartyHandler {
   constructor(private readonly repo: IPartyRepository) {}
-  async execute(partyId: string): Promise<ReadResult | null> {
-    return this.repo.findById(partyId)
+  async execute(partyId: string, pin: string | null = null): Promise<ReadResult | null> {
+    return this.repo.findById(partyId, pin)
   }
 }

@@ -3,6 +3,9 @@ import { InMemoryPartyRepository } from '@/infrastructure/persistence/InMemoryPa
 import { CreatePartyHandler } from '@/application/handlers/CreatePartyHandler'
 import { UpsertQuestionHandler } from '@/application/handlers/UpsertQuestionHandler'
 import { SubmitRsvpHandler } from '@/application/handlers/SubmitRsvpHandler'
+import { WrongPinError } from '@/domain/repositories/IPartyRepository'
+import { SetEditPinHandler } from '@/application/handlers/SetEditPinHandler'
+import { unlocked } from '../helpers/partyRead'
 
 async function setup() {
   const repo = new InMemoryPartyRepository()
@@ -22,7 +25,7 @@ async function setup() {
     options: ['Pizza', 'Hot dog'],
     required: true,
   })
-  const qid = (await repo.findById(party.id))!.snapshot.questions[0]!.id
+  const qid = unlocked(await repo.findById(party.id)).snapshot.questions[0]!.id
   return { repo, partyId: party.id, qid }
 }
 
@@ -35,7 +38,7 @@ describe('SubmitRsvpHandler', () => {
       familyAnswers: {},
       children: [{ name: 'Leo', answers: { [qid]: 'Pizza' } }],
     })
-    expect((await repo.findById(partyId))?.snapshot.rsvps).toHaveLength(1)
+    expect(unlocked(await repo.findById(partyId)).snapshot.rsvps).toHaveLength(1)
   })
 
   it('rejects an invalid select answer before appending', async () => {
@@ -48,6 +51,32 @@ describe('SubmitRsvpHandler', () => {
         children: [{ name: 'Leo', answers: { [qid]: 'Sushi' } }],
       }),
     ).rejects.toThrow(/option/i)
-    expect((await repo.findById(partyId))?.snapshot.rsvps).toHaveLength(0)
+    expect(unlocked(await repo.findById(partyId)).snapshot.rsvps).toHaveLength(0)
+  })
+
+  it('refuses a submission without the PIN on a PIN-protected party', async () => {
+    const { repo, partyId, qid } = await setup()
+    await new SetEditPinHandler(repo).execute({ partyId, pin: '1234' })
+    await expect(
+      new SubmitRsvpHandler(repo).execute({
+        partyId,
+        parentsLabel: 'P',
+        familyAnswers: {},
+        children: [{ name: 'Leo', answers: { [qid]: 'Pizza' } }],
+      }),
+    ).rejects.toBeInstanceOf(WrongPinError)
+  })
+
+  it('accepts a submission with the correct PIN on a PIN-protected party', async () => {
+    const { repo, partyId, qid } = await setup()
+    await new SetEditPinHandler(repo).execute({ partyId, pin: '1234' })
+    await new SubmitRsvpHandler(repo).execute({
+      partyId,
+      parentsLabel: 'P',
+      familyAnswers: {},
+      children: [{ name: 'Leo', answers: { [qid]: 'Pizza' } }],
+      pin: '1234',
+    })
+    expect(unlocked(await repo.findById(partyId, '1234')).snapshot.rsvps).toHaveLength(1)
   })
 })

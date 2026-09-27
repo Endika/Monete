@@ -6,11 +6,20 @@ export interface SaveResult {
 }
 
 /** Read result. `hasPin` replaces the old shipped PIN hash — the hash never leaves the server. */
-export interface ReadResult {
+export interface UnlockedRead {
+  locked: false
   snapshot: PartySnapshot
   version: number
   hasPin: boolean
 }
+
+/** A PIN-protected party read without (or with a wrong) PIN: no data, no version, no fail counted. */
+export interface LockedRead {
+  locked: true
+  hasPin: true
+}
+
+export type ReadResult = UnlockedRead | LockedRead
 
 export class VersionConflictError extends Error {
   constructor(readonly currentVersion: number) {
@@ -54,7 +63,12 @@ export class RateLimitedError extends Error {
 }
 
 export interface IPartyRepository {
-  findById(id: string): Promise<ReadResult | null>
+  /**
+   * `pin` is forwarded to the server-side gate: no active row -> null; no PIN -> the full
+   * object; PIN set and no/wrong pin -> a {@link LockedRead} (no fail counted for a missing
+   * pin); PIN set and the right pin -> the full object with `hasPin: true`.
+   */
+  findById(id: string, pin?: string | null): Promise<ReadResult | null>
   getVersion(id: string): Promise<number | null>
   create(snapshot: PartySnapshot): Promise<SaveResult>
   /**
@@ -75,9 +89,9 @@ export interface IPartyRepository {
   /** Erasure: hard-delete the party (PIN-gated server-side when a PIN is set). */
   deleteParty(id: string, pin: string | null): Promise<void>
   /** Guest RSVP submit — atomic append, never clobbers config or other rsvps. Bounded. */
-  appendRsvp(id: string, rsvp: Rsvp): Promise<void>
+  appendRsvp(id: string, rsvp: Rsvp, pin: string | null): Promise<void>
   /** Atomic replace of one rsvp by id (guest/host edit). Bounded. */
-  updateRsvp(id: string, rsvpId: string, rsvp: Rsvp): Promise<void>
+  updateRsvp(id: string, rsvpId: string, rsvp: Rsvp, pin: string | null): Promise<void>
   /** Atomic remove of one rsvp by id. */
-  removeRsvp(id: string, rsvpId: string): Promise<void>
+  removeRsvp(id: string, rsvpId: string, pin: string | null): Promise<void>
 }

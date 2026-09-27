@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { InMemoryPartyRepository } from '@/infrastructure/persistence/InMemoryPartyRepository'
 import { VersionConflictError } from '@/domain/repositories/IPartyRepository'
 import { Party } from '@/domain/entities/Party'
+import { unlocked } from '../helpers/partyRead'
 
 function snap() {
   return Party.create({
@@ -19,7 +20,7 @@ describe('InMemoryPartyRepository', () => {
     const s = snap()
     await repo.create(s)
     const row = await repo.findById(s.id)
-    expect(row?.version).toBe(1)
+    expect(unlocked(row).version).toBe(1)
   })
 
   it('rejects an update with a stale expectedVersion', async () => {
@@ -47,8 +48,8 @@ describe('InMemoryPartyRepository', () => {
         now: '2026-05-29T00:00:00.000Z',
       }),
     )
-    await Promise.all(rsvps.map((r) => repo.appendRsvp(party.toSnapshot().id, r)))
+    await Promise.all(rsvps.map((r) => repo.appendRsvp(party.toSnapshot().id, r, null)))
     const row = await repo.findById(party.toSnapshot().id)
-    expect(row?.snapshot.rsvps).toHaveLength(5)
+    expect(unlocked(row).snapshot.rsvps).toHaveLength(5)
   })
 })

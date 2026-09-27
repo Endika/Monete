@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParty } from '@/presentation/context/PartyContext'
 import { useContainer } from '@/presentation/context/ContainerProvider'
-import { EditPinProvider, useEditPin } from '@/presentation/context/EditPinContext'
+import { EditPinProvider, useEditPin, clearStoredPin } from '@/presentation/context/EditPinContext'
 import type { EditPartyDetailsHandler } from '@/application/handlers/EditPartyDetailsHandler'
 import type { UpsertQuestionHandler } from '@/application/handlers/UpsertQuestionHandler'
 import type { RemoveQuestionHandler } from '@/application/handlers/RemoveQuestionHandler'
@@ -85,16 +85,20 @@ function rsvpToInitial(r: {
 }
 
 export function HostDashboard({ partyId, recents }: HostDashboardProps) {
-  const { hasPin, status } = useParty()
+  const { hasPin, status, snapshot, refresh } = useParty()
 
-  // Never mount PinGate before hasPin is known — it would flash the dashboard unlocked.
+  // Never mount before hasPin/snapshot are known — it would flash the dashboard unlocked.
   if (status !== 'ready') return null
 
   return (
-    <EditPinProvider>
-      <PinGate partyId={partyId} hasPin={hasPin}>
+    <EditPinProvider partyId={partyId}>
+      {snapshot ? (
         <HostDashboardInner partyId={partyId} recents={recents} />
-      </PinGate>
+      ) : (
+        <PinGate partyId={partyId} hasPin={hasPin} onUnlocked={refresh}>
+          {null}
+        </PinGate>
+      )}
     </EditPinProvider>
   )
 }
@@ -206,7 +210,9 @@ function HostDashboardInner({ partyId, recents }: HostDashboardProps) {
 
   const handleAddRsvp = async (input: RsvpInput) => {
     try {
-      await container.resolve<SubmitRsvpHandler>('submitRsvp').execute({ partyId, ...input })
+      await container
+        .resolve<SubmitRsvpHandler>('submitRsvp')
+        .execute({ partyId, ...input, pin: editPin })
       setFormState(null)
       await refresh()
     } catch (err) {
@@ -219,7 +225,7 @@ function HostDashboardInner({ partyId, recents }: HostDashboardProps) {
     try {
       await container
         .resolve<UpdateRsvpHandler>('updateRsvp')
-        .execute({ partyId, rsvpId, ...input })
+        .execute({ partyId, rsvpId, ...input, pin: editPin })
       setFormState(null)
       await refresh()
     } catch (err) {
@@ -230,7 +236,9 @@ function HostDashboardInner({ partyId, recents }: HostDashboardProps) {
 
   const handleDeleteRsvp = async (rsvpId: string) => {
     try {
-      await container.resolve<RemoveRsvpHandler>('removeRsvp').execute({ partyId, rsvpId })
+      await container
+        .resolve<RemoveRsvpHandler>('removeRsvp')
+        .execute({ partyId, rsvpId, pin: editPin })
       await refresh()
     } catch (err) {
       handleError(err)
@@ -241,6 +249,7 @@ function HostDashboardInner({ partyId, recents }: HostDashboardProps) {
     try {
       await container.resolve<DeletePartyHandler>('deleteParty').execute(partyId, editPin)
       recentsStore.removeHosted(partyId)
+      clearStoredPin(partyId)
       window.location.href = import.meta.env.BASE_URL
     } catch (err) {
       setConfirmDelete(false)
