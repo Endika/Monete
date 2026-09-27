@@ -2,12 +2,16 @@ export interface HostedEntry {
   id: string
   title: string
   startsAt: string
+  /** Set by blankLocked, cleared by refreshEntry. Absent (old entries) reads as unlocked. */
+  locked?: boolean
 }
 export interface JoinedEntry {
   id: string
   title: string
   startsAt: string
   rsvpId?: string
+  /** Set by blankLocked, cleared by refreshEntry. Absent (old entries) reads as unlocked. */
+  locked?: boolean
 }
 
 const HOSTED_KEY = 'monete:hosted'
@@ -76,12 +80,18 @@ export class RecentsStore {
   /**
    * A locked read must not go on showing a cached party's real title/date — blank both
    * fields (in whichever list has the entry) but keep the entry, its link and rsvpId, so
-   * the family can still reopen it and enter the PIN. A successful unlock's normal save/
-   * claim flow repopulates them.
+   * the family can still reopen it and enter the PIN. `locked: true` is what the UI (and
+   * refreshEntry below) key off of, since a blank title/date can't be told apart from an
+   * entry that was simply never given one.
    */
   blankLocked(id: string): void {
-    this.updateHosted(id, { title: '', startsAt: '' })
-    this.updateJoined(id, { title: '', startsAt: '' })
+    this.updateHosted(id, { title: '', startsAt: '', locked: true })
+    this.updateJoined(id, { title: '', startsAt: '', locked: true })
+  }
+  /** An unlocked read repopulates whichever list has the entry and clears `locked`. */
+  refreshEntry(id: string, patch: { title: string; startsAt: string }): void {
+    this.updateHosted(id, { ...patch, locked: false })
+    this.updateJoined(id, { ...patch, locked: false })
   }
   removeJoined(partyId: string): void {
     const filtered = this.read<JoinedEntry>(JOINED_KEY).filter((e) => e.id !== partyId)

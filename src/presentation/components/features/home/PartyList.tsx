@@ -4,6 +4,7 @@ interface Entry {
   id: string
   title: string
   startsAt: string
+  locked?: boolean
 }
 
 interface PartyListProps {
@@ -24,9 +25,10 @@ export function PartyList({ title, entries, onOpen }: PartyListProps) {
       <h2 className="font-display text-lg font-bold text-cocoa">{title}</h2>
       <ul className="flex flex-col gap-2">
         {entries.map((e) => {
-          // A locked read blanks the title/date (RecentsStore.blankLocked) so a cached
-          // entry can't leak a PIN-protected party's details on this list.
-          const locked = !e.title || !e.startsAt
+          // RecentsStore.blankLocked sets this when a read comes back locked, so a cached
+          // entry can't leak a PIN-protected party's details on this list; refreshEntry
+          // clears it again once an unlocked read repopulates the title/date.
+          const locked = e.locked === true
           return (
             <li key={e.id}>
               <button
