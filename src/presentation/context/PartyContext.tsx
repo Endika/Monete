@@ -86,6 +86,15 @@ export function PartyProvider({
           if (sentPin !== null) clearStoredPin(partyId)
           // A cached recents entry must not go on showing a now-locked party's details.
           recentsStore.blankLocked(partyId)
+        } else if (row) {
+          // The party no longer has a PIN (e.g. the host just removed it): any leftover
+          // stored value for it is meaningless now.
+          if (!row.hasPin) clearStoredPin(partyId)
+          // Repopulate whichever recents entry has this party, undoing an earlier blank.
+          recentsStore.refreshEntry(partyId, {
+            title: row.snapshot.event.title,
+            startsAt: row.snapshot.event.startsAt,
+          })
         }
         setSnapshot(row && !row.locked ? row.snapshot : null)
         setVersion(row && !row.locked ? row.version : 0)
