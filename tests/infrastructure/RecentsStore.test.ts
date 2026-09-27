@@ -57,4 +57,42 @@ describe('RecentsStore', () => {
     s.updateHosted('missing', { title: 'X' })
     expect(s.listHosted()).toEqual([{ id: 'a', title: 'A', startsAt: '2026-01-01T00:00:00.000Z' }])
   })
+
+  it('updateJoined updates an existing entry in place, keeping its rsvpId', () => {
+    const s = new RecentsStore(memStorage())
+    s.addJoined({ id: 'p1', title: 'P', startsAt: '2026-01-01T00:00:00.000Z', rsvpId: 'r1' })
+    s.updateJoined('p1', { title: 'P2' })
+    expect(s.getJoined('p1')).toEqual({
+      id: 'p1',
+      title: 'P2',
+      startsAt: '2026-01-01T00:00:00.000Z',
+      rsvpId: 'r1',
+    })
+  })
+
+  it('blankLocked clears title/startsAt but keeps the entry, its id and rsvpId', () => {
+    const s = new RecentsStore(memStorage())
+    s.addHosted({ id: 'h1', title: 'Hosted party', startsAt: '2026-01-01T00:00:00.000Z' })
+    s.addJoined({
+      id: 'j1',
+      title: 'Joined party',
+      startsAt: '2026-02-01T00:00:00.000Z',
+      rsvpId: 'r1',
+    })
+
+    s.blankLocked('h1')
+    s.blankLocked('j1')
+
+    expect(s.listHosted()).toEqual([{ id: 'h1', title: '', startsAt: '' }])
+    expect(s.getJoined('j1')).toEqual({ id: 'j1', title: '', startsAt: '', rsvpId: 'r1' })
+  })
+
+  it('blankLocked on an unknown id touches neither list', () => {
+    const s = new RecentsStore(memStorage())
+    s.addHosted({ id: 'h1', title: 'Hosted party', startsAt: '2026-01-01T00:00:00.000Z' })
+    s.blankLocked('missing')
+    expect(s.listHosted()).toEqual([
+      { id: 'h1', title: 'Hosted party', startsAt: '2026-01-01T00:00:00.000Z' },
+    ])
+  })
 })

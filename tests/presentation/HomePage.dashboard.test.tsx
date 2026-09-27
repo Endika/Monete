@@ -31,4 +31,17 @@ describe('HomePage dashboard', () => {
     )
     expect(screen.getByText('Leo turns 5')).toBeInTheDocument()
   })
+
+  it('renders a locked (blanked) recents entry sensibly instead of crashing on an empty date', () => {
+    const store = new RecentsStore(memStorage())
+    store.addHosted({ id: 'abc1234', title: 'Leo turns 5', startsAt: '2026-06-20T17:00:00.000Z' })
+    store.blankLocked('abc1234')
+    render(
+      <ContainerProvider container={buildContainer({ inMemory: true })}>
+        <HomePage onCreated={vi.fn()} onOpenParty={vi.fn()} recents={store} />
+      </ContainerProvider>,
+    )
+    expect(screen.queryByText('Leo turns 5')).not.toBeInTheDocument()
+    expect(screen.getByText('This party is locked')).toBeInTheDocument()
+  })
 })

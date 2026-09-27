@@ -27,11 +27,17 @@ async function setup(withPin: boolean): Promise<{ container: Container; id: stri
   return { container, id: created.party.id }
 }
 
-function renderGate(container: Container, id: string, hasPin: boolean, onUnlocked?: () => void) {
+function renderGate(
+  container: Container,
+  id: string,
+  hasPin: boolean,
+  onUnlocked?: () => void,
+  rateLimited?: boolean,
+) {
   return render(
     <ContainerProvider container={container}>
       <EditPinProvider partyId={id}>
-        <PinGate partyId={id} hasPin={hasPin} onUnlocked={onUnlocked}>
+        <PinGate partyId={id} hasPin={hasPin} onUnlocked={onUnlocked} rateLimited={rateLimited}>
           <div>secret</div>
         </PinGate>
       </EditPinProvider>
@@ -75,5 +81,12 @@ describe('PinGate', () => {
     await userEvent.click(screen.getByRole('button', { name: /unlock|ok|enter/i }))
     await screen.findByText('secret')
     expect(onUnlocked).toHaveBeenCalledTimes(1)
+  })
+
+  it('shows the too-many-attempts message up front when a passive read was already throttled', async () => {
+    const { container, id } = await setup(true)
+    renderGate(container, id, true, undefined, true)
+    expect(await screen.findByText(/too many attempts/i)).toBeInTheDocument()
+    expect(screen.queryByText('secret')).not.toBeInTheDocument()
   })
 })

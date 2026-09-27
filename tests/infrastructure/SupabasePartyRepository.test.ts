@@ -117,18 +117,6 @@ describe('SupabasePartyRepository', () => {
     expect(await repo.findById('abc1234', 'wrong')).toEqual({ locked: true, hasPin: true })
   })
 
-  it('always sends p_pin, even when no pin is supplied, so PostgREST resolves the gated overload', async () => {
-    const calls: unknown[] = []
-    const repo = new SupabasePartyRepository({
-      rpc: async (_fn: string, args: unknown) => {
-        calls.push(args)
-        return { data: null, error: null }
-      },
-    } as never)
-    await repo.findById('abc1234')
-    expect(calls[0]).toEqual({ p_id: 'abc1234', p_pin: null })
-  })
-
   it('always sends p_pin (also when null), and maps a locked payload and a PT429 error', async () => {
     // A stub that errors if get_party is ever called without a p_pin key at all — the
     // behavioural proof that findById includes it (even as null) is that this never fires.
