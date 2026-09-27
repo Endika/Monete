@@ -49,7 +49,7 @@ function rsvpToInitial(rsvp: {
 }
 
 export function GuestPage({ partyId }: GuestPageProps) {
-  const { hasPin, status, snapshot, refresh } = useParty()
+  const { hasPin, status, snapshot, rateLimited, refresh } = useParty()
 
   // Never mount before hasPin/snapshot are known — it would flash the party unlocked.
   if (status !== 'ready') return null
@@ -59,7 +59,7 @@ export function GuestPage({ partyId }: GuestPageProps) {
       {snapshot ? (
         <GuestPageInner partyId={partyId} />
       ) : (
-        <PinGate partyId={partyId} hasPin={hasPin} onUnlocked={refresh}>
+        <PinGate partyId={partyId} hasPin={hasPin} rateLimited={rateLimited} onUnlocked={refresh}>
           {null}
         </PinGate>
       )}

@@ -85,7 +85,7 @@ function rsvpToInitial(r: {
 }
 
 export function HostDashboard({ partyId, recents }: HostDashboardProps) {
-  const { hasPin, status, snapshot, refresh } = useParty()
+  const { hasPin, status, snapshot, rateLimited, refresh } = useParty()
 
   // Never mount before hasPin/snapshot are known — it would flash the dashboard unlocked.
   if (status !== 'ready') return null
@@ -95,7 +95,7 @@ export function HostDashboard({ partyId, recents }: HostDashboardProps) {
       {snapshot ? (
         <HostDashboardInner partyId={partyId} recents={recents} />
       ) : (
-        <PinGate partyId={partyId} hasPin={hasPin} onUnlocked={refresh}>
+        <PinGate partyId={partyId} hasPin={hasPin} rateLimited={rateLimited} onUnlocked={refresh}>
           {null}
         </PinGate>
       )}

@@ -11,6 +11,7 @@ import {
 import type { PartySnapshot } from '@/domain/entities/Party'
 import { useContainer } from '@/presentation/context/ContainerProvider'
 import { RefreshPartyHandler } from '@/application/handlers/RefreshPartyHandler'
+import { RateLimitedError } from '@/domain/repositories/IPartyRepository'
 import { RecentsStore } from '@/infrastructure/persistence/RecentsStore'
 import { readStoredPin, clearStoredPin } from '@/presentation/context/EditPinContext'
 
@@ -29,6 +30,8 @@ interface PartyState {
   hasPin: boolean
   status: PartyStatus
   error: string | null
+  /** The last read hit the PIN throttle (PT429) — show the gate with that message, not `error`. */
+  rateLimited: boolean
   refresh: () => Promise<void>
   /** Drop this party from this device's lists. User-driven only — never automatic. */
   forget: () => void
@@ -53,6 +56,7 @@ export function PartyProvider({
   const [hasPin, setHasPin] = useState(false)
   const [status, setStatus] = useState<PartyStatus>('loading')
   const [error, setError] = useState<string | null>(null)
+  const [rateLimited, setRateLimited] = useState(false)
   const refreshRef = useRef<(() => Promise<void>) | undefined>(undefined)
   const [loadedId, setLoadedId] = useState(partyId)
 
@@ -64,6 +68,7 @@ export function PartyProvider({
     setStatus('loading')
     setSnapshot(null)
     setHasPin(false)
+    setRateLimited(false)
   }
 
   useEffect(() => {
@@ -71,17 +76,38 @@ export function PartyProvider({
     const handler = container.resolve<RefreshPartyHandler>('refreshParty')
 
     const doRefresh = async () => {
+      const sentPin = readStoredPin(partyId)
       try {
-        const row = await handler.execute(partyId, readStoredPin(partyId))
+        const row = await handler.execute(partyId, sentPin)
         if (cancelled) return
+        if (row && row.locked) {
+          // The stored PIN just proved wrong: forget it so the next load — this device's
+          // own or anyone else's — doesn't keep spending failed attempts against it.
+          if (sentPin !== null) clearStoredPin(partyId)
+          // A cached recents entry must not go on showing a now-locked party's details.
+          recentsStore.blankLocked(partyId)
+        }
         setSnapshot(row && !row.locked ? row.snapshot : null)
         setVersion(row && !row.locked ? row.version : 0)
         setHasPin(row?.hasPin ?? false)
         setError(null)
+        setRateLimited(false)
         setStatus(row ? 'ready' : 'deleted')
       } catch (e) {
         if (cancelled) return
+        if (e instanceof RateLimitedError) {
+          // Only a PIN-protected party's read can 429. Keep the stored PIN — it may well
+          // be right, just throttled right now — and show the gate, not the offline screen.
+          setSnapshot(null)
+          setVersion(0)
+          setHasPin(true)
+          setError(null)
+          setRateLimited(true)
+          setStatus('ready')
+          return
+        }
         setError(e instanceof Error ? e.message : String(e))
+        setRateLimited(false)
         // A failed refresh of a party already on screen must not blank it.
         setStatus((s) => (s === 'ready' ? 'ready' : 'unavailable'))
       }
@@ -93,7 +119,7 @@ export function PartyProvider({
     return () => {
       cancelled = true
     }
-  }, [container, partyId])
+  }, [container, partyId, recentsStore])
 
   const refresh = useCallback(async () => {
     if (refreshRef.current) await refreshRef.current()
@@ -108,7 +134,9 @@ export function PartyProvider({
   }, [recentsStore, partyId])
 
   return (
-    <Ctx.Provider value={{ snapshot, version, hasPin, status, error, refresh, forget }}>
+    <Ctx.Provider
+      value={{ snapshot, version, hasPin, status, error, rateLimited, refresh, forget }}
+    >
       {children}
     </Ctx.Provider>
   )
