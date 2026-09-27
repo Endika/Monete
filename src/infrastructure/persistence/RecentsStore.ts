@@ -21,10 +21,19 @@ const CAP = 50
 export class RecentsStore {
   constructor(private readonly storage: Storage = window.localStorage) {}
 
+  /**
+   * Unreadable (parse error, or valid JSON that isn't an array) reads as empty, same as
+   * missing — never throws, and never lets a caller mistake a non-array for a list to
+   * iterate. Load-time callers (blankLocked, refreshEntry) rely on the resulting empty
+   * list to find no matching id and skip their write, so an unreadable stored value is
+   * never overwritten just because the app read it.
+   */
   private read<T>(key: string): T[] {
     try {
       const raw = this.storage.getItem(key)
-      return raw ? (JSON.parse(raw) as T[]) : []
+      if (!raw) return []
+      const parsed: unknown = JSON.parse(raw)
+      return Array.isArray(parsed) ? (parsed as T[]) : []
     } catch {
       return []
     }
