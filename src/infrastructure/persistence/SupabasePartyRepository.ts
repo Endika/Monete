@@ -42,7 +42,8 @@ export class SupabasePartyRepository implements IPartyRepository {
 
   async findById(id: string, pin: string | null = null): Promise<ReadResult | null> {
     const { data, error } = await this.client.rpc('get_party', { p_id: id, p_pin: pin })
-    if (error) throw error
+    const mapped = mapRpcError(error)
+    if (mapped) throw mapped
     if (!data) return null
     const payload = data as GetPartyPayload
     if (payload.locked) return { locked: true, hasPin: true }
@@ -91,17 +92,21 @@ export class SupabasePartyRepository implements IPartyRepository {
       const mapped = mapRpcError(error)
       if (mapped) throw mapped
     }
+    // 0 is never a real version (they start at 1): a wrong-PIN sentinel that never raises,
+    // so the recorded fail can't be rolled back with it (see monete_pin_fails_stick).
+    if (data === 0) throw new WrongPinError()
     return { snapshot, version: (data as number) ?? expectedVersion + 1 }
   }
 
   async setPin(id: string, newPin: string | null, currentPin: string | null): Promise<void> {
-    const { error } = await this.client.rpc('set_party_pin', {
+    const { data, error } = await this.client.rpc('set_party_pin', {
       p_id: id,
       p_new_pin: newPin,
       p_current_pin: currentPin,
     })
     const mapped = mapRpcError(error)
     if (mapped) throw mapped
+    if (data === false) throw new WrongPinError()
   }
 
   async verifyPin(id: string, pin: string): Promise<boolean> {
@@ -112,19 +117,25 @@ export class SupabasePartyRepository implements IPartyRepository {
   }
 
   async deleteParty(id: string, pin: string | null): Promise<void> {
-    const { error } = await this.client.rpc('delete_party', { p_id: id, p_pin: pin })
+    const { data, error } = await this.client.rpc('delete_party', { p_id: id, p_pin: pin })
     const mapped = mapRpcError(error)
     if (mapped) throw mapped
+    if (data === false) throw new WrongPinError()
   }
 
   async appendRsvp(id: string, rsvp: Rsvp, pin: string | null): Promise<void> {
-    const { error } = await this.client.rpc('append_rsvp', { p_id: id, p_rsvp: rsvp, p_pin: pin })
+    const { data, error } = await this.client.rpc('append_rsvp', {
+      p_id: id,
+      p_rsvp: rsvp,
+      p_pin: pin,
+    })
     const mapped = mapRpcError(error)
     if (mapped) throw mapped
+    if (data === false) throw new WrongPinError()
   }
 
   async updateRsvp(id: string, rsvpId: string, rsvp: Rsvp, pin: string | null): Promise<void> {
-    const { error } = await this.client.rpc('update_rsvp', {
+    const { data, error } = await this.client.rpc('update_rsvp', {
       p_id: id,
       p_rsvp_id: rsvpId,
       p_rsvp: rsvp,
@@ -132,15 +143,17 @@ export class SupabasePartyRepository implements IPartyRepository {
     })
     const mapped = mapRpcError(error)
     if (mapped) throw mapped
+    if (data === false) throw new WrongPinError()
   }
 
   async removeRsvp(id: string, rsvpId: string, pin: string | null): Promise<void> {
-    const { error } = await this.client.rpc('remove_rsvp', {
+    const { data, error } = await this.client.rpc('remove_rsvp', {
       p_id: id,
       p_rsvp_id: rsvpId,
       p_pin: pin,
     })
     const mapped = mapRpcError(error)
     if (mapped) throw mapped
+    if (data === false) throw new WrongPinError()
   }
 }
