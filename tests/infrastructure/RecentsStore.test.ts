@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { RecentsStore } from '@/infrastructure/persistence/RecentsStore'
 
 function memStorage(): Storage {
@@ -122,5 +122,115 @@ describe('RecentsStore', () => {
       rsvpId: 'r1',
       locked: false,
     })
+  })
+
+  // Format guards: a hardcoded literal of what a real device already has on disk, never one
+  // produced by a save call in this test — that would only prove a round-trip, not that an
+  // older shape still loads.
+  it('format guard: loads a hosted list with an old entry (no locked) and a locked one', () => {
+    const storage = memStorage()
+    storage.setItem(
+      'monete:hosted',
+      '[{"id":"h1","title":"Old one","startsAt":"2026-01-01T00:00:00.000Z"},' +
+        '{"id":"h2","title":"","startsAt":"","locked":true}]',
+    )
+    const s = new RecentsStore(storage)
+    expect(s.listHosted()).toEqual([
+      { id: 'h1', title: 'Old one', startsAt: '2026-01-01T00:00:00.000Z' },
+      { id: 'h2', title: '', startsAt: '', locked: true },
+    ])
+  })
+
+  it('format guard: loads a joined list with an old entry (no rsvpId/locked) and a claimed one', () => {
+    const storage = memStorage()
+    storage.setItem(
+      'monete:joined',
+      '[{"id":"j1","title":"Old one","startsAt":"2026-01-01T00:00:00.000Z"},' +
+        '{"id":"j2","title":"Joined party","startsAt":"2026-02-01T00:00:00.000Z","rsvpId":"r1","locked":false}]',
+    )
+    const s = new RecentsStore(storage)
+    expect(s.listJoined()).toEqual([
+      { id: 'j1', title: 'Old one', startsAt: '2026-01-01T00:00:00.000Z' },
+      {
+        id: 'j2',
+        title: 'Joined party',
+        startsAt: '2026-02-01T00:00:00.000Z',
+        rsvpId: 'r1',
+        locked: false,
+      },
+    ])
+  })
+
+  it('reads an unparseable stored list as empty instead of throwing', () => {
+    const storage = memStorage()
+    storage.setItem('monete:hosted', '{not json')
+    const s = new RecentsStore(storage)
+    expect(s.listHosted()).toEqual([])
+  })
+
+  it('reads a parseable non-array stored list as empty instead of crashing', () => {
+    const storage = memStorage()
+    storage.setItem('monete:joined', '{"oops":"this is an object, not a list"}')
+    const s = new RecentsStore(storage)
+    expect(s.listJoined()).toEqual([])
+  })
+
+  it('blankLocked never overwrites an unparseable stored list', () => {
+    const storage = memStorage()
+    storage.setItem('monete:hosted', '{not json')
+    storage.setItem('monete:joined', '{not json either')
+    const setItemSpy = vi.spyOn(storage, 'setItem')
+
+    const s = new RecentsStore(storage)
+    s.blankLocked('h1')
+
+    expect(setItemSpy).not.toHaveBeenCalled()
+    expect(storage.getItem('monete:hosted')).toBe('{not json')
+    expect(storage.getItem('monete:joined')).toBe('{not json either')
+  })
+
+  it('blankLocked never overwrites a parseable non-array stored list', () => {
+    const storage = memStorage()
+    storage.setItem('monete:hosted', '{"not":"an array"}')
+    const setItemSpy = vi.spyOn(storage, 'setItem')
+
+    const s = new RecentsStore(storage)
+    s.blankLocked('h1')
+
+    expect(setItemSpy).not.toHaveBeenCalled()
+    expect(storage.getItem('monete:hosted')).toBe('{"not":"an array"}')
+  })
+
+  it('refreshEntry never overwrites an unreadable stored list', () => {
+    const storage = memStorage()
+    storage.setItem('monete:joined', '[not valid json')
+    const setItemSpy = vi.spyOn(storage, 'setItem')
+
+    const s = new RecentsStore(storage)
+    s.refreshEntry('j1', { title: 'Party', startsAt: '2026-01-01T00:00:00.000Z' })
+
+    expect(setItemSpy).not.toHaveBeenCalled()
+    expect(storage.getItem('monete:joined')).toBe('[not valid json')
+  })
+
+  it('a user action (addHosted) may write even though the stored list was unreadable', () => {
+    const storage = memStorage()
+    storage.setItem('monete:hosted', '{not json')
+    const s = new RecentsStore(storage)
+
+    s.addHosted({ id: 'h1', title: 'Fresh start', startsAt: '2026-01-01T00:00:00.000Z' })
+
+    expect(s.listHosted()).toEqual([
+      { id: 'h1', title: 'Fresh start', startsAt: '2026-01-01T00:00:00.000Z' },
+    ])
+  })
+
+  it('a user action (removeJoined) may write even though the stored list was unreadable', () => {
+    const storage = memStorage()
+    storage.setItem('monete:joined', '{not json')
+    const s = new RecentsStore(storage)
+
+    expect(() => s.removeJoined('j1')).not.toThrow()
+    expect(s.listJoined()).toEqual([])
   })
 })
