@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.5.2](https://github.com/Endika/Monete/compare/v2.5.1...v2.5.2) (2026-09-27)
+
+
+### Bug Fixes
+
+* **geo:** throw on address-lookup failure instead of hiding it ([3216eab](https://github.com/Endika/Monete/commit/3216eab756264c1f6b9d1f6915992d6d2940b89d))
+* **recents:** never let a non-array stored list crash or get erased ([b4e430b](https://github.com/Endika/Monete/commit/b4e430b3cf2f5ed96f8980e5f04d34a3b87d3263))
+* skip Photon for stale queries and drop a mock-call assertion ([2032100](https://github.com/Endika/Monete/commit/20321002305a9e49946159a0e45e1327ee9491dc))
+* surface address search/details failures instead of an empty list ([9243f68](https://github.com/Endika/Monete/commit/9243f6806201d735099e476b490483418a83a5b3))
+
 ## [2.5.1](https://github.com/Endika/Monete/compare/v2.5.0...v2.5.1) (2026-09-27)
 
 
