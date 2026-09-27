@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.1](https://github.com/Endika/Monete/compare/v2.5.0...v2.5.1) (2026-09-27)
+
+
+### Bug Fixes
+
+* **db:** drop the pre-PIN RPC overloads ([a5b0e10](https://github.com/Endika/Monete/commit/a5b0e10e0f35591076cb4f39c9724ce51b19bc60))
+
 ## [2.5.0](https://github.com/Endika/Monete/compare/v2.4.0...v2.5.0) (2026-09-27)
 
 
