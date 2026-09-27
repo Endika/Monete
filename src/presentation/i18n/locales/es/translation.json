@@ -9,6 +9,8 @@
     "venueNamePlaceholder": "p. ej. Parque de bolas Jungla",
     "addressLabel": "Dirección",
     "addressPlaceholder": "Busca la dirección…",
+    "addressSearchError": "No se han podido buscar direcciones. Comprueba tu conexión e inténtalo de nuevo.",
+    "addressDetailsError": "No se ha podido obtener la ubicación en el mapa de esa dirección. Vuelve a intentarlo.",
     "startsAtLabel": "Fecha y hora",
     "endsAtLabel": "Hora de fin (opcional)",
     "requirementsLabel": "Requisitos / notas",

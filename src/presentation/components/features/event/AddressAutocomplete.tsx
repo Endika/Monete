@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Input } from '@/presentation/components/common/Input'
+import { ErrorBanner } from '@/presentation/components/common/ErrorBanner'
 import { searchAddresses } from '@/infrastructure/geo/photonSearch'
 import { googleAutocomplete, googlePlaceDetails } from '@/infrastructure/geo/googlePlaces'
 
@@ -28,6 +29,7 @@ interface Suggestion {
 export function AddressAutocomplete({ value, onChange }: Props) {
   const { t, i18n } = useTranslation()
   const [suggestions, setSuggestions] = useState<Suggestion[]>([])
+  const [error, setError] = useState<string | null>(null)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const mountedRef = useRef(true)
   const latestQueryRef = useRef<string>('')
@@ -53,56 +55,67 @@ export function AddressAutocomplete({ value, onChange }: Props) {
     }
 
     latestQueryRef.current = text
+
+    // Photon is also where Google's own search ends up when there's no key: any failure
+    // past this point is the search the user is actually left looking at, so it must show
+    // the app's error instead of quietly leaving the list empty.
+    const tryPhoton = async (query: string, lang: string) => {
+      try {
+        const fallback = await searchAddresses(query, lang)
+        if (mountedRef.current && query === latestQueryRef.current) {
+          setSuggestions(fallback)
+          setError(null)
+        }
+      } catch {
+        if (mountedRef.current && query === latestQueryRef.current) {
+          setSuggestions([])
+          setError(t('home.addressSearchError'))
+        }
+      }
+    }
+
     timerRef.current = setTimeout(() => {
       const query = text
       const lang = i18n.language
 
       if (key) {
         void googleAutocomplete(query, key)
-          .then(async (results) => {
-            if (!mountedRef.current || query !== latestQueryRef.current) return
+          .then((results) => {
+            if (!mountedRef.current || query !== latestQueryRef.current) return undefined
             if (results.length > 0) {
               setSuggestions(results.map((r) => ({ label: r.label, placeId: r.placeId })))
-            } else {
-              // fallback to Photon if Google returns nothing
-              const fallback = await searchAddresses(query, lang)
-              if (mountedRef.current && query === latestQueryRef.current) {
-                setSuggestions(fallback)
-              }
+              setError(null)
+              return undefined
             }
+            // Google found nothing — try Photon before treating it as a genuine empty result.
+            return tryPhoton(query, lang)
           })
-          .catch(() => {
-            void searchAddresses(query, lang).then((fallback) => {
-              if (mountedRef.current && query === latestQueryRef.current) {
-                setSuggestions(fallback)
-              }
-            })
-          })
+          .catch(() => tryPhoton(query, lang))
       } else {
-        void searchAddresses(query, lang).then((results) => {
-          if (mountedRef.current && query === latestQueryRef.current) {
-            setSuggestions(results)
-          }
-        })
+        void tryPhoton(query, lang)
       }
     }, 300)
   }
 
   const handlePick = (s: Suggestion) => {
     if (s.placeId && key) {
-      void googlePlaceDetails(s.placeId, key).then((details) => {
-        if (details) {
+      void googlePlaceDetails(s.placeId, key)
+        .then((details) => {
+          setError(null)
           onChange({
             address: details.label,
             lat: details.lat,
             lng: details.lng,
             name: details.name,
           })
-        } else {
-          onChange({ address: s.label, lat: null, lng: null })
-        }
-      })
+        })
+        .catch(() => {
+          // Don't save a coordinate-less place silently — leave the field as it was and
+          // let the user retry, instead of dropping the party's map pin without a trace.
+          setError(t('home.addressDetailsError'))
+        })
     } else {
+      setError(null)
       onChange({ address: s.label, lat: s.lat ?? null, lng: s.lng ?? null })
     }
     setSuggestions([])
@@ -133,6 +146,7 @@ export function AddressAutocomplete({ value, onChange }: Props) {
           ))}
         </ul>
       )}
+      <ErrorBanner message={error} />
     </div>
   )
 }

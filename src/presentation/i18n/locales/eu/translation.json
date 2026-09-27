@@ -9,6 +9,8 @@
     "venueNamePlaceholder": "adib. Jungla jolas-parkea",
     "addressLabel": "Helbidea",
     "addressPlaceholder": "Bilatu helbidea…",
+    "addressSearchError": "Ezin izan dira helbideak bilatu. Egiaztatu konexioa eta saiatu berriro.",
+    "addressDetailsError": "Ezin izan da helbide horren kokapena mapan lortu. Saiatu berriro.",
     "startsAtLabel": "Data eta ordua",
     "endsAtLabel": "Amaiera-ordua (aukerakoa)",
     "requirementsLabel": "Baldintzak / oharrak",
