@@ -1,3 +1,5 @@
+import { GeoLookupError } from '@/infrastructure/geo/GeoLookupError'
+
 export interface PlaceSuggestion {
   placeId: string
   label: string
@@ -14,7 +16,7 @@ export async function googleAutocomplete(query: string, key: string): Promise<Pl
       },
       body: JSON.stringify({ input: query }),
     })
-    if (!res.ok) return []
+    if (!res.ok) throw new GeoLookupError(`Google Places autocomplete failed: ${res.status}`)
     const data = (await res.json()) as {
       suggestions?: Array<{
         placePrediction?: { placeId?: string; text?: { text?: string } }
@@ -27,15 +29,16 @@ export async function googleAutocomplete(query: string, key: string): Promise<Pl
         return { placeId: pp.placeId, label: pp.text.text }
       })
       .filter((x): x is PlaceSuggestion => x !== null)
-  } catch {
-    return []
+  } catch (e) {
+    if (e instanceof GeoLookupError) throw e
+    throw new GeoLookupError('Google Places autocomplete request failed', { cause: e })
   }
 }
 
 export async function googlePlaceDetails(
   placeId: string,
   key: string,
-): Promise<{ label: string; name: string; lat: number; lng: number } | null> {
+): Promise<{ label: string; name: string; lat: number; lng: number }> {
   try {
     const res = await fetch(`https://places.googleapis.com/v1/places/${placeId}`, {
       headers: {
@@ -43,20 +46,23 @@ export async function googlePlaceDetails(
         'X-Goog-FieldMask': 'location,formattedAddress,displayName',
       },
     })
-    if (!res.ok) return null
+    if (!res.ok) throw new GeoLookupError(`Google place details failed: ${res.status}`)
     const data = (await res.json()) as {
       location?: { latitude?: number; longitude?: number }
       formattedAddress?: string
       displayName?: { text?: string }
     }
-    if (!data.location?.latitude || !data.location?.longitude || !data.formattedAddress) return null
+    if (!data.location?.latitude || !data.location?.longitude || !data.formattedAddress) {
+      throw new GeoLookupError('Google place details response is missing location fields')
+    }
     return {
       label: data.formattedAddress,
       name: data.displayName?.text ?? '',
       lat: data.location.latitude,
       lng: data.location.longitude,
     }
-  } catch {
-    return null
+  } catch (e) {
+    if (e instanceof GeoLookupError) throw e
+    throw new GeoLookupError('Google place details request failed', { cause: e })
   }
 }
