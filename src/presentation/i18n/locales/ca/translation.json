@@ -9,6 +9,8 @@
     "venueNamePlaceholder": "p. ex. Parc de boles Jungla",
     "addressLabel": "Adreça",
     "addressPlaceholder": "Cerca l'adreça…",
+    "addressSearchError": "No s'han pogut cercar adreces. Comprova la connexió i torna-ho a provar.",
+    "addressDetailsError": "No s'ha pogut obtenir la ubicació al mapa d'aquesta adreça. Torna-ho a provar.",
     "startsAtLabel": "Data i hora",
     "endsAtLabel": "Hora de fi (opcional)",
     "requirementsLabel": "Requisits / notes",

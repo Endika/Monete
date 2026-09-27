@@ -9,6 +9,8 @@
     "venueNamePlaceholder": "e.g. Jungle Play Park",
     "addressLabel": "Address",
     "addressPlaceholder": "Search address…",
+    "addressSearchError": "Couldn't search for addresses. Check your connection and try again.",
+    "addressDetailsError": "Couldn't get the map location for that address. Try picking it again.",
     "startsAtLabel": "Date & time",
     "endsAtLabel": "End time (optional)",
     "requirementsLabel": "Requirements / notes",

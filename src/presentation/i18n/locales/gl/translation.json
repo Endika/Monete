@@ -9,6 +9,8 @@
     "venueNamePlaceholder": "p. ex. Parque de bólas Xungla",
     "addressLabel": "Enderezo",
     "addressPlaceholder": "Busca o enderezo…",
+    "addressSearchError": "Non se puideron buscar enderezos. Comproba a conexión e téntao de novo.",
+    "addressDetailsError": "Non se puido obter a localización no mapa dese enderezo. Téntao de novo.",
     "startsAtLabel": "Data e hora",
     "endsAtLabel": "Hora de remate (opcional)",
     "requirementsLabel": "Requisitos / notas",
