@@ -1,5 +1,26 @@
 # Changelog
 
+## [2.5.0](https://github.com/Endika/Monete/compare/v2.4.0...v2.5.0) (2026-09-27)
+
+
+### Features
+
+* **db:** gate party reads and rsvp writes behind the edit pin ([93a9f9b](https://github.com/Endika/Monete/commit/93a9f9b7eca862db89c7ea8ed25cc8dac767fee8))
+* thread the party pin through reads and rsvp writes ([3942d59](https://github.com/Endika/Monete/commit/3942d59b6b3b3ec0d16559bc225234809a1d6b69))
+
+
+### Bug Fixes
+
+* **db:** make wrong-pin fails stick and only verify resets them ([5ad269f](https://github.com/Endika/Monete/commit/5ad269f261c067ef25934dff7e00cd0d8c02e6eb))
+* **db:** serialize the pin throttle guard with a row lock ([dfcdb4b](https://github.com/Endika/Monete/commit/dfcdb4b8dd63f7e9f256b9844447c29b8dbc95f4))
+* **db:** the guard's placeholder row must not anchor the window ([16b7c9f](https://github.com/Endika/Monete/commit/16b7c9fd9c39b7ac9b92b6f5369d133afcef3906))
+* **i18n:** stop calling the pin gate an organizer-only area ([a74cafa](https://github.com/Endika/Monete/commit/a74cafa9d0da9878ec3a0160136549ee9d6c5608))
+* keep the verified PIN in memory when storage throws ([55e4c09](https://github.com/Endika/Monete/commit/55e4c09e91d14db1f0f8aa9e8ec641ca126e7c2c))
+* make wrong-pin fails stick and stop resetting on a correct write ([71b2b5c](https://github.com/Endika/Monete/commit/71b2b5c27e65e0be2c28eece30df7d6f18123aa4))
+* recover a stale PIN, a throttled read, and a locked recents entry ([8a26769](https://github.com/Endika/Monete/commit/8a2676983f85c6193efc804fbed9c50921565e92))
+* recover from a write that finds the PIN stale ([4565e8b](https://github.com/Endika/Monete/commit/4565e8b8d63b5fab5506c63a4c58893327e5759b))
+* restore a locked recents entry once the party unlocks ([7891e03](https://github.com/Endika/Monete/commit/7891e034f2abaf592a98580e819054a33084c2c9))
+
 ## [2.4.0](https://github.com/Endika/Monete/compare/v2.3.0...v2.4.0) (2026-09-16)
 
 
