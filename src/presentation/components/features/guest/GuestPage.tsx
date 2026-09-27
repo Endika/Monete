@@ -22,6 +22,8 @@ function messageForError(t: (key: string) => string, e: unknown): string {
   const code = e instanceof Error ? (e as Error & { code?: string }).code : undefined
   if (code === 'PAYLOAD_TOO_LARGE') return t('common.tooLarge')
   if (code === 'STALE_CLIENT') return t('common.updateRequired')
+  if (code === 'WRONG_PIN') return t('host.wrongPin')
+  if (code === 'RATE_LIMITED') return t('host.tooManyAttempts')
   return e instanceof Error ? e.message : String(e)
 }
 
@@ -97,6 +99,14 @@ function GuestPageInner({ partyId }: GuestPageProps) {
     allDay: snapshot.event.allDay,
   }
 
+  function handleWriteError(e: unknown) {
+    setSubmitError(messageForError(t, e))
+    const code = e instanceof Error ? (e as Error & { code?: string }).code : undefined
+    // A wrong PIN here means the remembered one just went stale (e.g. the host rotated
+    // it): refresh so the locked read clears it and swaps back to the gate.
+    if (code === 'WRONG_PIN') void refresh()
+  }
+
   async function handleRegister(input: {
     parentsLabel: string
     familyAnswers: AnswerMap
@@ -118,7 +128,7 @@ function GuestPageInner({ partyId }: GuestPageProps) {
       setSubmitted(true)
       setSubmitError(null)
     } catch (e) {
-      setSubmitError(messageForError(t, e))
+      handleWriteError(e)
       throw e
     }
   }
@@ -139,7 +149,7 @@ function GuestPageInner({ partyId }: GuestPageProps) {
       setMode('view')
       setSubmitError(null)
     } catch (e) {
-      setSubmitError(messageForError(t, e))
+      handleWriteError(e)
       throw e
     }
   }

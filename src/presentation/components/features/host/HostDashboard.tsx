@@ -124,6 +124,9 @@ function HostDashboardInner({ partyId, recents }: HostDashboardProps) {
       setError(t('common.updateRequired'))
     } else if (code === 'WRONG_PIN') {
       setError(t('host.wrongPin'))
+      // The remembered PIN just went stale (e.g. rotated elsewhere): refresh so the
+      // locked read clears it and this swaps back to the gate instead of staying stuck.
+      void refresh()
     } else if (code === 'RATE_LIMITED') {
       setError(t('host.tooManyAttempts'))
     } else if (code === 'PAYLOAD_TOO_LARGE') {
