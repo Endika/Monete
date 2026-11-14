@@ -30,7 +30,7 @@ export function VenueSummaryModal({ snapshot, onClose }: VenueSummaryModalProps)
       requirements: snapshot.event.requirements,
     },
     hc,
-    t,
+    (key, vars) => t(key, vars ?? {}),
   )
 
   const handleCopy = () => {
