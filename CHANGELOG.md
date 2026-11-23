@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.3](https://github.com/Endika/Monete/compare/v2.5.2...v2.5.3) (2026-11-23)
+
+
+### Bug Fixes
+
+* **pwa:** precache the app again so installed apps update ([2c2dc46](https://github.com/Endika/Monete/commit/2c2dc46e23421e131f47f917781bf93550641608))
+
 ## [2.5.2](https://github.com/Endika/Monete/compare/v2.5.1...v2.5.2) (2026-09-27)
 
 
