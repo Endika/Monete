@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.6](https://github.com/Endika/Monete/compare/v2.5.5...v2.5.6) (2026-11-25)
+
+
+### Bug Fixes
+
+* **host:** show a date answer as the same day in any timezone ([7c8deb7](https://github.com/Endika/Monete/commit/7c8deb79f133948059e88d4269220d2e38e940a4))
+
 ## [2.5.5](https://github.com/Endika/Monete/compare/v2.5.4...v2.5.5) (2026-11-25)
 
 
