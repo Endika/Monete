@@ -7,6 +7,12 @@ describe('googleMapsUrl coords', () => {
       'https://www.google.com/maps/search/?api=1&query=40.4,-3.7',
     )
   })
+  it.each([
+    { lat: null, lng: -3.7 },
+    { lat: 40.4, lng: null },
+  ])('falls back to the address when a coordinate is missing: %o', (coords) => {
+    expect(googleMapsUrl('Plaza Mayor', coords)).toContain('query=Plaza%20Mayor')
+  })
   it('falls back to address text without coords', () => {
     expect(googleMapsUrl('Plaza Mayor')).toContain('query=Plaza%20Mayor')
   })

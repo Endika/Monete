@@ -16,7 +16,7 @@ function toLabel(p: Record<string, string | undefined>): string {
   return [street, p.postcode, p.city, p.state, p.country].filter(Boolean).join(', ')
 }
 
-export async function searchAddresses(query: string, lang = 'en'): Promise<AddressSuggestion[]> {
+export async function searchAddresses(query: string, lang: string): Promise<AddressSuggestion[]> {
   const q = query.trim()
   if (q.length < 3) return []
   const supported = ['en', 'de', 'fr', 'it']
