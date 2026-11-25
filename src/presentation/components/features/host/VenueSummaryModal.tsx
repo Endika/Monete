@@ -5,6 +5,7 @@ import { computeHeadcount } from '@/presentation/utils/headcount'
 import { formatVenueSummary } from '@/presentation/utils/formatVenueSummary'
 import { whatsAppShareUrl } from '@/presentation/utils/shareWhatsApp'
 import { Modal } from '@/presentation/components/common/Modal'
+import { formatEventStart } from '@/presentation/utils/formatEventStart'
 import { Button } from '@/presentation/components/common/Button'
 
 interface VenueSummaryModalProps {
@@ -17,10 +18,7 @@ export function VenueSummaryModal({ snapshot, onClose }: VenueSummaryModalProps)
   const [copied, setCopied] = useState(false)
 
   const hc = computeHeadcount(snapshot)
-  const formattedDate = new Intl.DateTimeFormat(i18n.language, {
-    dateStyle: 'full',
-    timeStyle: 'short',
-  }).format(new Date(snapshot.event.startsAt))
+  const formattedDate = formatEventStart(snapshot.event, i18n.language)
   const text = formatVenueSummary(
     {
       title: snapshot.event.title,
