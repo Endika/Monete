@@ -21,7 +21,7 @@ export interface Headcount {
 }
 
 function toCount(v: AnswerValue | undefined): number {
-  return typeof v === 'number' ? v : Number(v) || 0
+  return Number(v) || 0
 }
 
 export function birthdayNames(rsvps: Rsvp[]): string[] {
