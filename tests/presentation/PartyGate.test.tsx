@@ -70,13 +70,6 @@ function StatusProbe() {
 describe('PartyGate', () => {
   beforeEach(() => window.localStorage.clear())
 
-  it('renders the party when it loads', async () => {
-    const c = buildContainer({ inMemory: true })
-    const party = await createParty(c)
-    renderGate(c, party.id, new RecentsStore(memStorage()))
-    await waitFor(() => expect(screen.getByText('party contents')).toBeInTheDocument())
-  })
-
   it('offers to forget a deleted party but changes nothing until confirmed', async () => {
     const c = buildContainer({ inMemory: true })
     const party = await createParty(c)

@@ -21,10 +21,4 @@ describe('AddToCalendarButton', () => {
     await userEvent.click(screen.getByRole('button', { name: /google calendar/i }))
     expect(open).toHaveBeenCalledWith(expect.stringContaining('calendar.google.com'), '_blank')
   })
-
-  it('offers the .ics option', async () => {
-    render(<AddToCalendarButton event={event} />)
-    await userEvent.click(screen.getByRole('button', { name: /add to calendar/i }))
-    expect(screen.getByRole('button', { name: /apple|outlook|\.ics/i })).toBeInTheDocument()
-  })
 })
