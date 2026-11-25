@@ -8,6 +8,7 @@ import type { UpsertQuestionHandler } from '@/application/handlers/UpsertQuestio
 import type { RemoveQuestionHandler } from '@/application/handlers/RemoveQuestionHandler'
 import type { SetEditPinHandler } from '@/application/handlers/SetEditPinHandler'
 import type { DeletePartyHandler } from '@/application/handlers/DeletePartyHandler'
+import { isEditPin } from '@/application/dtos/SetEditPinDTO'
 import type { SubmitRsvpHandler } from '@/application/handlers/SubmitRsvpHandler'
 import type { UpdateRsvpHandler } from '@/application/handlers/UpdateRsvpHandler'
 import type { RemoveRsvpHandler } from '@/application/handlers/RemoveRsvpHandler'
@@ -185,12 +186,11 @@ function HostDashboardInner({ partyId, recents }: HostDashboardProps) {
 
   const handleSetPin = async () => {
     try {
-      const next = newPin || null
       await container
         .resolve<SetEditPinHandler>('setEditPin')
-        .execute({ partyId, pin: next, currentPin: editPin })
+        .execute({ partyId, pin: newPin, currentPin: editPin })
       // Adopt the new PIN for the session so subsequent edits keep working.
-      setEditPin(next)
+      setEditPin(newPin)
       setNewPin('')
       await refresh()
       setPinSaved(true)
@@ -308,7 +308,7 @@ function HostDashboardInner({ partyId, recents }: HostDashboardProps) {
             }}
           />
           <div className="flex gap-2 flex-wrap">
-            <Button type="button" onClick={handleSetPin}>
+            <Button type="button" onClick={handleSetPin} disabled={!isEditPin(newPin)}>
               {t('host.setPin')}
             </Button>
             {hasPin && (
