@@ -1,19 +1,10 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { PartySnapshot, AnswerValue, QuestionType } from '@/domain/entities/Party'
+import type { PartySnapshot } from '@/domain/entities/Party'
 import { computeHeadcount } from '@/presentation/utils/headcount'
+import { formatAnswer } from '@/presentation/utils/formatAnswer'
 import { Button } from '@/presentation/components/common/Button'
 import { VenueSummaryModal } from '@/presentation/components/features/host/VenueSummaryModal'
-
-// Read-only formatting of a single answer for the host's quick-view accordion.
-function formatAnswer(value: AnswerValue, type: QuestionType, locale: string): string {
-  if (value === null || value === '') return '—'
-  if (type === 'date') {
-    const d = new Date(String(value))
-    return Number.isNaN(d.getTime()) ? String(value) : d.toLocaleDateString(locale)
-  }
-  return String(value)
-}
 
 interface HeadcountViewProps {
   snapshot: PartySnapshot
