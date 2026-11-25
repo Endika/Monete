@@ -22,3 +22,5 @@ Thumbs.db
 
 # Internal planning notes (specs/plans) live outside the repo (../Monete-notes)
 docs/superpowers/
+
+.stryker-tmp/
