@@ -25,7 +25,11 @@ describe('searchAddresses', () => {
     vi.unstubAllGlobals()
   })
 
-  it('builds the label from street, number, postcode, city, state and country', async () => {
+  it('builds the label from the parts present, skipping the missing ones', async () => {
+    const partial = {
+      geometry: { coordinates: [1, 2] },
+      properties: { street: 'Gran Vía', city: 'Madrid' },
+    }
     const feature = {
       geometry: { coordinates: [1, 2] },
       properties: {
@@ -39,11 +43,12 @@ describe('searchAddresses', () => {
     }
     vi.stubGlobal(
       'fetch',
-      vi.fn().mockResolvedValue({ ok: true, json: async () => ({ features: [feature] }) }),
+      vi.fn().mockResolvedValue({ ok: true, json: async () => ({ features: [feature, partial] }) }),
     )
-    expect((await searchAddresses('calle mayor', 'es'))[0]!.label).toBe(
+    expect((await searchAddresses('calle mayor', 'es')).map((s) => s.label)).toEqual([
       'Calle Mayor 5, 28013, Madrid, Madrid, España',
-    )
+      'Gran Vía, Madrid',
+    ])
     vi.unstubAllGlobals()
   })
 
