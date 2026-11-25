@@ -97,4 +97,36 @@ describe('HostDashboard behind a party PIN', () => {
     await waitFor(() => expect(screen.getByLabelText(/pin/i)).toBeInTheDocument())
     expect(window.localStorage.getItem(`monete:pin:${party.id}`)).toBeNull()
   })
+
+  it('only offers to set a well-formed PIN, so an empty field never removes it', async () => {
+    const container = buildContainer({ inMemory: true })
+    const { party } = await container.resolve<CreatePartyHandler>('createParty').execute({
+      title: 'Leo 5',
+      address: 'A',
+      startsAt: '2026-06-20T17:00:00.000Z',
+      endsAt: null,
+      requirements: '',
+    })
+    const repo = container.resolve<IPartyRepository>('partyRepo')
+    await new SetEditPinHandler(repo).execute({ partyId: party.id, pin: '1234' })
+
+    render(
+      <ContainerProvider container={container}>
+        <PartyProvider partyId={party.id}>
+          <HostDashboard partyId={party.id} />
+        </PartyProvider>
+      </ContainerProvider>,
+    )
+    await userEvent.type(await screen.findByLabelText(/pin/i), '1234')
+    await userEvent.click(screen.getByRole('button', { name: /unlock|ok|enter/i }))
+
+    const setPin = await screen.findByRole('button', { name: /set party pin/i })
+    expect(setPin).toBeDisabled()
+    await userEvent.type(screen.getByLabelText(/set party pin/i), '56')
+    expect(setPin).toBeDisabled()
+    await userEvent.type(screen.getByLabelText(/set party pin/i), '78')
+    await userEvent.click(setPin)
+
+    await waitFor(async () => expect((await repo.findById(party.id, '5678'))?.locked).toBe(false))
+  })
 })
