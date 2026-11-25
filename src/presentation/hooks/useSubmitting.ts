@@ -9,12 +9,8 @@ export function useSubmitting(): {
   const [status, setStatus] = useState<Status>('idle')
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
 
-  useEffect(() => {
-    return () => {
-      clearTimeout(timer.current)
-    }
-    // Stryker disable next-line ArrayDeclaration: a constant non-empty dependency list behaves like []
-  }, [])
+  // Stryker disable next-line ArrayDeclaration: a constant non-empty dependency list behaves like []
+  useEffect(() => () => clearTimeout(timer.current), [])
 
   const run = async (fn: () => Promise<void>) => {
     clearTimeout(timer.current)
