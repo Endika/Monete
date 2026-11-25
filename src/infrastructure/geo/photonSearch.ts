@@ -19,8 +19,7 @@ function toLabel(p: Record<string, string | undefined>): string {
 export async function searchAddresses(query: string, lang: string): Promise<AddressSuggestion[]> {
   const q = query.trim()
   if (q.length < 3) return []
-  const supported = ['en', 'de', 'fr', 'it']
-  const photonLang = supported.includes(lang) ? lang : 'en'
+  const photonLang = ['de', 'fr', 'it'].includes(lang) ? lang : 'en'
   try {
     const res = await fetch(
       `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&lang=${photonLang}&limit=5`,
