@@ -31,8 +31,7 @@ export class RecentsStore {
   private read<T>(key: string): T[] {
     try {
       const raw = this.storage.getItem(key)
-      if (!raw) return []
-      const parsed: unknown = JSON.parse(raw)
+      const parsed: unknown = JSON.parse(String(raw))
       return Array.isArray(parsed) ? (parsed as T[]) : []
     } catch {
       return []
