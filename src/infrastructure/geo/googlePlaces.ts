@@ -22,13 +22,11 @@ export async function googleAutocomplete(query: string, key: string): Promise<Pl
         placePrediction?: { placeId?: string; text?: { text?: string } }
       }>
     }
-    return (data.suggestions ?? [])
-      .map((s) => {
-        const pp = s.placePrediction
-        if (!pp?.placeId || !pp.text?.text) return null
-        return { placeId: pp.placeId, label: pp.text.text }
-      })
-      .filter((x): x is PlaceSuggestion => x !== null)
+    return (
+      data.suggestions?.flatMap(({ placePrediction: pp }) =>
+        pp?.placeId && pp.text?.text ? [{ placeId: pp.placeId, label: pp.text.text }] : [],
+      ) ?? []
+    )
   } catch (e) {
     if (e instanceof GeoLookupError) throw e
     throw new GeoLookupError('Google Places autocomplete request failed', { cause: e })
