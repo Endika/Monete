@@ -66,4 +66,40 @@ describe('RSVP caps (anti-ballooning / egress abuse)', () => {
     await repo.appendRsvp(s.id, rsvp(), null)
     expect(unlocked(await repo.findById(s.id)).snapshot.rsvps).toHaveLength(1)
   })
+
+  it('accepts a party blob exactly at the cap and rejects one byte over, on create and update', async () => {
+    const s = snap()
+    s.event.title = ''
+    s.event.title = 'x'.repeat(262144 - JSON.stringify(s).length)
+    const repo = new InMemoryPartyRepository()
+    expect(JSON.stringify(s)).toHaveLength(262144)
+    await repo.create(s)
+    await repo.update(s.id, s, 1, null)
+
+    const over = { ...s, event: { ...s.event, title: `${s.event.title}x` } }
+    await expect(new InMemoryPartyRepository().create(over)).rejects.toBeInstanceOf(
+      PayloadTooLargeError,
+    )
+    await expect(repo.update(s.id, over, 2, null)).rejects.toBeInstanceOf(PayloadTooLargeError)
+  })
+
+  it('rejects an RSVP append that would push the total blob past the cap', async () => {
+    const repo = new InMemoryPartyRepository()
+    const s = snap()
+    s.rsvps = [rsvp({ id: 'filler', parentsLabel: 'x'.repeat(256000) })]
+    await repo.create(s)
+    await expect(
+      repo.appendRsvp(s.id, rsvp({ parentsLabel: 'y'.repeat(8000) }), null),
+    ).rejects.toBeInstanceOf(PayloadTooLargeError)
+  })
+
+  it('rejects an RSVP edit larger than the per-rsvp cap', async () => {
+    const repo = new InMemoryPartyRepository()
+    const s = snap()
+    s.rsvps = [rsvp()]
+    await repo.create(s)
+    await expect(
+      repo.updateRsvp(s.id, 'r1', rsvp({ parentsLabel: 'x'.repeat(9000) }), null),
+    ).rejects.toBeInstanceOf(PayloadTooLargeError)
+  })
 })
