@@ -39,14 +39,32 @@ export class RecentsStore {
     }
   }
 
-  private write<T extends { id: string }>(key: string, entry: T): void {
-    const rest = this.read<T>(key).filter((e) => e.id !== entry.id)
-    const next = [entry, ...rest].slice(0, CAP)
+  private persist(key: string, list: { id: string }[]): void {
     try {
-      this.storage.setItem(key, JSON.stringify(next))
+      this.storage.setItem(key, JSON.stringify(list))
     } catch {
       /* storage full / unavailable — non-fatal */
     }
+  }
+
+  private add<T extends { id: string }>(key: string, entry: T): void {
+    const rest = this.read<T>(key).filter((e) => e.id !== entry.id)
+    this.persist(key, [entry, ...rest].slice(0, CAP))
+  }
+
+  private patch<T extends { id: string }>(key: string, id: string, patch: Partial<T>): void {
+    const list = this.read<T>(key)
+    const index = list.findIndex((e) => e.id === id)
+    if (index === -1) return
+    list[index] = { ...list[index]!, ...patch }
+    this.persist(key, list)
+  }
+
+  private remove(key: string, id: string): void {
+    this.persist(
+      key,
+      this.read<{ id: string }>(key).filter((e) => e.id !== id),
+    )
   }
 
   listHosted(): HostedEntry[] {
@@ -56,33 +74,21 @@ export class RecentsStore {
     return this.read<JoinedEntry>(JOINED_KEY)
   }
   addHosted(e: HostedEntry): void {
-    this.write(HOSTED_KEY, e)
+    this.add(HOSTED_KEY, e)
   }
+
   updateHosted(id: string, patch: Partial<Omit<HostedEntry, 'id'>>): void {
-    const list = this.read<HostedEntry>(HOSTED_KEY)
-    const index = list.findIndex((e) => e.id === id)
-    if (index === -1) return
-    list[index] = { ...list[index]!, ...patch }
-    try {
-      this.storage.setItem(HOSTED_KEY, JSON.stringify(list))
-    } catch {
-      /* storage full / unavailable — non-fatal */
-    }
+    this.patch<HostedEntry>(HOSTED_KEY, id, patch)
   }
+
   addJoined(e: JoinedEntry): void {
-    this.write(JOINED_KEY, e)
+    this.add(JOINED_KEY, e)
   }
+
   updateJoined(id: string, patch: Partial<Omit<JoinedEntry, 'id'>>): void {
-    const list = this.read<JoinedEntry>(JOINED_KEY)
-    const index = list.findIndex((e) => e.id === id)
-    if (index === -1) return
-    list[index] = { ...list[index]!, ...patch }
-    try {
-      this.storage.setItem(JOINED_KEY, JSON.stringify(list))
-    } catch {
-      /* storage full / unavailable — non-fatal */
-    }
+    this.patch<JoinedEntry>(JOINED_KEY, id, patch)
   }
+
   getJoined(partyId: string): JoinedEntry | undefined {
     return this.listJoined().find((e) => e.id === partyId)
   }
@@ -103,19 +109,10 @@ export class RecentsStore {
     this.updateJoined(id, { ...patch, locked: false })
   }
   removeJoined(partyId: string): void {
-    const filtered = this.read<JoinedEntry>(JOINED_KEY).filter((e) => e.id !== partyId)
-    try {
-      this.storage.setItem(JOINED_KEY, JSON.stringify(filtered))
-    } catch {
-      /* storage full / unavailable — non-fatal */
-    }
+    this.remove(JOINED_KEY, partyId)
   }
+
   removeHosted(partyId: string): void {
-    const filtered = this.read<HostedEntry>(HOSTED_KEY).filter((e) => e.id !== partyId)
-    try {
-      this.storage.setItem(HOSTED_KEY, JSON.stringify(filtered))
-    } catch {
-      /* storage full / unavailable — non-fatal */
-    }
+    this.remove(HOSTED_KEY, partyId)
   }
 }

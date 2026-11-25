@@ -29,11 +29,18 @@ describe('RecentsStore', () => {
     expect(s.getJoined('p1')!.rsvpId).toBe('r1')
   })
 
-  it('removeJoined drops the entry for a party', () => {
+  it('removes a party from the one list it is asked to, and keeps the newest 50', () => {
     const s = new RecentsStore(memStorage())
-    s.addJoined({ id: 'p1', title: 'P', startsAt: 'x', rsvpId: 'r1' })
-    s.removeJoined('p1')
-    expect(s.getJoined('p1')).toBeUndefined()
+    for (let i = 0; i <= 50; i++) s.addHosted({ id: `h${i}`, title: 'P', startsAt: 'x' })
+    s.addJoined({ id: 'h50', title: 'P', startsAt: 'x', rsvpId: 'r1' })
+    expect(s.listHosted().map((e) => e.id)).toHaveLength(50)
+    expect(s.listHosted()[49]!.id).toBe('h1')
+
+    s.removeJoined('h50')
+    expect(s.getJoined('h50')).toBeUndefined()
+    expect(s.listHosted()[0]!.id).toBe('h50')
+    s.removeHosted('h50')
+    expect(s.listHosted()[0]!.id).toBe('h49')
   })
 
   it('updateHosted updates an existing entry in place without reordering', () => {
@@ -175,26 +182,16 @@ describe('RecentsStore', () => {
     expect(s.listJoined()).toEqual([])
   })
 
-  it('blankLocked never overwrites an unparseable stored list', () => {
+  it('blankLocked never overwrites a stored list it could not read', () => {
     const storage = memStorage()
     storage.setItem('monete:hosted', '{not json')
-    storage.setItem('monete:joined', '{not json either')
+    storage.setItem('monete:joined', '{"not":"an array"}')
 
     const s = new RecentsStore(storage)
     s.blankLocked('h1')
 
     expect(storage.getItem('monete:hosted')).toBe('{not json')
-    expect(storage.getItem('monete:joined')).toBe('{not json either')
-  })
-
-  it('blankLocked never overwrites a parseable non-array stored list', () => {
-    const storage = memStorage()
-    storage.setItem('monete:hosted', '{"not":"an array"}')
-
-    const s = new RecentsStore(storage)
-    s.blankLocked('h1')
-
-    expect(storage.getItem('monete:hosted')).toBe('{"not":"an array"}')
+    expect(storage.getItem('monete:joined')).toBe('{"not":"an array"}')
   })
 
   it('refreshEntry never overwrites an unreadable stored list', () => {
