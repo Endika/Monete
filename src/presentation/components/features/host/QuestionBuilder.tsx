@@ -5,6 +5,7 @@ import { Input } from '@/presentation/components/common/Input'
 import { Button } from '@/presentation/components/common/Button'
 import { STANDARD_QUESTIONS } from './standardQuestions'
 import { useSubmitting } from '@/presentation/hooks/useSubmitting'
+import { availablePresets, parseOptions } from '@/presentation/utils/questionForm'
 
 interface QuestionBuilderProps {
   questions: Question[]
@@ -28,6 +29,13 @@ const DEFAULT_FORM: FormState = {
   required: false,
 }
 
+const TYPE_LABEL_KEYS: Record<QuestionType, string> = {
+  select: 'host.typeSelect',
+  text: 'host.typeText',
+  number: 'host.typeNumber',
+  date: 'host.typeDate',
+}
+
 // Rotating accent colours for preset chips
 const PRESET_CHIP_COLORS = [
   'bg-banana/20 text-cocoa border border-banana hover:bg-banana/40',
@@ -45,10 +53,7 @@ export function QuestionBuilder({ questions, onUpsert, onRemove }: QuestionBuild
   const [editingKind, setEditingKind] = useState<Question['kind']>('custom')
   const [form, setForm] = useState<FormState>(DEFAULT_FORM)
 
-  const presentKinds = new Set(questions.map((q) => q.kind))
-  const availablePresets = STANDARD_QUESTIONS.filter(
-    (p) => p.kind === 'custom' || !presentKinds.has(p.kind),
-  )
+  const presets = availablePresets(STANDARD_QUESTIONS, questions)
 
   function handlePreset(preset: (typeof STANDARD_QUESTIONS)[number]) {
     onUpsert({
@@ -75,13 +80,7 @@ export function QuestionBuilder({ questions, onUpsert, onRemove }: QuestionBuild
   }
 
   function handleSave() {
-    const options =
-      form.type === 'select'
-        ? form.optionsText
-            .split(',')
-            .map((s) => s.trim())
-            .filter(Boolean)
-        : []
+    const options = parseOptions(form.type, form.optionsText)
     run(async () => {
       await onUpsert({
         kind: editingId ? editingKind : 'custom',
@@ -109,13 +108,13 @@ export function QuestionBuilder({ questions, onUpsert, onRemove }: QuestionBuild
   return (
     <div className="flex flex-col gap-5">
       {/* Standard question preset chips */}
-      {availablePresets.length > 0 && (
+      {presets.length > 0 && (
         <div className="flex flex-col gap-2">
           <span className="text-sm font-semibold font-display text-cocoa/80">
             {t('host.standardQuestions')}
           </span>
           <div className="flex flex-wrap gap-2">
-            {availablePresets.map((preset, idx) => (
+            {presets.map((preset, idx) => (
               <button
                 key={preset.kind}
                 type="button"
@@ -142,13 +141,7 @@ export function QuestionBuilder({ questions, onUpsert, onRemove }: QuestionBuild
                 {q.scope === 'family' ? t('host.scopeFamily') : t('host.scopeChild')}
               </span>
               <span className="rounded-full bg-sky/15 px-2.5 py-0.5 text-xs font-semibold text-sky">
-                {q.type === 'select'
-                  ? t('host.typeSelect')
-                  : q.type === 'text'
-                    ? t('host.typeText')
-                    : q.type === 'number'
-                      ? t('host.typeNumber')
-                      : t('host.typeDate')}
+                {t(TYPE_LABEL_KEYS[q.type])}
               </span>
               <button
                 type="button"
