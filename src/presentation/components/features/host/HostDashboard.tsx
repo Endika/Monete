@@ -11,7 +11,7 @@ import type { DeletePartyHandler } from '@/application/handlers/DeletePartyHandl
 import type { SubmitRsvpHandler } from '@/application/handlers/SubmitRsvpHandler'
 import type { UpdateRsvpHandler } from '@/application/handlers/UpdateRsvpHandler'
 import type { RemoveRsvpHandler } from '@/application/handlers/RemoveRsvpHandler'
-import type { Question, AnswerMap } from '@/domain/entities/Party'
+import type { Question } from '@/domain/entities/Party'
 import { PinGate } from '@/presentation/components/features/security/PinGate'
 import { PartyDetailsForm } from '@/presentation/components/features/host/PartyDetailsForm'
 import { QuestionBuilder } from '@/presentation/components/features/host/QuestionBuilder'
@@ -22,6 +22,8 @@ import { ErrorBanner } from '@/presentation/components/common/ErrorBanner'
 import { RsvpForm } from '@/presentation/components/features/guest/RsvpForm'
 import { whatsAppShareUrl } from '@/presentation/utils/shareWhatsApp'
 import { HeadcountView } from '@/presentation/components/features/host/HeadcountView'
+import { errorCode, messageForError } from '@/presentation/utils/writeError'
+import type { RsvpInput } from '@/presentation/components/features/guest/RsvpForm'
 import { RecentsStore } from '@/infrastructure/persistence/RecentsStore'
 
 interface HostDashboardProps {
@@ -54,35 +56,6 @@ function SectionCard({
 }
 
 type FormState = null | { mode: 'add' } | { mode: 'edit'; rsvpId: string }
-
-interface RsvpInput {
-  parentsLabel: string
-  familyAnswers: AnswerMap
-  children: { name: string; answers: AnswerMap; isSibling: boolean; isBirthday: boolean }[]
-}
-
-function rsvpToInitial(r: {
-  parentsLabel: string
-  familyAnswers: AnswerMap
-  children: {
-    id: string
-    name: string
-    answers: AnswerMap
-    isSibling?: boolean
-    isBirthday?: boolean
-  }[]
-}): RsvpInput {
-  return {
-    parentsLabel: r.parentsLabel,
-    familyAnswers: r.familyAnswers,
-    children: r.children.map((c) => ({
-      name: c.name,
-      answers: c.answers,
-      isSibling: c.isSibling ?? false,
-      isBirthday: c.isBirthday ?? false,
-    })),
-  }
-}
 
 export function HostDashboard({ partyId, recents }: HostDashboardProps) {
   const { hasPin, status, snapshot, rateLimited, refresh } = useParty()
@@ -119,21 +92,10 @@ function HostDashboardInner({ partyId, recents }: HostDashboardProps) {
   if (!snapshot) return null
 
   const handleError = (err: unknown) => {
-    const code = err instanceof Error ? (err as Error & { code?: string }).code : undefined
-    if (code === 'STALE_CLIENT') {
-      setError(t('common.updateRequired'))
-    } else if (code === 'WRONG_PIN') {
-      setError(t('host.wrongPin'))
-      // The remembered PIN just went stale (e.g. rotated elsewhere): refresh so the
-      // locked read clears it and this swaps back to the gate instead of staying stuck.
-      void refresh()
-    } else if (code === 'RATE_LIMITED') {
-      setError(t('host.tooManyAttempts'))
-    } else if (code === 'PAYLOAD_TOO_LARGE') {
-      setError(t('common.tooLarge'))
-    } else {
-      setError(err instanceof Error ? err.message : String(err))
-    }
+    setError(messageForError(t, err))
+    // The remembered PIN just went stale (e.g. rotated elsewhere): refresh so the
+    // locked read clears it and this swaps back to the gate instead of staying stuck.
+    if (errorCode(err) === 'WRONG_PIN') void refresh()
   }
 
   const handleSaveDetails = async (details: {
@@ -342,7 +304,7 @@ function HostDashboardInner({ partyId, recents }: HostDashboardProps) {
             allowBirthday
             initial={
               formState.mode === 'edit'
-                ? rsvpToInitial(snapshot.rsvps.find((r) => r.id === formState.rsvpId)!)
+                ? snapshot.rsvps.find((r) => r.id === formState.rsvpId)
                 : undefined
             }
             submitLabel={formState.mode === 'edit' ? t('host.editResponse') : t('host.addGuest')}
