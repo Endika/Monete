@@ -1,8 +1,8 @@
 import { z } from 'zod'
+import { PinField } from '@/application/dtos/shapes'
 export const RemoveQuestionSchema = z.object({
   partyId: z.string(),
   questionId: z.string(),
-  /** Unlocked edit PIN (null for a PIN-less party). Enforced server-side. */
-  pin: z.string().nullable().optional(),
+  pin: PinField,
 })
-export type RemoveQuestionInput = z.infer<typeof RemoveQuestionSchema>
+export type RemoveQuestionInput = z.input<typeof RemoveQuestionSchema>

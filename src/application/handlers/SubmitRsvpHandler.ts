@@ -6,8 +6,7 @@ export class SubmitRsvpHandler {
   constructor(private readonly repo: IPartyRepository) {}
   async execute(input: SubmitRsvpInput): Promise<{ rsvpId: string }> {
     const p = SubmitRsvpSchema.parse(input)
-    const pin = p.pin ?? null
-    const row = await this.repo.findById(p.partyId, pin)
+    const row = await this.repo.findById(p.partyId, p.pin)
     if (!row) throw new Error('Party not found')
     if (row.locked) throw new WrongPinError()
     // Validate against the current question set, then atomically append.
@@ -16,7 +15,7 @@ export class SubmitRsvpHandler {
       familyAnswers: p.familyAnswers,
       children: p.children,
     })
-    await this.repo.appendRsvp(p.partyId, rsvp, pin)
+    await this.repo.appendRsvp(p.partyId, rsvp, p.pin)
     return { rsvpId: rsvp.id }
   }
 }
