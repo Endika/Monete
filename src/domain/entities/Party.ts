@@ -66,7 +66,7 @@ export interface PartySnapshot {
   updatedAt: string
 }
 
-export interface CreatePartyInput {
+export interface EventDetailsInput {
   title: string
   venueName?: string
   address: string
@@ -76,21 +76,20 @@ export interface CreatePartyInput {
   allDay?: boolean
   lat?: number | null
   lng?: number | null
+}
+
+export interface CreatePartyInput extends EventDetailsInput {
   id?: PartyId
   now?: string
 }
 
-function normalizeDetails(input: {
-  title: string
-  venueName?: string
-  address: string
-  startsAt: string
-  endsAt: string | null
-  requirements: string
-  allDay?: boolean
-  lat?: number | null
-  lng?: number | null
-}): EventDetails {
+export interface RsvpBodyInput {
+  parentsLabel: string
+  familyAnswers: AnswerMap
+  children: { name: string; answers: AnswerMap; isSibling?: boolean; isBirthday?: boolean }[]
+}
+
+function normalizeDetails(input: EventDetailsInput): EventDetails {
   const title = input.title.trim()
   if (title.length < 1 || title.length > 100) throw new Error('Party: title must be 1..100 chars')
   return {
@@ -155,18 +154,7 @@ export class Party {
     return new Party(PartyId.of(s.id), backfilled)
   }
 
-  editDetails(input: {
-    title: string
-    venueName?: string
-    address: string
-    startsAt: string
-    endsAt: string | null
-    requirements: string
-    allDay?: boolean
-    lat?: number | null
-    lng?: number | null
-    now?: string
-  }): Party {
+  editDetails(input: EventDetailsInput & { now?: string }): Party {
     const event = normalizeDetails(input)
     const now = input.now ?? new Date().toISOString()
     return new Party(this.id, { ...this.s, event, updatedAt: now })
@@ -222,9 +210,7 @@ export class Party {
     }
   }
 
-  private buildChildren(
-    children: { name: string; answers: AnswerMap; isSibling?: boolean; isBirthday?: boolean }[],
-  ): Child[] {
+  private buildChildren(children: RsvpBodyInput['children']): Child[] {
     const childQuestions = this.s.questions.filter((q) => q.scope === 'child')
     return children.map((c) => {
       const name = c.name.trim()
@@ -240,52 +226,33 @@ export class Party {
     })
   }
 
-  buildRsvp(input: {
-    parentsLabel: string
-    familyAnswers: AnswerMap
-    children: { name: string; answers: AnswerMap; isSibling?: boolean; isBirthday?: boolean }[]
-    now?: string
-  }): Rsvp {
+  private validatedBody(
+    input: RsvpBodyInput,
+  ): Pick<Rsvp, 'parentsLabel' | 'familyAnswers' | 'children'> {
     const parentsLabel = input.parentsLabel.trim()
     if (parentsLabel.length < 1) throw new Error('Rsvp: parentsLabel is required')
     if (input.children.length < 1) throw new Error('Rsvp: at least one child is required')
-
     const familyQuestions = this.s.questions.filter((q) => q.scope === 'family')
     this.validateAnswers(familyQuestions, input.familyAnswers, 'the family')
-    const children = this.buildChildren(input.children)
-
     return {
-      id: uuidv7(),
       parentsLabel,
       familyAnswers: { ...input.familyAnswers },
-      children,
+      children: this.buildChildren(input.children),
+    }
+  }
+
+  buildRsvp(input: RsvpBodyInput & { now?: string }): Rsvp {
+    return {
+      id: uuidv7(),
+      ...this.validatedBody(input),
       createdAt: input.now ?? new Date().toISOString(),
     }
   }
 
-  updateRsvp(
-    rsvpId: string,
-    input: {
-      parentsLabel: string
-      familyAnswers: AnswerMap
-      children: { name: string; answers: AnswerMap; isSibling?: boolean; isBirthday?: boolean }[]
-    },
-    now?: string,
-  ): Party {
+  updateRsvp(rsvpId: string, input: RsvpBodyInput, now?: string): Party {
     const existing = this.s.rsvps.find((r) => r.id === rsvpId)
     if (!existing) throw new Error('Rsvp: not found')
-    const parentsLabel = input.parentsLabel.trim()
-    if (parentsLabel.length < 1) throw new Error('Rsvp: parentsLabel is required')
-    if (input.children.length < 1) throw new Error('Rsvp: at least one child is required')
-    const familyQuestions = this.s.questions.filter((q) => q.scope === 'family')
-    this.validateAnswers(familyQuestions, input.familyAnswers, 'the family')
-    const children = this.buildChildren(input.children)
-    const updated: Rsvp = {
-      ...existing,
-      parentsLabel,
-      familyAnswers: { ...input.familyAnswers },
-      children,
-    }
+    const updated: Rsvp = { ...existing, ...this.validatedBody(input) }
     const rsvps = this.s.rsvps.map((r) => (r.id === rsvpId ? updated : r))
     return new Party(this.id, { ...this.s, rsvps, updatedAt: now ?? new Date().toISOString() })
   }
