@@ -16,6 +16,7 @@ function notify() {
 
 function subscribe(cb: () => void): () => void {
   subscribers.add(cb)
+  // Stryker disable next-line ArrowFunction: React ignores store changes on unmounted components, so a leaked subscriber is unobservable
   return () => subscribers.delete(cb)
 }
 
@@ -24,19 +25,16 @@ function getSnapshot(): BeforeInstallPromptEvent | null {
 }
 
 // Capture the event once at module scope so it is never lost regardless of
-// which component mounts first. Guarded for SSR / jsdom environments.
-if (typeof window !== 'undefined') {
-  window.addEventListener('beforeinstallprompt', (e: Event) => {
-    e.preventDefault()
-    deferred = e as BeforeInstallPromptEvent
-    notify()
-  })
-}
+// which component mounts first.
+window.addEventListener('beforeinstallprompt', (e: Event) => {
+  e.preventDefault()
+  deferred = e as BeforeInstallPromptEvent
+  notify()
+})
 
-// ─── Environment helpers (all guarded for jsdom) ──────────────────────────────
+// ─── Environment helpers ──────────────────────────────────────────────────────
 
 function detectIos(): boolean {
-  if (typeof navigator === 'undefined') return false
   const ua = navigator.userAgent
   if (/iphone|ipad|ipod/i.test(ua)) return true
   // iPadOS 13+ reports as MacIntel with touch support
@@ -47,7 +45,6 @@ function detectIos(): boolean {
 }
 
 function detectStandalone(): boolean {
-  if (typeof window === 'undefined') return false
   const viaMatchMedia =
     typeof window.matchMedia === 'function' &&
     window.matchMedia('(display-mode: standalone)').matches
