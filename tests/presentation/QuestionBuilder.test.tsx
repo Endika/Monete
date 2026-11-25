@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { act, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { QuestionBuilder } from '@/presentation/components/features/host/QuestionBuilder'
 import '@/presentation/i18n/config'
@@ -20,5 +20,19 @@ describe('QuestionBuilder', () => {
         options: ['Water', 'Juice'],
       }),
     )
+  })
+
+  it('adds a preset once however often it is tapped while saving, and lets a failed add go', async () => {
+    let fail!: (e: Error) => void
+    const onUpsert = vi.fn(() => new Promise<void>((_, reject) => (fail = reject)))
+    render(<QuestionBuilder onUpsert={onUpsert} onRemove={vi.fn()} questions={[]} />)
+    const chip = screen.getByRole('button', { name: /allergies/i })
+    await userEvent.click(chip)
+    await userEvent.click(chip)
+    expect(onUpsert).toHaveBeenCalledTimes(1)
+    expect(chip).toBeDisabled()
+
+    await act(async () => fail(new Error('offline')))
+    expect(chip).toBeEnabled()
   })
 })
