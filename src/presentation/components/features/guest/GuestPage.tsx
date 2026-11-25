@@ -15,6 +15,7 @@ import { googleMapsUrl } from '@/shared/utils/googleMapsUrl'
 import { MapEmbed } from '@/presentation/components/features/event/MapEmbed'
 import { RecentsStore } from '@/infrastructure/persistence/RecentsStore'
 import { PinGate } from '@/presentation/components/features/security/PinGate'
+import { formatEventStart } from '@/presentation/utils/formatEventStart'
 import type { AnswerMap } from '@/domain/entities/Party'
 
 /** Map a repository error to a user-facing message, honouring the server caps/guards. */
@@ -86,10 +87,7 @@ function GuestPageInner({ partyId }: GuestPageProps) {
   // PartyGate renders loading / gone / unavailable above us; this only narrows the type.
   if (!snapshot) return null
 
-  const formattedDate = new Intl.DateTimeFormat(i18n.language, {
-    dateStyle: 'full',
-    timeStyle: snapshot.event.allDay ? undefined : 'short',
-  }).format(new Date(snapshot.event.startsAt))
+  const formattedDate = formatEventStart(snapshot.event, i18n.language)
 
   const calendarEvent = {
     title: snapshot.event.title,
