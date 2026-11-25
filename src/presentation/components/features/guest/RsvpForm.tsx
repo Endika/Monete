@@ -8,13 +8,15 @@ import { ChildAnswers } from './ChildAnswers'
 import { QuestionInput } from './QuestionInput'
 import { useSubmitting } from '@/presentation/hooks/useSubmitting'
 
+export interface RsvpInput {
+  parentsLabel: string
+  familyAnswers: AnswerMap
+  children: { name: string; answers: AnswerMap; isSibling: boolean; isBirthday: boolean }[]
+}
+
 interface RsvpFormProps {
   snapshot: PartySnapshot
-  onSubmit: (input: {
-    parentsLabel: string
-    familyAnswers: AnswerMap
-    children: { name: string; answers: AnswerMap; isSibling: boolean; isBirthday: boolean }[]
-  }) => void | Promise<void>
+  onSubmit: (input: RsvpInput) => void | Promise<void>
   initial?: {
     parentsLabel: string
     familyAnswers: AnswerMap

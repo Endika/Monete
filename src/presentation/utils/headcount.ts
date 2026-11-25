@@ -1,4 +1,4 @@
-import type { PartySnapshot, Question } from '@/domain/entities/Party'
+import type { AnswerValue, PartySnapshot, Question, Rsvp } from '@/domain/entities/Party'
 
 export interface ChildRow {
   id: string
@@ -20,6 +20,16 @@ export interface Headcount {
   extraTotals: { label: string; total: number }[]
 }
 
+function toCount(v: AnswerValue | undefined): number {
+  return typeof v === 'number' ? v : Number(v) || 0
+}
+
+export function birthdayNames(rsvps: Rsvp[]): string[] {
+  return [
+    ...new Set(rsvps.flatMap((r) => r.children.filter((c) => c.isBirthday).map((c) => c.name))),
+  ]
+}
+
 function findByKind(questions: Question[], kind: Question['kind']): Question | undefined {
   return questions.find((q) => q.kind === kind)
 }
@@ -33,8 +43,7 @@ export function computeHeadcount(party: PartySnapshot): Headcount {
   const children: ChildRow[] = []
   for (const r of party.rsvps) {
     if (adultsQ) {
-      const v = r.familyAnswers[adultsQ.id]
-      totalAdults += typeof v === 'number' ? v : Number(v) || 0
+      totalAdults += toCount(r.familyAnswers[adultsQ.id])
     }
     for (const c of r.children) {
       children.push({
@@ -47,23 +56,19 @@ export function computeHeadcount(party: PartySnapshot): Headcount {
             ? String(c.answers[allergiesQ.id])
             : null
           : null,
-        isSibling: c.isSibling ?? false,
-        isBirthday: c.isBirthday ?? false,
+        isSibling: c.isSibling,
+        isBirthday: c.isBirthday,
       })
     }
   }
   const totalInvited = children.filter((c) => !c.isSibling).length
   const totalSiblings = children.filter((c) => c.isSibling).length
-  const birthdayNames = [...new Set(children.filter((c) => c.isBirthday).map((c) => c.name))]
 
   const extraTotals = party.questions
     .filter((q) => q.scope === 'family' && q.type === 'number' && q.kind !== 'adultsCount')
     .map((q) => ({
       label: q.label,
-      total: party.rsvps.reduce((sum, r) => {
-        const v = r.familyAnswers[q.id]
-        return sum + (typeof v === 'number' ? v : Number(v) || 0)
-      }, 0),
+      total: party.rsvps.reduce((sum, r) => sum + toCount(r.familyAnswers[q.id]), 0),
     }))
 
   return {
@@ -72,7 +77,7 @@ export function computeHeadcount(party: PartySnapshot): Headcount {
     totalSiblings,
     totalAdults,
     children,
-    birthdayNames,
+    birthdayNames: birthdayNames(party.rsvps),
     extraTotals,
   }
 }
