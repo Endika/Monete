@@ -52,15 +52,16 @@ interface EditPinState {
 const Ctx = createContext<EditPinState | null>(null)
 
 export function EditPinProvider({ partyId, children }: { partyId: string; children: ReactNode }) {
-  const [pin, setPinState] = useState<string | null>(() => readStoredPin(partyId))
+  const [held, setHeld] = useState(() => ({ partyId, pin: readStoredPin(partyId) }))
+  if (held.partyId !== partyId) setHeld({ partyId, pin: readStoredPin(partyId) })
   const setPin = useCallback(
     (next: string | null) => {
-      setPinState(next)
+      setHeld({ partyId, pin: next })
       writeStoredPin(partyId, next)
     },
     [partyId],
   )
-  return <Ctx.Provider value={{ pin, setPin }}>{children}</Ctx.Provider>
+  return <Ctx.Provider value={{ pin: held.pin, setPin }}>{children}</Ctx.Provider>
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
