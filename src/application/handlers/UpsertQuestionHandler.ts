@@ -27,7 +27,7 @@ export class UpsertQuestionHandler {
           p.questionId ? party.updateQuestion(p.questionId, fields) : party.addQuestion(fields)
         ).toSnapshot()
       },
-      p.pin ?? null,
+      p.pin,
     )
   }
 }

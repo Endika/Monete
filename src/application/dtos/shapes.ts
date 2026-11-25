@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 /** Unlocked edit PIN (null for a PIN-less party). Enforced server-side. */
-export const PinField = z.string().nullable().optional()
+export const PinField = z.string().nullable().default(null)
 
 const AnswerMap = z.record(z.string(), z.union([z.string(), z.number(), z.null()])).default({})
 

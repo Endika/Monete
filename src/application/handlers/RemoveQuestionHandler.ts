@@ -14,7 +14,7 @@ export class RemoveQuestionHandler {
       this.repo,
       p.partyId,
       (row) => Party.restore(row.snapshot).removeQuestion(p.questionId).toSnapshot(),
-      p.pin ?? null,
+      p.pin,
     )
   }
 }

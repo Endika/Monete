@@ -27,7 +27,7 @@ export class EditPartyDetailsHandler {
             allDay: p.allDay,
           })
           .toSnapshot(),
-      p.pin ?? null,
+      p.pin,
     )
   }
 }
