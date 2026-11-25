@@ -27,6 +27,13 @@ describe('InMemoryPartyRepository mirrors the SQL PIN gate', () => {
     expect(unlocked(await repo.findById(s.id, '1234')).snapshot.id).toBe(s.id)
   })
 
+  it('ignores a pin sent to a PIN-less party', async () => {
+    const repo = new InMemoryPartyRepository()
+    const s = snap()
+    await repo.create(s)
+    await expect(repo.appendRsvp(s.id, rsvp, '9999')).resolves.toBeUndefined()
+  })
+
   it('locks a read on a wrong pin and counts it as a failure', async () => {
     const repo = new InMemoryPartyRepository()
     const s = snap()
