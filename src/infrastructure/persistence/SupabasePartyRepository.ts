@@ -14,8 +14,7 @@ import { parsePartySnapshot } from '@/infrastructure/persistence/PartySnapshotSc
 import { SCHEMA_VERSION } from '@/infrastructure/persistence/schemaVersion'
 
 /** Map a PostgREST error (PTxyz SQLSTATE) raised by the RPCs to a domain error. */
-function mapRpcError(error: { code?: string } | null): Error | null {
-  if (!error) return null
+function mapRpcError(error: { code?: string }): Error {
   switch (error.code) {
     case 'PT401':
       return new WrongPinError()
@@ -30,6 +29,14 @@ function mapRpcError(error: { code?: string } | null): Error | null {
   }
 }
 
+function assertNoRpcError(error: { code?: string } | null): void {
+  if (error) throw mapRpcError(error)
+}
+
+function assertAccepted(data: unknown): void {
+  if (data === false) throw new WrongPinError()
+}
+
 interface GetPartyPayload {
   locked?: boolean
   data?: unknown
@@ -42,8 +49,7 @@ export class SupabasePartyRepository implements IPartyRepository {
 
   async findById(id: string, pin: string | null = null): Promise<ReadResult | null> {
     const { data, error } = await this.client.rpc('get_party', { p_id: id, p_pin: pin })
-    const mapped = mapRpcError(error)
-    if (mapped) throw mapped
+    assertNoRpcError(error)
     if (!data) return null
     const payload = data as GetPartyPayload
     if (payload.locked) return { locked: true, hasPin: true }
@@ -57,7 +63,7 @@ export class SupabasePartyRepository implements IPartyRepository {
 
   async getVersion(id: string): Promise<number | null> {
     const { data, error } = await this.client.rpc('get_party_version', { p_id: id })
-    if (error) throw error
+    assertNoRpcError(error)
     return (data as number | null) ?? null
   }
 
@@ -67,8 +73,7 @@ export class SupabasePartyRepository implements IPartyRepository {
       p_data: { ...snapshot, _schemaVersion: SCHEMA_VERSION },
       p_pin_hash: null,
     })
-    const mapped = mapRpcError(error)
-    if (mapped) throw mapped
+    assertNoRpcError(error)
     return { snapshot, version: (data as number) ?? 1 }
   }
 
@@ -89,8 +94,7 @@ export class SupabasePartyRepository implements IPartyRepository {
         const version = await this.getVersion(id)
         throw new VersionConflictError(version ?? -1)
       }
-      const mapped = mapRpcError(error)
-      if (mapped) throw mapped
+      throw mapRpcError(error)
     }
     // 0 is never a real version (they start at 1): a wrong-PIN sentinel that never raises,
     // so the recorded fail can't be rolled back with it (see monete_pin_fails_stick).
@@ -104,23 +108,20 @@ export class SupabasePartyRepository implements IPartyRepository {
       p_new_pin: newPin,
       p_current_pin: currentPin,
     })
-    const mapped = mapRpcError(error)
-    if (mapped) throw mapped
-    if (data === false) throw new WrongPinError()
+    assertNoRpcError(error)
+    assertAccepted(data)
   }
 
   async verifyPin(id: string, pin: string): Promise<boolean> {
     const { data, error } = await this.client.rpc('verify_party_pin', { p_id: id, p_pin: pin })
-    const mapped = mapRpcError(error)
-    if (mapped) throw mapped
+    assertNoRpcError(error)
     return data === true
   }
 
   async deleteParty(id: string, pin: string | null): Promise<void> {
     const { data, error } = await this.client.rpc('delete_party', { p_id: id, p_pin: pin })
-    const mapped = mapRpcError(error)
-    if (mapped) throw mapped
-    if (data === false) throw new WrongPinError()
+    assertNoRpcError(error)
+    assertAccepted(data)
   }
 
   async appendRsvp(id: string, rsvp: Rsvp, pin: string | null): Promise<void> {
@@ -129,9 +130,8 @@ export class SupabasePartyRepository implements IPartyRepository {
       p_rsvp: rsvp,
       p_pin: pin,
     })
-    const mapped = mapRpcError(error)
-    if (mapped) throw mapped
-    if (data === false) throw new WrongPinError()
+    assertNoRpcError(error)
+    assertAccepted(data)
   }
 
   async updateRsvp(id: string, rsvpId: string, rsvp: Rsvp, pin: string | null): Promise<void> {
@@ -141,9 +141,8 @@ export class SupabasePartyRepository implements IPartyRepository {
       p_rsvp: rsvp,
       p_pin: pin,
     })
-    const mapped = mapRpcError(error)
-    if (mapped) throw mapped
-    if (data === false) throw new WrongPinError()
+    assertNoRpcError(error)
+    assertAccepted(data)
   }
 
   async removeRsvp(id: string, rsvpId: string, pin: string | null): Promise<void> {
@@ -152,8 +151,7 @@ export class SupabasePartyRepository implements IPartyRepository {
       p_rsvp_id: rsvpId,
       p_pin: pin,
     })
-    const mapped = mapRpcError(error)
-    if (mapped) throw mapped
-    if (data === false) throw new WrongPinError()
+    assertNoRpcError(error)
+    assertAccepted(data)
   }
 }

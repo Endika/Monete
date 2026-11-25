@@ -23,8 +23,8 @@ interface Row {
   pin: string | null
 }
 
-function byteLen(value: unknown): number {
-  return JSON.stringify(value).length
+function assertWithin(value: unknown, maxBytes: number): void {
+  if (JSON.stringify(value).length > maxBytes) throw new PayloadTooLargeError()
 }
 
 /**
@@ -60,6 +60,13 @@ export class InMemoryPartyRepository implements IPartyRepository {
     }
   }
 
+  private authorizedRow(id: string, pin: string | null): Row {
+    const row = this.rows.get(id)
+    if (!row) throw new Error('Party not found')
+    this.checkPin(row, id, pin)
+    return row
+  }
+
   async findById(id: string, pin: string | null = null): Promise<ReadResult | null> {
     this.findByIdCalls++
     const row = this.rows.get(id)
@@ -93,7 +100,7 @@ export class InMemoryPartyRepository implements IPartyRepository {
 
   async create(snapshot: PartySnapshot): Promise<SaveResult> {
     if (this.rows.has(snapshot.id)) throw new Error('Party already exists')
-    if (byteLen(snapshot) > MAX_PARTY_BYTES) throw new PayloadTooLargeError()
+    assertWithin(snapshot, MAX_PARTY_BYTES)
     const row: Row = { snapshot: structuredClone(snapshot), version: 1, pin: null }
     this.rows.set(snapshot.id, row)
     return { snapshot: structuredClone(row.snapshot), version: row.version }
@@ -105,20 +112,16 @@ export class InMemoryPartyRepository implements IPartyRepository {
     expectedVersion: number,
     pin: string | null,
   ): Promise<SaveResult> {
-    const row = this.rows.get(id)
-    if (!row) throw new Error('Party not found')
-    this.checkPin(row, id, pin)
+    const row = this.authorizedRow(id, pin)
     if (row.version !== expectedVersion) throw new VersionConflictError(row.version)
-    if (byteLen(snapshot) > MAX_PARTY_BYTES) throw new PayloadTooLargeError()
+    assertWithin(snapshot, MAX_PARTY_BYTES)
     row.snapshot = structuredClone(snapshot)
     row.version += 1
     return { snapshot: structuredClone(row.snapshot), version: row.version }
   }
 
   async setPin(id: string, newPin: string | null, currentPin: string | null): Promise<void> {
-    const row = this.rows.get(id)
-    if (!row) throw new Error('Party not found')
-    this.checkPin(row, id, currentPin)
+    const row = this.authorizedRow(id, currentPin)
     if (newPin !== null && !/^\d{4,6}$/.test(newPin)) throw new Error('Invalid PIN format')
     row.pin = newPin
     row.version += 1
@@ -138,42 +141,34 @@ export class InMemoryPartyRepository implements IPartyRepository {
   }
 
   async deleteParty(id: string, pin: string | null): Promise<void> {
-    const row = this.rows.get(id)
-    if (!row) throw new Error('Party not found')
-    this.checkPin(row, id, pin)
+    this.authorizedRow(id, pin)
     this.rows.delete(id)
     this.pinFails.delete(id)
   }
 
   async appendRsvp(id: string, rsvp: Rsvp, pin: string | null): Promise<void> {
-    const row = this.rows.get(id)
-    if (!row) throw new Error('Party not found')
-    this.checkPin(row, id, pin)
-    if (byteLen(rsvp) > MAX_RSVP_BYTES) throw new PayloadTooLargeError()
+    const row = this.authorizedRow(id, pin)
+    assertWithin(rsvp, MAX_RSVP_BYTES)
     if (row.snapshot.rsvps.length >= MAX_RSVPS) throw new PayloadTooLargeError()
     const next = { ...row.snapshot, rsvps: [...row.snapshot.rsvps, structuredClone(rsvp)] }
-    if (byteLen(next) > MAX_PARTY_BYTES) throw new PayloadTooLargeError()
+    assertWithin(next, MAX_PARTY_BYTES)
     // Mirrors the atomic SQL append: only touches the rsvps array, never the rest.
     row.snapshot = next
   }
 
   async updateRsvp(id: string, rsvpId: string, rsvp: Rsvp, pin: string | null): Promise<void> {
-    const row = this.rows.get(id)
-    if (!row) throw new Error('Party not found')
-    this.checkPin(row, id, pin)
-    if (byteLen(rsvp) > MAX_RSVP_BYTES) throw new PayloadTooLargeError()
+    const row = this.authorizedRow(id, pin)
+    assertWithin(rsvp, MAX_RSVP_BYTES)
     const next = {
       ...row.snapshot,
       rsvps: row.snapshot.rsvps.map((r) => (r.id === rsvpId ? structuredClone(rsvp) : r)),
     }
-    if (byteLen(next) > MAX_PARTY_BYTES) throw new PayloadTooLargeError()
+    assertWithin(next, MAX_PARTY_BYTES)
     row.snapshot = next
   }
 
   async removeRsvp(id: string, rsvpId: string, pin: string | null): Promise<void> {
-    const row = this.rows.get(id)
-    if (!row) throw new Error('Party not found')
-    this.checkPin(row, id, pin)
+    const row = this.authorizedRow(id, pin)
     row.snapshot = { ...row.snapshot, rsvps: row.snapshot.rsvps.filter((r) => r.id !== rsvpId) }
   }
 }
