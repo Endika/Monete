@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.5](https://github.com/Endika/Monete/compare/v2.5.4...v2.5.5) (2026-11-25)
+
+
+### Bug Fixes
+
+* **geo:** accept a place on the equator or the Greenwich meridian ([3b59326](https://github.com/Endika/Monete/commit/3b5932659ddf22c2762ddee7e463cdb123095a13))
+
 ## [2.5.4](https://github.com/Endika/Monete/compare/v2.5.3...v2.5.4) (2026-11-25)
 
 
