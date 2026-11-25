@@ -48,23 +48,23 @@ describe('googlePlaces', () => {
     await expect(googleAutocomplete('plaza', 'k')).rejects.toBeInstanceOf(GeoLookupError)
   })
 
-  it('maps place details to label+coords', async () => {
+  it('maps place details to label+coords, a zero coordinate included', async () => {
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue({
         ok: true,
         json: async () => ({
-          location: { latitude: 40.4, longitude: -3.7 },
-          formattedAddress: 'Plaza Mayor',
-          displayName: { text: 'Plaza Mayor de Madrid' },
+          location: { latitude: 51.48, longitude: 0 },
+          formattedAddress: 'Blackheath Ave',
+          displayName: { text: 'Royal Observatory' },
         }),
       }),
     )
     expect(await googlePlaceDetails('p1', 'k')).toEqual({
-      label: 'Plaza Mayor',
-      name: 'Plaza Mayor de Madrid',
-      lat: 40.4,
-      lng: -3.7,
+      label: 'Blackheath Ave',
+      name: 'Royal Observatory',
+      lat: 51.48,
+      lng: 0,
     })
   })
 
@@ -73,14 +73,12 @@ describe('googlePlaces', () => {
     await expect(googlePlaceDetails('p1', 'k')).rejects.toBeInstanceOf(GeoLookupError)
   })
 
-  it('throws when the response is missing coordinates instead of returning null', async () => {
-    vi.stubGlobal(
-      'fetch',
-      vi.fn().mockResolvedValue({
-        ok: true,
-        json: async () => ({ formattedAddress: 'Plaza Mayor' }),
-      }),
-    )
+  it.each([
+    ['latitude', { location: { longitude: -3.7 }, formattedAddress: 'Plaza Mayor' }],
+    ['longitude', { location: { latitude: 40.4 }, formattedAddress: 'Plaza Mayor' }],
+    ['address', { location: { latitude: 40.4, longitude: -3.7 } }],
+  ])('throws when the response has no %s instead of returning null', async (_, body) => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, json: async () => body }))
     await expect(googlePlaceDetails('p1', 'k')).rejects.toBeInstanceOf(GeoLookupError)
   })
 

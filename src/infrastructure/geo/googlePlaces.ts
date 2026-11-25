@@ -52,7 +52,12 @@ export async function googlePlaceDetails(
       formattedAddress?: string
       displayName?: { text?: string }
     }
-    if (!data.location?.latitude || !data.location?.longitude || !data.formattedAddress) {
+    if (
+      // Stryker disable next-line OptionalChaining: with no location the TypeError ends up as the same GeoLookupError
+      data.location?.latitude == null ||
+      data.location.longitude == null ||
+      !data.formattedAddress
+    ) {
       throw new GeoLookupError('Google place details response is missing location fields')
     }
     return {
