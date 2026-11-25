@@ -34,7 +34,6 @@ function assertWithin(value: unknown, maxBytes: number): void {
 export class InMemoryPartyRepository implements IPartyRepository {
   private rows = new Map<string, Row>()
   private pinFails = new Map<string, number>()
-  findByIdCalls = 0
 
   /**
    * Throttle gate: raise once the failed-attempt cap is hit (mirrors monete_pin_guard).
@@ -68,7 +67,6 @@ export class InMemoryPartyRepository implements IPartyRepository {
   }
 
   async findById(id: string, pin: string | null = null): Promise<ReadResult | null> {
-    this.findByIdCalls++
     const row = this.rows.get(id)
     if (!row) return null
     if (row.pin === null) {

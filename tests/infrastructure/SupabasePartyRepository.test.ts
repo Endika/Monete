@@ -126,9 +126,14 @@ describe('SupabasePartyRepository', () => {
   it('rethrows an unmapped rpc error untouched', async () => {
     const error = { code: 'XX000', message: 'boom' }
     const repo = new SupabasePartyRepository(
-      fakeClient({ get_party_version: { data: null, error }, update_party: { data: null, error } }),
+      fakeClient({
+        get_party_version: { data: null, error },
+        create_party: { data: null, error },
+        update_party: { data: null, error },
+      }),
     )
     await expect(repo.getVersion('abc1234')).rejects.toBe(error)
+    await expect(repo.create(snap())).rejects.toBe(error)
     await expect(repo.update('abc1234', snap(), 1, null)).rejects.toBe(error)
   })
 
