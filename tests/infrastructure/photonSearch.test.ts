@@ -25,6 +25,44 @@ describe('searchAddresses', () => {
     vi.unstubAllGlobals()
   })
 
+  it('builds the label from street, number, postcode, city, state and country', async () => {
+    const feature = {
+      geometry: { coordinates: [1, 2] },
+      properties: {
+        street: 'Calle Mayor',
+        housenumber: '5',
+        postcode: '28013',
+        city: 'Madrid',
+        state: 'Madrid',
+        country: 'España',
+      },
+    }
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({ ok: true, json: async () => ({ features: [feature] }) }),
+    )
+    expect((await searchAddresses('calle mayor', 'es'))[0]!.label).toBe(
+      'Calle Mayor 5, 28013, Madrid, Madrid, España',
+    )
+    vi.unstubAllGlobals()
+  })
+
+  it.each([
+    ['en', 'en'],
+    ['de', 'de'],
+    ['fr', 'fr'],
+    ['it', 'it'],
+    ['es', 'en'],
+  ])('sends lang %s to photon as %s, with the query trimmed', async (lang, sent) => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, json: async () => ({}) })
+    vi.stubGlobal('fetch', fetchMock)
+    await searchAddresses('  abc  ', lang)
+    expect(fetchMock).toHaveBeenCalledWith(
+      `https://photon.komoot.io/api/?q=abc&lang=${sent}&limit=5`,
+    )
+    vi.unstubAllGlobals()
+  })
+
   it('returns [] on a short query, without calling the network', async () => {
     const fetchMock = vi.fn()
     vi.stubGlobal('fetch', fetchMock)
@@ -41,13 +79,19 @@ describe('searchAddresses', () => {
 
   it('throws on an HTTP failure instead of hiding it as no results', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 503 }))
-    await expect(searchAddresses('xyz', 'es')).rejects.toBeInstanceOf(GeoLookupError)
+    const failure = searchAddresses('xyz', 'es')
+    await expect(failure).rejects.toBeInstanceOf(GeoLookupError)
+    await expect(failure).rejects.toThrow('Photon search failed: 503')
     vi.unstubAllGlobals()
   })
 
   it('throws on a network failure instead of hiding it as no results', async () => {
-    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new TypeError('offline')))
-    await expect(searchAddresses('xyz', 'es')).rejects.toBeInstanceOf(GeoLookupError)
+    const cause = new TypeError('offline')
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(cause))
+    await expect(searchAddresses('xyz', 'es')).rejects.toMatchObject({
+      message: 'Photon search request failed',
+      cause,
+    })
     vi.unstubAllGlobals()
   })
 })
