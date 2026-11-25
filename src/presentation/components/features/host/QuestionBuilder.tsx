@@ -48,6 +48,7 @@ const PRESET_CHIP_COLORS = [
 export function QuestionBuilder({ questions, onUpsert, onRemove }: QuestionBuilderProps) {
   const { t } = useTranslation()
   const { status, run } = useSubmitting()
+  const preset = useSubmitting()
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editingKind, setEditingKind] = useState<Question['kind']>('custom')
@@ -55,15 +56,20 @@ export function QuestionBuilder({ questions, onUpsert, onRemove }: QuestionBuild
 
   const presets = availablePresets(STANDARD_QUESTIONS, questions)
 
-  function handlePreset(preset: (typeof STANDARD_QUESTIONS)[number]) {
-    onUpsert({
-      kind: preset.kind,
-      type: preset.type,
-      scope: preset.scope,
-      options: preset.options,
-      required: preset.required,
-      label: t(preset.labelKey),
-    })
+  function handlePreset(p: (typeof STANDARD_QUESTIONS)[number]) {
+    // The dashboard already shows the error; this only keeps a failed add from going unhandled.
+    preset
+      .run(async () => {
+        await onUpsert({
+          kind: p.kind,
+          type: p.type,
+          scope: p.scope,
+          options: p.options,
+          required: p.required,
+          label: t(p.labelKey),
+        })
+      })
+      .catch(() => {})
   }
 
   function handleEdit(q: Question) {
@@ -114,14 +120,15 @@ export function QuestionBuilder({ questions, onUpsert, onRemove }: QuestionBuild
             {t('host.standardQuestions')}
           </span>
           <div className="flex flex-wrap gap-2">
-            {presets.map((preset, idx) => (
+            {presets.map((p, idx) => (
               <button
-                key={preset.kind}
+                key={p.kind}
                 type="button"
+                disabled={preset.status === 'submitting'}
                 className={`rounded-full px-4 py-1.5 text-sm font-semibold font-display transition-all duration-150 cursor-pointer ${PRESET_CHIP_COLORS[idx % PRESET_CHIP_COLORS.length]}`}
-                onClick={() => handlePreset(preset)}
+                onClick={() => handlePreset(p)}
               >
-                {t(preset.labelKey)}
+                {t(p.labelKey)}
               </button>
             ))}
           </div>
