@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.5.4](https://github.com/Endika/Monete/compare/v2.5.3...v2.5.4) (2026-11-25)
+
+
+### Bug Fixes
+
+* **host:** leave the time out of an all-day party's venue summary ([f3769db](https://github.com/Endika/Monete/commit/f3769db842d13d32de85cd2eb56a28ed5f0f60e2))
+* **host:** stop an empty PIN field from removing the party PIN ([9d737e9](https://github.com/Endika/Monete/commit/9d737e9af04be409dc851100e731c087c8e7e43b))
+* **pin:** keep the PIN of the party on screen across navigation ([1e73d67](https://github.com/Endika/Monete/commit/1e73d67762cd5fde62708348330812b8fda20d65))
+
 ## [2.5.3](https://github.com/Endika/Monete/compare/v2.5.2...v2.5.3) (2026-11-23)
 
 
