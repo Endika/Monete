@@ -14,10 +14,7 @@ function toDateStamp(d: Date): string {
 }
 
 export function toCalendarStamp(iso: string): string {
-  return new Date(iso)
-    .toISOString()
-    .replace(/[-:]/g, '')
-    .replace(/\.\d{3}Z$/, 'Z')
+  return new Date(iso).toISOString().replace(/[-:]|\.\d{3}/g, '')
 }
 
 function resolveEnd(event: CalendarEvent): string {
@@ -75,6 +72,7 @@ export function buildGoogleCalendarUrl(event: CalendarEvent): string {
 
 function hashString(s: string): number {
   let h = 0
+  // Stryker disable next-line ArithmeticOperator: subtracting each char only flips the sign, which Math.abs drops
   for (let i = 0; i < s.length; i++) h = (Math.imul(31, h) + s.charCodeAt(i)) | 0
   return h
 }
