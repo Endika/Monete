@@ -5,6 +5,7 @@ import { useEditPin } from '@/presentation/context/EditPinContext'
 import type { VerifyPinHandler } from '@/application/handlers/VerifyPinHandler'
 import { Input } from '@/presentation/components/common/Input'
 import { Button } from '@/presentation/components/common/Button'
+import { errorCode } from '@/presentation/utils/writeError'
 import { ErrorBanner } from '@/presentation/components/common/ErrorBanner'
 
 interface PinGateProps {
@@ -44,8 +45,7 @@ export function PinGate({ partyId, hasPin, rateLimited, onUnlocked, children }: 
         setError(t('host.wrongPin'))
       }
     } catch (err) {
-      const code = err instanceof Error ? (err as Error & { code?: string }).code : undefined
-      setError(code === 'RATE_LIMITED' ? t('host.tooManyAttempts') : t('host.wrongPin'))
+      setError(errorCode(err) === 'RATE_LIMITED' ? t('host.tooManyAttempts') : t('host.wrongPin'))
     }
   }
 

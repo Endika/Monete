@@ -7,7 +7,7 @@ import type { SubmitRsvpHandler } from '@/application/handlers/SubmitRsvpHandler
 import type { UpdateRsvpHandler } from '@/application/handlers/UpdateRsvpHandler'
 import { ErrorBanner } from '@/presentation/components/common/ErrorBanner'
 import { AddToCalendarButton } from './AddToCalendarButton'
-import { RsvpForm } from './RsvpForm'
+import { RsvpForm, type RsvpInput } from './RsvpForm'
 import { ParticipantList } from './ParticipantList'
 import { MonkeyMascot } from '@/presentation/components/common/MonkeyMascot'
 import { Button } from '@/presentation/components/common/Button'
@@ -16,40 +16,14 @@ import { MapEmbed } from '@/presentation/components/features/event/MapEmbed'
 import { RecentsStore } from '@/infrastructure/persistence/RecentsStore'
 import { PinGate } from '@/presentation/components/features/security/PinGate'
 import { formatEventStart } from '@/presentation/utils/formatEventStart'
-import type { AnswerMap } from '@/domain/entities/Party'
-
-/** Map a repository error to a user-facing message, honouring the server caps/guards. */
-function messageForError(t: (key: string) => string, e: unknown): string {
-  const code = e instanceof Error ? (e as Error & { code?: string }).code : undefined
-  if (code === 'PAYLOAD_TOO_LARGE') return t('common.tooLarge')
-  if (code === 'STALE_CLIENT') return t('common.updateRequired')
-  if (code === 'WRONG_PIN') return t('host.wrongPin')
-  if (code === 'RATE_LIMITED') return t('host.tooManyAttempts')
-  return e instanceof Error ? e.message : String(e)
-}
+import { errorCode, messageForError } from '@/presentation/utils/writeError'
+import { birthdayNames } from '@/presentation/utils/headcount'
 
 interface GuestPageProps {
   partyId: string
 }
 
 type Mode = 'view' | 'register' | { editRsvpId: string }
-
-function rsvpToInitial(rsvp: {
-  parentsLabel: string
-  familyAnswers: AnswerMap
-  children: { name: string; answers: AnswerMap; isSibling: boolean; isBirthday: boolean }[]
-}) {
-  return {
-    parentsLabel: rsvp.parentsLabel,
-    familyAnswers: rsvp.familyAnswers,
-    children: rsvp.children.map((c) => ({
-      name: c.name,
-      answers: c.answers,
-      isSibling: c.isSibling,
-      isBirthday: c.isBirthday,
-    })),
-  }
-}
 
 export function GuestPage({ partyId }: GuestPageProps) {
   const { hasPin, status, snapshot, rateLimited, refresh } = useParty()
@@ -99,17 +73,12 @@ function GuestPageInner({ partyId }: GuestPageProps) {
 
   function handleWriteError(e: unknown) {
     setSubmitError(messageForError(t, e))
-    const code = e instanceof Error ? (e as Error & { code?: string }).code : undefined
     // A wrong PIN here means the remembered one just went stale (e.g. the host rotated
     // it): refresh so the locked read clears it and swaps back to the gate.
-    if (code === 'WRONG_PIN') void refresh()
+    if (errorCode(e) === 'WRONG_PIN') void refresh()
   }
 
-  async function handleRegister(input: {
-    parentsLabel: string
-    familyAnswers: AnswerMap
-    children: { name: string; answers: AnswerMap; isSibling: boolean; isBirthday: boolean }[]
-  }) {
+  async function handleRegister(input: RsvpInput) {
     try {
       const { rsvpId } = await container
         .resolve<SubmitRsvpHandler>('submitRsvp')
@@ -131,14 +100,7 @@ function GuestPageInner({ partyId }: GuestPageProps) {
     }
   }
 
-  async function handleUpdate(
-    rsvpId: string,
-    input: {
-      parentsLabel: string
-      familyAnswers: AnswerMap
-      children: { name: string; answers: AnswerMap; isSibling: boolean; isBirthday: boolean }[]
-    },
-  ) {
+  async function handleUpdate(rsvpId: string, input: RsvpInput) {
     try {
       await container
         .resolve<UpdateRsvpHandler>('updateRsvp')
@@ -155,11 +117,7 @@ function GuestPageInner({ partyId }: GuestPageProps) {
   const editingRsvp =
     typeof mode === 'object' ? (snapshot.rsvps.find((r) => r.id === mode.editRsvpId) ?? null) : null
 
-  const celebrantNames = [
-    ...new Set(
-      snapshot.rsvps.flatMap((r) => r.children.filter((c) => c.isBirthday).map((c) => c.name)),
-    ),
-  ]
+  const celebrantNames = birthdayNames(snapshot.rsvps)
 
   return (
     <div className="mx-auto max-w-lg px-4 py-10 flex flex-col gap-6">
@@ -287,7 +245,7 @@ function GuestPageInner({ partyId }: GuestPageProps) {
               <RsvpForm
                 key={mode.editRsvpId}
                 snapshot={snapshot}
-                initial={rsvpToInitial(editingRsvp)}
+                initial={editingRsvp}
                 submitLabel={t('guest.editResponse')}
                 onSubmit={(input) => handleUpdate(mode.editRsvpId, input)}
               />
