@@ -70,4 +70,30 @@ describe('useSubmitting', () => {
     expect(calls).toEqual(['first'])
     expect(result.current.status).toBe('saved')
   })
+
+  it('restarts the saved timer when run again before it fires', async () => {
+    const { result } = renderHook(() => useSubmitting())
+    const ok = async () => {}
+
+    await act(async () => result.current.run(ok))
+    act(() => {
+      vi.advanceTimersByTime(1000)
+    })
+    await act(async () => result.current.run(ok))
+    act(() => {
+      vi.advanceTimersByTime(1000)
+    })
+
+    expect(result.current.status).toBe('saved')
+  })
+
+  it('cancels the pending timer on unmount', async () => {
+    const { result, unmount } = renderHook(() => useSubmitting())
+
+    await act(async () => result.current.run(async () => {}))
+    expect(vi.getTimerCount()).toBe(1)
+    unmount()
+
+    expect(vi.getTimerCount()).toBe(0)
+  })
 })
