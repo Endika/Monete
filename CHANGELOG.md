@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.7](https://github.com/Endika/Monete/compare/v2.5.6...v2.5.7) (2026-11-25)
+
+
+### Bug Fixes
+
+* **questions:** add a preset once, however often it is tapped ([95e5cbf](https://github.com/Endika/Monete/commit/95e5cbf5699ec7c8a7632dd99b5d0d544e143188))
+
 ## [2.5.6](https://github.com/Endika/Monete/compare/v2.5.5...v2.5.6) (2026-11-25)
 
 
