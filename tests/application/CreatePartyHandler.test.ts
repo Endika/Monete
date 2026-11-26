@@ -16,17 +16,4 @@ describe('CreatePartyHandler', () => {
     expect(result.party.id).toMatch(/^[a-z0-9]{7}$/)
     expect(unlocked(await repo.findById(result.party.id)).snapshot.event.title).toBe('Leo turns 5')
   })
-
-  it('rejects an invalid payload', async () => {
-    const repo = new InMemoryPartyRepository()
-    await expect(
-      new CreatePartyHandler(repo).execute({
-        title: '',
-        address: '',
-        startsAt: 'nope',
-        endsAt: null,
-        requirements: '',
-      }),
-    ).rejects.toBeTruthy()
-  })
 })

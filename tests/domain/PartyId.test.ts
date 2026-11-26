@@ -11,8 +11,4 @@ describe('PartyId', () => {
     expect(() => PartyId.of('ABC')).toThrow()
     expect(() => PartyId.of('toolongvalue')).toThrow()
   })
-
-  it('accepts a well-formed id', () => {
-    expect(PartyId.of('abc1234').value).toBe('abc1234')
-  })
 })

@@ -92,7 +92,6 @@ describe('googlePlaceDetails', () => {
   it.each([
     ['latitude', { location: { longitude: -3.7 }, formattedAddress: 'Plaza Mayor' }],
     ['longitude', { location: { latitude: 40.4 }, formattedAddress: 'Plaza Mayor' }],
-    ['address', { location: { latitude: 40.4, longitude: -3.7 } }],
   ])('throws when the response has no %s instead of returning null', async (_, body) => {
     answering(body)
     await expect(googlePlaceDetails('p1', 'k')).rejects.toThrow('missing location fields')

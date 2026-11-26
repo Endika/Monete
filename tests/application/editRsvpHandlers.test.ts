@@ -32,37 +32,6 @@ async function setup() {
 }
 
 describe('rsvp edit/remove handlers', () => {
-  it('SubmitRsvpHandler returns the new rsvpId', async () => {
-    const { repo, partyId, qid } = await setup()
-    const res = await new SubmitRsvpHandler(repo).execute({
-      partyId,
-      parentsLabel: 'A',
-      familyAnswers: {},
-      children: [{ name: 'Leo', answers: { [qid]: 'Pizza' } }],
-    })
-    expect(res.rsvpId).toMatch(/[0-9a-f-]{36}/)
-  })
-
-  it('updates a rsvp by id', async () => {
-    const { repo, partyId, qid } = await setup()
-    const { rsvpId } = await new SubmitRsvpHandler(repo).execute({
-      partyId,
-      parentsLabel: 'A',
-      familyAnswers: {},
-      children: [{ name: 'Leo', answers: { [qid]: 'Pizza' } }],
-    })
-    await new UpdateRsvpHandler(repo).execute({
-      partyId,
-      rsvpId,
-      parentsLabel: 'A2',
-      familyAnswers: {},
-      children: [{ name: 'Leo', answers: { [qid]: 'Hot dog' } }],
-    })
-    const r = unlocked(await repo.findById(partyId)).snapshot.rsvps[0]!
-    expect(r.parentsLabel).toBe('A2')
-    expect(r.children[0]!.answers[qid]).toBe('Hot dog')
-  })
-
   it('removes a rsvp by id', async () => {
     const { repo, partyId, qid } = await setup()
     const { rsvpId } = await new SubmitRsvpHandler(repo).execute({

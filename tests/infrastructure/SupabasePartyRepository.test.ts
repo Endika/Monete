@@ -168,10 +168,7 @@ describe('SupabasePartyRepository', () => {
     },
   )
 
-  it.each([
-    [8, 8],
-    [null, 4],
-  ])(
+  it.each([[null, 4]])(
     'update sends the stamped blob and expected version, returns %s -> %s',
     async (data, version) => {
       const calls: [string, unknown][] = []

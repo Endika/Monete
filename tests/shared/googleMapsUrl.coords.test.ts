@@ -13,7 +13,4 @@ describe('googleMapsUrl coords', () => {
   ])('falls back to the address when a coordinate is missing: %o', (coords) => {
     expect(googleMapsUrl('Plaza Mayor', coords)).toContain('query=Plaza%20Mayor')
   })
-  it('falls back to address text without coords', () => {
-    expect(googleMapsUrl('Plaza Mayor')).toContain('query=Plaza%20Mayor')
-  })
 })

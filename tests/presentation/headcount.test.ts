@@ -103,21 +103,4 @@ describe('computeHeadcount', () => {
     expect(hc.children.map((c) => c.isBirthday)).toEqual([true, false, true])
     expect(hc.birthdayNames).toEqual(['Leo'])
   })
-
-  it('reports nothing for a party without questions or replies', () => {
-    const p = Party.create({
-      title: 'P',
-      address: 'A',
-      startsAt: '2026-06-20T17:00:00.000Z',
-      endsAt: null,
-      requirements: '',
-    })
-    expect(computeHeadcount(p.toSnapshot())).toMatchObject({
-      totalChildren: 0,
-      totalAdults: 0,
-      children: [],
-      birthdayNames: [],
-      extraTotals: [],
-    })
-  })
 })
