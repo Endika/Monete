@@ -68,6 +68,12 @@ describe('Party details', () => {
     expect(s).toMatchObject({ createdAt: 'created', updatedAt: NOW })
   })
 
+  it('accepts a 100-character title and no venue name', () => {
+    const { venueName: _omitted, ...rest } = details
+    const s = Party.create({ ...rest, title: 'x'.repeat(100) }).toSnapshot()
+    expect(s.event).toMatchObject({ title: 'x'.repeat(100), venueName: '' })
+  })
+
   it.each([
     ['a blank title', '   '],
     ['a title over 100 characters', 'x'.repeat(101)],
