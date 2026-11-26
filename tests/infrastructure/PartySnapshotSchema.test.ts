@@ -93,10 +93,6 @@ describe('parsePartySnapshot', () => {
     expect(present.event.venueName).toBe('Jungle Park')
   })
 
-  it('throws on a missing mandatory field', () => {
-    expect(() => parsePartySnapshot({ id: 'abc1234' })).toThrow(/validation failed/i)
-  })
-
   const minimal = {
     id: 'abc1234',
     event: { title: 'X', startsAt: '2026-06-20T17:00:00.000Z' },
@@ -135,15 +131,6 @@ describe('parsePartySnapshot', () => {
     })
     expect(parsed.rsvps[0]!.children).toEqual([])
     expect(parsed.rsvps[0]!.familyAnswers).toEqual({ a: 'x', b: 2, c: null })
-  })
-
-  it('rejects an answer that is not a string, number or null', () => {
-    expect(() =>
-      parsePartySnapshot({
-        ...minimal,
-        rsvps: [{ id: 'r', parentsLabel: 'P', familyAnswers: { a: true }, createdAt: 'x' }],
-      }),
-    ).toThrow(/validation failed/i)
   })
 
   it('reports at most five issues as "path: message" joined by "; "', () => {

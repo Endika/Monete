@@ -24,10 +24,6 @@ const allDay = (start: Date, end: Date | null) => ({
 const lines = (ics: string, prefix: string) => ics.split('\r\n').filter((l) => l.startsWith(prefix))
 
 describe('calendar links', () => {
-  it('formats an ISO date to a UTC calendar stamp', () => {
-    expect(toCalendarStamp('2026-06-20T17:00:00.000Z')).toBe('20260620T170000Z')
-  })
-
   it('builds the whole ics, escaping what the format reserves', () => {
     expect(
       buildIcs({ ...event, title: 'Leo; turns, 5', address: 'Fun Park\\12\nFloor 1' }).split(

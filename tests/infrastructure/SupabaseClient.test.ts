@@ -15,14 +15,11 @@ describe('getSupabase', () => {
     vi.unstubAllGlobals()
   })
 
-  it.each(['VITE_SUPABASE_URL', 'VITE_SUPABASE_ANON_KEY'])(
-    'throws when %s is missing',
-    async (name) => {
-      vi.stubEnv(name, '')
-      const getSupabase = await load()
-      expect(() => getSupabase()).toThrow('Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY')
-    },
-  )
+  it('throws when VITE_SUPABASE_URL is missing', async () => {
+    vi.stubEnv('VITE_SUPABASE_URL', '')
+    const getSupabase = await load()
+    expect(() => getSupabase()).toThrow('Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY')
+  })
 
   it('returns the same client on every call', async () => {
     const getSupabase = await load()

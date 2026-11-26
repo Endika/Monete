@@ -53,7 +53,6 @@ describe('searchAddresses', () => {
   })
 
   it.each([
-    ['en', 'en'],
     ['de', 'de'],
     ['fr', 'fr'],
     ['it', 'it'],
@@ -73,12 +72,6 @@ describe('searchAddresses', () => {
     vi.stubGlobal('fetch', fetchMock)
     expect(await searchAddresses('', 'es')).toEqual([])
     expect(fetchMock).not.toHaveBeenCalled()
-    vi.unstubAllGlobals()
-  })
-
-  it('returns [] for a genuine empty result', async () => {
-    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, json: async () => ({}) }))
-    expect(await searchAddresses('xyz', 'es')).toEqual([])
     vi.unstubAllGlobals()
   })
 

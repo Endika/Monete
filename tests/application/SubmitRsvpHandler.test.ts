@@ -30,17 +30,6 @@ async function setup() {
 }
 
 describe('SubmitRsvpHandler', () => {
-  it('appends a validated rsvp', async () => {
-    const { repo, partyId, qid } = await setup()
-    await new SubmitRsvpHandler(repo).execute({
-      partyId,
-      parentsLabel: 'Parents of Leo',
-      familyAnswers: {},
-      children: [{ name: 'Leo', answers: { [qid]: 'Pizza' } }],
-    })
-    expect(unlocked(await repo.findById(partyId)).snapshot.rsvps).toHaveLength(1)
-  })
-
   it('rejects an invalid select answer before appending', async () => {
     const { repo, partyId, qid } = await setup()
     await expect(

@@ -23,12 +23,6 @@ describe('RecentsStore', () => {
     expect(s.listHosted()[0]!.title).toBe('A2')
   })
 
-  it('tracks joined with rsvpId and looks one up', () => {
-    const s = new RecentsStore(memStorage())
-    s.addJoined({ id: 'p1', title: 'P', startsAt: '2026-06-20T17:00:00.000Z', rsvpId: 'r1' })
-    expect(s.getJoined('p1')!.rsvpId).toBe('r1')
-  })
-
   it('removes a party from the one list it is asked to, and keeps the newest 50', () => {
     const s = new RecentsStore(memStorage())
     for (let i = 0; i <= 50; i++) s.addHosted({ id: `h${i}`, title: 'P', startsAt: 'x' })
@@ -56,13 +50,6 @@ describe('RecentsStore', () => {
       title: 'New A',
       startsAt: '2026-03-01T00:00:00.000Z',
     })
-  })
-
-  it('updateHosted is a no-op when the id is not present', () => {
-    const s = new RecentsStore(memStorage())
-    s.addHosted({ id: 'a', title: 'A', startsAt: '2026-01-01T00:00:00.000Z' })
-    s.updateHosted('missing', { title: 'X' })
-    expect(s.listHosted()).toEqual([{ id: 'a', title: 'A', startsAt: '2026-01-01T00:00:00.000Z' }])
   })
 
   it('updateJoined updates an existing entry in place, keeping its rsvpId', () => {

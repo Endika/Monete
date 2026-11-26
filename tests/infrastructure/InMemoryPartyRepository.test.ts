@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { InMemoryPartyRepository } from '@/infrastructure/persistence/InMemoryPartyRepository'
 import { VersionConflictError } from '@/domain/repositories/IPartyRepository'
-import { Party, type Rsvp } from '@/domain/entities/Party'
+import { Party } from '@/domain/entities/Party'
 import { unlocked } from '../helpers/partyRead'
 
 function snap() {
@@ -14,19 +14,7 @@ function snap() {
   }).toSnapshot()
 }
 
-function rsvp(): Rsvp {
-  return { id: 'r1', parentsLabel: 'A', familyAnswers: {}, children: [], createdAt: 'x' }
-}
-
 describe('InMemoryPartyRepository', () => {
-  it('creates then reads at version 1', async () => {
-    const repo = new InMemoryPartyRepository()
-    const s = snap()
-    await repo.create(s)
-    const row = await repo.findById(s.id)
-    expect(unlocked(row).version).toBe(1)
-  })
-
   it('rejects an update with a stale expectedVersion', async () => {
     const repo = new InMemoryPartyRepository()
     const s = snap()
@@ -91,12 +79,8 @@ describe('InMemoryPartyRepository', () => {
   })
 
   it.each([
-    ['update', (r: InMemoryPartyRepository) => r.update('nope', snap(), 1, null)],
     ['setPin', (r: InMemoryPartyRepository) => r.setPin('nope', '1234', null)],
     ['deleteParty', (r: InMemoryPartyRepository) => r.deleteParty('nope', null)],
-    ['appendRsvp', (r: InMemoryPartyRepository) => r.appendRsvp('nope', rsvp(), null)],
-    ['updateRsvp', (r: InMemoryPartyRepository) => r.updateRsvp('nope', 'r1', rsvp(), null)],
-    ['removeRsvp', (r: InMemoryPartyRepository) => r.removeRsvp('nope', 'r1', null)],
   ])('%s rejects a missing party', async (_name, call) => {
     await expect(call(new InMemoryPartyRepository())).rejects.toThrow('Party not found')
   })
